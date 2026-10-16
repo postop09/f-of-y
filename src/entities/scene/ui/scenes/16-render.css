@@ -1,0 +1,5 @@
+/* render 장면 전용 */
+.btn { position: absolute; background: var(--sig); }
+.btn .word { color: var(--void); }
+.prog { position: absolute; height: 3px; background: var(--ln); }
+.prog i { position: absolute; inset: 0; background: var(--sig); transform-origin: 0 50%; }

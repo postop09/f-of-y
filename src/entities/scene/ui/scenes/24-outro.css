@@ -1,0 +1,14 @@
+/* outro 장면 전용 */
+.endcard {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: min(560px, calc(100% - 32px));
+  display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
+  font-size: calc(var(--mono) * .8); color: var(--fg);
+}
+.endcard p { margin: 0; }
+.end-big { font-family: var(--fam); font-variation-settings: "wght" 900, "wdth" 125; font-size: clamp(64px, 14vw, 180px); line-height: .8; margin-bottom: 18px !important; }
+.end-btn {
+  pointer-events: auto; appearance: none; border: 0; margin-top: 10px; padding: 12px 22px; cursor: pointer;
+  background: var(--sig); color: var(--void); font: 500 calc(var(--mono) * .8) var(--mono-fam);
+}
+.end-btn:hover { filter: brightness(1.08); }
+.end-btn:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; }

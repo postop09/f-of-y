@@ -1,0 +1,3 @@
+/* sixty 장면 전용 */
+.meter-b { position: absolute; background: var(--ln); }
+.meter-b.on { background: var(--sig); }

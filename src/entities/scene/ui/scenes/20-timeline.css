@@ -1,0 +1,11 @@
+/* timeline 장면 전용 */
+.nle { position: absolute; border: 1px solid var(--ln); background: #111418; transform-origin: 50% 50%; overflow: hidden; }
+.nle-lime { position: absolute; inset: 0; background: var(--sig); z-index: 3; }
+.nle-ruler { position: absolute; top: 0; right: 0; border-bottom: 1px solid var(--ln); }
+.nle-ruler span { position: absolute; top: 50%; transform: translateY(-50%); padding-left: 4px; border-left: 1px solid var(--ln); font-size: calc(var(--mono) * .42); color: var(--sub); }
+.nle-row { position: absolute; left: 0; right: 0; border-bottom: 1px solid #191d22; }
+.nle-name { position: absolute; left: 0; top: 0; bottom: 0; display: grid; place-items: center; font-size: calc(var(--mono) * .5); color: var(--sub); border-right: 1px solid var(--ln); }
+.nle-clip { position: absolute; padding: 3px 6px; background: #20252c; border: 1px solid #2b3139; font-size: calc(var(--mono) * .42); color: #8d939b; overflow: hidden; white-space: nowrap; }
+.nle-kf { position: absolute; width: 7px; height: 7px; background: var(--ink); }
+.nle-head { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--ink); z-index: 2; }
+.nle-head::before { content: ""; position: absolute; top: 0; left: -4px; border: 4px solid transparent; border-top: 6px solid var(--ink); }

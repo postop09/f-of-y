@@ -1,0 +1,8 @@
+/* strip 장면 전용 */
+.strip { position: absolute; left: 0; right: 0; background: #16191e; }
+.holes { position: absolute; left: 0; right: 0; background-image: linear-gradient(90deg, var(--void) 0 55%, transparent 55%); background-size: 26px 100%; }
+.frame { position: absolute; background: #1e2228; overflow: hidden; }
+.frame-no { position: absolute; left: 10px; top: 8px; font-size: calc(var(--mono) * .5); color: var(--sub); }
+.frame--paper { background: var(--paper); }
+.frame--paper .word, .frame--lime .word, .frame--paper .frame-no, .frame--lime .frame-no { color: var(--void); }
+.frame--lime { background: var(--sig); }

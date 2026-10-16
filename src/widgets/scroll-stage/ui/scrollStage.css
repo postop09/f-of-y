@@ -1,0 +1,85 @@
+/* the scroll track: empty, just tall. Its height is the length of the film. */
+.track { position: relative; height: calc(var(--units) * 100vh + 100vh); height: calc(var(--units) * 100lvh + 100lvh); }
+.vh-probe { position: absolute; top: 0; left: 0; width: 1px; height: 100vh; height: 100lvh; visibility: hidden; pointer-events: none; }
+
+#stage {
+  --bg: var(--void); --fg: var(--ink); --sub: var(--dim); --ln: var(--rule);
+  --pad: clamp(12px, 2.2vw, 26px); --bar: 42px; --mono: 18px; --hud: 11px;
+  position: fixed; inset: 0; overflow: hidden; background: var(--bg); color: var(--fg);
+  font-family: var(--mono-fam);
+  user-select: none; -webkit-user-select: none;
+  pointer-events: none; /* wheel and touch fall through to the page, so it scrolls */
+  transition: background-color .12s;
+}
+#stage.paper { --bg: var(--paper); --fg: var(--void); --sub: #5f636a; --ln: #cdcdc4; }
+.grid {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at center, var(--ln) 1px, transparent 1.6px);
+  background-size: 28px 28px; background-position: center;
+}
+.world { position: absolute; inset: 0; transform-origin: 0 0; }
+.fx, .layer, .flash { position: absolute; inset: 0; }
+.fx { width: 100%; height: 100%; }
+.flash { background: var(--sig); opacity: 0; }
+.layer > div, .layer > svg { position: absolute; }
+
+/* HUD */
+.hud { position: absolute; inset: 0; z-index: 3; color: var(--sub); font-size: var(--hud); letter-spacing: .06em; line-height: 1; }
+.hud .c { position: absolute; display: flex; align-items: center; gap: 1.4em; white-space: nowrap; }
+.hud .tl { top: calc(var(--pad) + 5px); left: calc(var(--pad) + 16px); }
+.hud .tr { top: calc(var(--pad) + 5px); right: calc(var(--pad) + 16px); }
+.hud .bl { bottom: calc(var(--bar) + 8px); left: calc(var(--pad) + 16px); max-width: calc(64% - var(--pad)); gap: .7em; }
+.hud .br { bottom: calc(var(--bar) + 8px); right: calc(var(--pad) + 16px); }
+.hud .cap { overflow: hidden; text-overflow: ellipsis; color: var(--fg); }
+.hud .gt { color: var(--sig); }
+#stage.paper .hud .gt { color: var(--fg); }
+.hud b { font-weight: 500; color: var(--fg); }
+.beats { display: flex; gap: .35em; }
+.beats i { width: .72em; height: .72em; background: var(--ln); }
+.beats i.on { background: var(--sig); }
+#stage.paper .beats i.on { background: var(--fg); }
+.corner { position: absolute; width: 12px; height: 12px; border: 0 solid var(--sub); opacity: .75; }
+.corner.a { top: var(--pad); left: var(--pad); border-width: 1px 0 0 1px; }
+.corner.b { top: var(--pad); right: var(--pad); border-width: 1px 1px 0 0; }
+.corner.c { bottom: calc(var(--bar) + 2px); left: var(--pad); border-width: 0 0 1px 1px; }
+.corner.d { bottom: calc(var(--bar) + 2px); right: var(--pad); border-width: 0 1px 1px 0; }
+
+/* transport: a scrubber for the scroll position */
+.transport {
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--bar); z-index: 4; display: flex; align-items: center; gap: 4px;
+  padding: 0 calc(var(--pad) - 8px); color: var(--sub); pointer-events: auto;
+}
+.transport button {
+  appearance: none; border: 0; background: transparent; color: inherit; width: 36px; height: 36px;
+  display: grid; place-items: center; cursor: pointer; padding: 0;
+}
+.transport button:hover { color: var(--fg); }
+.transport svg { width: 14px; height: 14px; fill: currentColor; }
+button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); outline-offset: 2px; }
+#scrub { position: relative; flex: 1; height: 100%; margin: 0 8px; cursor: pointer; touch-action: none; outline: none; }
+#scrub i { position: absolute; display: block; }
+#scrub .trk { left: 0; right: 0; top: 50%; height: 1px; background: var(--ln); }
+#scrub:hover .trk { background: var(--sub); }
+#scrub .fill { left: 0; top: 50%; height: 1px; background: var(--sub); }
+#scrub .tk { top: 50%; width: 1px; height: 5px; margin-top: -2px; background: var(--sub); opacity: .55; }
+#scrub .tk.big { height: 9px; margin-top: -4px; opacity: .95; }
+#scrub .head { top: 50%; width: 2px; height: 14px; margin: -7px 0 0 -1px; background: var(--sig); }
+.scene-lb { min-width: 11ch; padding-right: 8px; text-align: right; font-size: 10px; letter-spacing: .12em; }
+
+/* help */
+.help {
+  position: absolute; left: calc(var(--pad) + 16px); bottom: calc(var(--bar) + 40px); z-index: 3; display: flex; flex-direction: column; gap: 12px;
+  font-size: calc(var(--mono) * .68); color: var(--sub); max-width: calc(100% - 2 * var(--pad) - 32px);
+}
+.help .go { color: var(--fg); font-size: calc(var(--mono) * .82); font-weight: 500; }
+.help .go::before { content: ""; display: inline-block; width: .55em; height: .55em; margin-right: .6em; background: var(--sig); vertical-align: .05em; }
+.keys { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.keys span { display: inline-flex; align-items: center; gap: 7px; }
+kbd { font: inherit; color: var(--fg); border: 1px solid var(--ln); padding: 2px 6px 1px; }
+.help[hidden] { display: none; }
+
+@media (max-width: 640px) {
+  #stage { --bar: 46px; }
+  .hide-s { display: none; }
+  .hud .bl { max-width: 52%; }
+}

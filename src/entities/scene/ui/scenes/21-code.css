@@ -1,0 +1,6 @@
+/* code 장면 전용 */
+.src {
+  position: absolute; overflow: hidden; font-size: calc(var(--mono) * .62); color: var(--sub); opacity: .32; white-space: pre;
+  -webkit-mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+}
+.src-n { display: inline-block; width: 3ch; opacity: .6; }

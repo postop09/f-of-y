@@ -1,0 +1,9 @@
+/* keyframe 장면 전용 */
+.kf-track { position: absolute; border: 1px solid var(--ln); background: rgba(231, 231, 223, .02); }
+.kf-tick { position: absolute; top: -1.6em; font-size: calc(var(--mono) * .55); color: var(--sub); transform: translateX(-50%); }
+.kf-tick::after { content: ""; position: absolute; left: 50%; top: 1.5em; width: 1px; height: .6em; background: var(--ln); }
+.kf-tick:first-child { transform: none; }
+.kf-label { position: absolute; left: 0; top: calc(100% + .5em); font-size: calc(var(--mono) * .55); color: var(--sub); }
+.kf-trail { position: absolute; height: 2px; background-image: linear-gradient(90deg, var(--sig) 50%, transparent 50%); background-size: 6px 2px; }
+.kf-diamond { position: absolute; background: var(--ink); transform: translate(-50%, -50%) rotate(45deg); }
+.kf-diamond.on { background: var(--sig); }

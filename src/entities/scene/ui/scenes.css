@@ -1,0 +1,10 @@
+/* 여러 장면이 같이 쓰는 클래스. 장면 하나에서만 쓰는 클래스는 ui/scenes/NN-id.css 에. 색은 전부 :root / #stage 토큰. */
+.bar { position: absolute; }
+.sigbg { background: var(--sig); }
+.fgbg { background: var(--fg); }
+
+.ln { position: absolute; left: 0; top: 0; font-size: calc(var(--mono) * .78); line-height: 1.35; color: var(--sub); opacity: .5; }
+.ln.cur { opacity: 1; color: var(--fg); }
+.rowhl { position: absolute; background: rgba(231, 231, 223, .045); }
+.rowhl::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--sig); }
+.rowflash { position: absolute; inset: 0; background: var(--sig); opacity: 0; }

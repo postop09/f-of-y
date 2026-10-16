@@ -1,0 +1,7 @@
+/* everyone 장면 전용 */
+.fcell { position: absolute; border: 1px solid var(--ln); background: rgba(231, 231, 223, .025); }
+.fcell.on { background: var(--sig); border-color: var(--sig); }
+.fno { position: absolute; left: 5px; top: 3px; font-size: calc(var(--mono) * .42); color: var(--sub); }
+.fcell.on .fno { color: var(--void); }
+.fdot { position: absolute; width: 4px; height: 4px; margin: -2px 0 0 -2px; background: var(--sig); }
+.fcell.on .fdot { background: var(--void); }

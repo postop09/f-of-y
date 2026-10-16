@@ -1,0 +1,30 @@
+/* F(Y). The stage stays dark on purpose, like a video player; every colour is a token. */
+:root {
+  --void: #0c0e11;
+  --ink: #e7e7df;
+  --dim: #6d727a;
+  --rule: #20252c;
+  --sig: #c6f432;
+  --paper: #e7e7df;
+  --fam: "Archivo", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --mono-fam: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+  background: var(--void);
+  scrollbar-width: none;
+  overscroll-behavior-y: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --void: #0c0e11; --ink: #e7e7df; }
+}
+:root[data-theme="dark"] { --void: #0c0e11; --ink: #e7e7df; }
+:root::-webkit-scrollbar { display: none; }
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

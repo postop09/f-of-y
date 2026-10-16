@@ -1,0 +1,8 @@
+.code { position: absolute; left: 0; top: 0; white-space: pre; font-size: var(--mono); line-height: 1.35; font-weight: 500; color: var(--fg); }
+.code .p, .dim { color: var(--sub); }
+.code .sig, .code.sig { color: var(--sig); }
+.code .bd { display: inline-block; transform-origin: 100% 50%; }
+.small { font-size: calc(var(--mono) * .68); font-weight: 400; }
+.caret { display: inline-block; width: .6em; height: 1.12em; margin-left: .06em; vertical-align: -.22em; background: var(--sig); }
+#stage.paper .caret { background: var(--fg); }
+.bigcaret { position: absolute; background: var(--sig); }
