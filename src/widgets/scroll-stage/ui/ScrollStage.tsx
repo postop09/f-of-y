@@ -32,7 +32,7 @@ import { Transport } from './Transport'
 import './scrollStage.css'
 
 const jump = (top: number) => window.scrollTo({ top, behavior: REDUCE ? 'auto' : 'smooth' })
-/** the end card asks for a replay with this event; the stage's input effect does the work (no refs read in render) */
+/** the end card and the transport ask for a replay with this event; the stage's input effect does the work (no refs read in render) */
 const REPLAY = 'f-of-y:replay'
 const requestReplay = () => window.dispatchEvent(new Event(REPLAY))
 /** keys that would scroll the page; swallowed while the film plays itself */
@@ -313,9 +313,11 @@ export const ScrollStage = () => {
           prog={prog}
           trackRef={trackRef}
           locked={fr.auto}
+          ended={fr.u >= TOTAL - 0.05}
           muted={muted}
           onMute={() => soundRef.current && setMuted(soundRef.current.toggleMute())}
           onHome={() => jump(0)}
+          onReplay={requestReplay}
           onPointerDown={onScrubDown}
           onPointerMove={onScrubMove}
           onPointerUp={onScrubUp}
