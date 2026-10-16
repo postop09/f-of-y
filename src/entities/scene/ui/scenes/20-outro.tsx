@@ -14,17 +14,17 @@ export const outro: SceneSpec = {
   id: 'outro',
   len: 13,
   text: 'no keyframes. 0 keyframes, 1 file, every frame is f(scrollY).',
-  // paper on the downbeat at 4, the struck-out word on the next sixteenth, then the last line on thirty-seconds
-  sfx: [...typeCues('keyframe', 0.25), ...typeCues('KEYFRAMES', 2.25, 1 / 8), [4, 'boom'], [4.25, 'shing'], ...typeCues(FINAL, 5.5), [11.75, 'whoosh'], [12.25, 'blip', 0]],
+  // the big caret waits a beat, KEYFRAMES is typed on thirty-seconds from 1, paper on the downbeat at 4,
+  // the struck-out word on the next sixteenth, then the last line on thirty-seconds
+  sfx: [...typeCues('KEYFRAMES', 1, 1 / 8), [4, 'boom'], [4.25, 'shing'], ...typeCues(FINAL, 5.5), [11.75, 'whoosh'], [12.25, 'blip', 0]],
   view: (f) => {
     const { L, lb } = f
     const N = fit('NO', (L.W - 2 * L.M) * 0.42, L.H * 0.26)
     const y = L.H * 0.17
-    const kfSeg: Seg[] = [['keyframe', '']]
-    const kf = typeOn(f, kfSeg, 0.25, 2.25)
     const K = fit('KEYFRAMES', (L.W - 2 * L.M) * 0.95, L.H * 0.24, 900, 62)
     const ky = y + N.fs * 0.95
-    const shown = 'KEYFRAMES'.slice(0, countOn(lb, 2.25, 9, 1 / 8))
+    const shown = 'KEYFRAMES'.slice(0, countOn(lb, 1, 9, 1 / 8))
+    const typingK = lb >= 1 && shown.length < 9
     const paper = lb >= 4 && lb < 5.5
     const strike = E.outCubic(span(4.25, 4.75, lb))
     const fsz = L.mono * 1.15
@@ -40,7 +40,7 @@ export const outro: SceneSpec = {
     const C = lb >= 5.5 && lb < 12
     return {
       paper,
-      cap: lb < 2.25 ? 'export const keyframes = [];' : lb < 4 ? 'type("KEYFRAMES")' : lb < 5.5 ? 'keyframes.length  // 0' : lb < 11.75 ? 'render complete  // exit 0' : 'clear()',
+      cap: lb < 1 ? 'export const keyframes = [];' : lb < 4 ? 'type("KEYFRAMES")' : lb < 5.5 ? 'keyframes.length  // 0' : lb < 11.75 ? 'render complete  // exit 0' : 'clear()',
       flash: lb >= 4 ? 0.2 * (1 - span(4, 4.2, lb)) : 0,
       shake: lb >= 4 ? 10 * (1 - span(4, 4.2, lb)) : 0,
       node: (
@@ -48,9 +48,8 @@ export const outro: SceneSpec = {
           {A && (
             <>
               <Word text="NO" fs={N.fs} x={L.M} y={y} style={{ transform: `scale(${E.outBack(span(0, 0.25, lb)).toFixed(4)})`, transformOrigin: '0% 100%' }} />
-              {lb < 2.25 && <Code x={L.M} y={ky} segs={kfSeg} n={kf.n} caret={kf.caret} style={{ fontSize: L.mono * 1.3 }} />}
-              {lb >= 2.25 && <Word text={shown} fs={K.fs} x={L.M} y={ky} d={62} />}
-              {lb >= 2.25 && !paper && <div className="bigcaret" style={{ left: L.M + textW(shown, K.fs, 900, 62) + K.fs * 0.04, top: ky + K.fs * 0.03, width: K.fs * 0.06, height: K.fs * 0.72, visibility: lb < 3.375 || f.blink ? 'visible' : 'hidden' }} />}
+              {shown && <Word text={shown} fs={K.fs} x={L.M} y={ky} d={62} />}
+              {lb >= 0.25 && !paper && <div className="bigcaret" style={{ left: L.M + textW(shown, K.fs, 900, 62) + K.fs * 0.04, top: ky + K.fs * 0.03, width: K.fs * 0.06, height: K.fs * 0.72, visibility: typingK || f.blink ? 'visible' : 'hidden' }} />}
               {strike > 0 && <div className="bar fgbg" style={{ left: L.M - K.fs * 0.05, top: ky + K.fs * 0.34, width: (K.w + K.fs * 0.1) * strike, height: Math.max(4, K.fs * 0.075) }} />}
             </>
           )}
