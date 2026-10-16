@@ -75,7 +75,7 @@ button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); ou
 .live-line { z-index: 3; pointer-events: auto; }
 /* the input sits on top of an invisible copy of its own text: the copy sets the width, in the real font */
 .live-word { display: inline-grid; vertical-align: top; }
-.live-word::after { content: attr(data-value) " "; grid-area: 1 / 1; visibility: hidden; white-space: pre; text-transform: uppercase; }
+.live-word::after { content: attr(data-value); padding-right: 2px; grid-area: 1 / 1; visibility: hidden; white-space: pre; text-transform: uppercase; } /* 2px: just room for the caret */
 .live-word input {
   grid-area: 1 / 1; width: 100%; min-width: 1ch;
   font: inherit; color: var(--fg); background: transparent; border: 0; padding: 0; margin: 0; outline: none;
