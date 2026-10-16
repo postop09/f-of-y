@@ -71,6 +71,19 @@ button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); ou
 #scrub .head { top: 50%; width: 2px; height: 14px; margin: -7px 0 0 -1px; background: var(--sig); }
 .scene-lb { min-width: 11ch; padding-right: 8px; text-align: right; font-size: 10px; letter-spacing: .12em; }
 
+/* live: the input line at the end of the film (outside the aria-hidden world) */
+.live-line { z-index: 3; pointer-events: auto; }
+/* the input sits on top of an invisible copy of its own text: the copy sets the width, in the real font */
+.live-word { display: inline-grid; vertical-align: top; }
+.live-word::after { content: attr(data-value) " "; grid-area: 1 / 1; visibility: hidden; white-space: pre; text-transform: uppercase; }
+.live-word input {
+  grid-area: 1 / 1; width: 100%; min-width: 1ch;
+  font: inherit; color: var(--fg); background: transparent; border: 0; padding: 0; margin: 0; outline: none;
+  text-transform: uppercase; caret-color: var(--sig);
+}
+.live-word input:focus-visible { box-shadow: 0 2px 0 var(--sig); }
+.live-hint { z-index: 3; font-size: calc(var(--mono) * .68); }
+
 /* help */
 .help {
   position: absolute; left: calc(var(--pad) + 16px); bottom: calc(var(--bar) + 40px); z-index: 3; display: flex; flex-direction: column; gap: 12px;

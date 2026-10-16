@@ -23,10 +23,6 @@ export type Frame = Clock & {
   y: number
   /** 1 스크롤 단위의 px */
   unitPx: number
-  /** 전체 장면 수 */
-  count: number
-  /** 처음부터 소리와 함께 다시 자동 재생 (클릭 핸들러 안에서만 부른다) */
-  replay: () => void
 }
 
 /** 카메라: 초점(fx, fy)을 (px, py)로 옮기며 s배 확대 */

@@ -17,7 +17,7 @@ describe('scene timing', () => {
     expect(CUES.filter((c) => c.kind === 'boom').map((c) => c.u)).toContain(DROP)
     expect(zoom && zoom.at + 4).toBe(DROP)
   })
-  it('runs 109 beats', () => {
-    expect(TOTAL).toBe(109)
+  it('runs 112 beats', () => {
+    expect(TOTAL).toBe(112)
   })
 })

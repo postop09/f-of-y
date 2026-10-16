@@ -24,6 +24,10 @@ export type Motion = {
   /** 효과음을 여기(u)까지 울렸거나 예약했다 */
   sfxU: number
   hits: Hit[]
+  /** 마우스 위치 (live 필드가 밀려난다) */
+  ptr: { x: number; y: number; in: boolean }
+  /** 영상 끝의 live 필드가 돌고 있다 */
+  live: boolean
 }
 
 export const createMotion = (autoplay = false): Motion => ({
@@ -42,7 +46,19 @@ export const createMotion = (autoplay = false): Motion => ({
   go: false,
   sfxU: 0,
   hits: [],
+  ptr: { x: -1e4, y: -1e4, in: false },
+  live: false,
 })
 
 /** 렌더에 쓰는 프레임 스냅샷 */
-export type FrameState = { u: number; v: number; now: number; blink: boolean; unitPx: number; auto: boolean; wait: boolean }
+export type FrameState = {
+  u: number
+  v: number
+  now: number
+  blink: boolean
+  unitPx: number
+  auto: boolean
+  wait: boolean
+  /** live 필드가 돌고 있으면 그 HUD 줄과 클릭의 흔들림·번쩍임 */
+  live: { cap: string; shake: number; flash: number } | null
+}

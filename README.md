@@ -1,6 +1,6 @@
 # f-of-y — F(Y) · 스크롤 키네틱 타이포
 
-키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 21장면.
+키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 22장면.
 내리면 재생, 멈추면 정지, 올리면 되감기. 마우스 근처 글자는 굵기·폭이 깎인다.
 `parc-etoile-ui-lab`의 `web/07-scroll/`을 독립 프로젝트로 옮긴 것.
 
@@ -25,8 +25,9 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 장면은 `{ id, len, at, view(f), draw?(g, f) }`. `view(f)`는 순수 함수로 이 프레임의 JSX와 카메라·플래시·흔들림·HUD 캡션을 돌려주고, `draw`는 캔버스 층을 그린다.
 - `f.lb`는 장면 안 위치. 시계도 키프레임도 없으니 새로고침해도 같은 프레임에 선다.
 - 조작: 휠·스와이프 재생/되감기, `←` `→` 장면 이동, 하단 바 스크러빙. `prefers-reduced-motion`이면 카메라·흔들림·플래시가 꺼진다.
-- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 109박, 약 70초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 마지막 화면의 `다시 재생` 버튼은 반주까지 첫 칸부터 다시 맞춰 처음부터 다시 자동 재생한다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
+- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 112박, 약 72초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 끝에 있을 때 하단 바 왼쪽의 ↻ 버튼은 반주까지 첫 칸부터 다시 맞춰 처음부터 다시 자동 재생한다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
 - 소리는 전부 Web Audio 합성이다(`public/keyframe.html`에서 옮김). 시작한 뒤로는 94 BPM 반주가 계속 돌고, 장면의 효과음(`sfx`)은 자동 재생 중엔 박자에 맞춰 미리 예약되고 스크롤 모드에선 앞으로 지나갈 때 울린다(되감기·점프에선 안 울림). 클릭하면 다음 16분음표에 히트(소리 + 퍼지는 네모)가 들어간다. `M`이나 하단 바 오른쪽 버튼으로 음소거, 탭이 가려지면 소리도 멈춘다.
+- 영상 끝(yours 장면 다음)에서는 live 필드가 된다(`public/keyframe.html`의 live를 옮김). YOURS 픽셀이 시간으로 움직이는 상태가 되어, 커서에 밀리고, 클릭하면 터졌다가 스프링으로 돌아오고, 반주 박마다 부푼다. `$ type("…")` 입력칸에 단어를 치면 픽셀이 그 단어로 옮겨 간다(Enter면 바로, 아니면 입력이 멈춘 뒤). 스크롤을 올리면 다시 영상으로 돌아가고, 바꾼 단어는 다음에 돌아올 때도 남는다. 구현은 `widgets/scroll-stage/lib/liveField.ts`(물리)와 `ui/LiveInput.tsx`(입력 줄).
 
 ## 구조 (Feature-Sliced Design)
 
@@ -36,11 +37,11 @@ app → pages → widgets → features → entities → shared   (import 는 아
 src/app/                  main.tsx, styles/index.css (색·글꼴 토큰)
 src/pages/film/           FilmPage — 스테이지가 곧 페이지
 src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드·자동 재생), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
-                          lib/sound (AudioContext·반주 스케줄러·효과음·히트·음소거), lib/hits (클릭 히트 그리기), model/autoplay (첫 방문 자동 재생 여부·속도)
+                          lib/sound (AudioContext·반주 스케줄러·효과음·히트·음소거), lib/hits (클릭 히트 그리기), lib/liveField + ui/LiveInput (끝의 live 필드), model/autoplay (첫 방문 자동 재생 여부·속도)
                           lib/worldTransform (카메라·흔들림 → transform)
-src/entities/scene/       model/scenes.ts (21장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
+src/entities/scene/       model/scenes.ts (22장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
                           ui/scenes/NN-id.tsx (장면 하나 = 파일 하나, 전용 클래스는 같은 이름의 .css), ui/scenes.css (여러 장면 공용 클래스),
-                          lib/stackScenes (at·TOTAL 누적), lib/cues (typeCues·효과음 신호 펼치기 → CUES), lib/findSceneIndex, lib/centre
+                          lib/stackScenes (at·TOTAL 누적), lib/cues (typeCues·효과음 신호 펼치기 → CUES), lib/wordSlot (WORD·BOOM 자리), lib/liveWord (YOURS·live 단어 자리와 격자), lib/findSceneIndex, lib/centre
 src/shared/config/        motion (prefers-reduced-motion), typography (글꼴·색 상수)
 src/shared/lib/           math (clamp·span·bump·easing·spring·hash), layout (뷰포트 → 레이아웃, memo), textMeasure (DOM 글자 폭),
                           canvasText (캔버스 글자·래스터), typing (타이핑 진행), caches (리사이즈 시 초기화)
