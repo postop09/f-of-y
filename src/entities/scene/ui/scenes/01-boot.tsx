@@ -5,23 +5,24 @@ import { Code } from '@/shared/ui/Code'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
+const COMMAND: Seg[] = [['run ', ''], ['start', 'sig']]
+
 export const boot: SceneSpec = {
   id: 'boot',
   len: 4,
-  text: '$ scroll(y)',
+  text: '$ run start',
   // the intro bar: no drums yet. Typed on thirty-seconds, enter on beat 4, and the groove comes in with the next scene
-  sfx: [...typeCues('scroll(y)', 1.5), [3, 'enter']],
+  sfx: [...typeCues(COMMAND, 1.5), [3, 'enter']],
   view: (f) => {
     const { L, lb } = f
     const rowH = L.mono * 1.9
     const x = L.M
     const y = L.TY
-    const segs: Seg[] = [['scroll(', ''], ['y', 'sig'], [')', '']]
-    const t = typeOn(f, segs, 1.5)
+    const t = typeOn(f, COMMAND, 1.5)
     const fl = span(3, 3.45, lb)
     const hx = Math.max(0, x - L.mono * 3)
     return {
-      cap: lb < 1.5 ? 'await user.scroll()' : lb < 3 ? 'type("scroll(y)")' : 'enter()',
+      cap: lb < 1.5 ? 'await user.scroll()' : lb < 3 ? 'type("run start")' : 'enter()',
       node: (
         <>
           {range(-3, 4).map((i) => (
@@ -33,7 +34,7 @@ export const boot: SceneSpec = {
             <div className="rowflash" style={{ opacity: fl > 0 && fl < 1 ? (1 - fl) * 0.45 : 0 }} />
           </div>
           <div className="code dim" style={{ left: x + L.mono * 0.2, top: y - rowH }}>~/f-of-y  (main)</div>
-          <Code x={x} y={y} prompt="$" segs={segs} n={t.n} caret={t.caret} />
+          <Code x={x} y={y} prompt="$" segs={COMMAND} n={t.n} caret={t.caret} />
         </>
       ),
     }
