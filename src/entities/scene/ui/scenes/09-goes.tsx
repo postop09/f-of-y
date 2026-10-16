@@ -1,4 +1,4 @@
-// 10 ─ goes: anticipation, then off screen with a trail
+// 09 ─ goes: anticipation, then off screen with a trail
 import { E, clamp, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'

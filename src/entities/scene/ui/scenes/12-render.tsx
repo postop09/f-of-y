@@ -1,4 +1,4 @@
-// 13 ─ hit render
+// 12 ─ hit render
 import { bump, pad, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
@@ -6,7 +6,7 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
-import './13-render.css'
+import './12-render.css'
 
 export const render: SceneSpec = {
   id: 'render',

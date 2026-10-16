@@ -214,7 +214,10 @@ const CHORD = [
   [155.56, 196.0, 233.08, 277.18],
 ]
 
-/** 16분음표 한 칸(step)의 반주. 첫 마디는 패드와 하이햇만, 9~10마디에 숨 고르기, 그 뒤로는 4마디 진행이 계속 돈다. */
+/** 반주가 숨을 고른 뒤 다시 터지는 박. 영상에서는 zoom의 CLOSE가 여기에 떨어진다(scenes.test.ts가 확인). */
+export const DROP = 36
+
+/** 16분음표 한 칸(step)의 반주. 첫 마디는 패드와 하이햇만, DROP 앞 한 마디는 숨 고르기, 그 뒤로는 4마디 진행이 계속 돈다. */
 export const music = (S: Synth, d: AudioNode, step: number, a: number) => {
   const bar = Math.floor(step / 16)
   const s = step % 16
@@ -225,9 +228,9 @@ export const music = (S: Synth, d: AudioNode, step: number, a: number) => {
     return
   }
   if (s === 0) S.pad(d, a, CHORD[bar % 4], 4 * SPB)
-  if (beat >= 36 && beat < 40) {
-    if (beat < 39) {
-      S.hat(d, a, 0.04 + (0.1 * (beat - 36)) / 3)
+  if (beat >= DROP - 4 && beat < DROP) {
+    if (beat < DROP - 1) {
+      S.hat(d, a, 0.04 + (0.1 * (beat - (DROP - 4))) / 3)
       if (s === 0 || s === 8) S.kick(d, a, 0.8)
     }
     return

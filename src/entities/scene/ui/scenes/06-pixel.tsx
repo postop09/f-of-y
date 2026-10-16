@@ -1,4 +1,4 @@
-// 06 ─ pixel: a scan line turns the word into cells, rows slide, they scatter
+// 06 ─ pixel: a scan line turns the word into cells, rows slide, they scatter, and the WORD they make is cut in two
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
 import { type Layout, memo } from '@/shared/lib/layout'
@@ -27,9 +27,10 @@ const pixelWords = (L: Layout) =>
 export const pixel: SceneSpec = {
   id: 'pixel',
   len: 8,
-  text: 'every pixel on this screen is moving off a word',
-  // scan, two lines on thirty-seconds, rows slide at 3.75, scatter at 5, WORD lands at 6
-  sfx: [[0.5, 'riser'], ...typeCues('on this screen', 2), [3.75, 'whoosh'], ...typeCues('is moving', 3.75, 1 / 8), [5, 'crash'], ...typeCues(' off a', 5, 1 / 8), [6, 'boom']],
+  text: 'every pixel on this screen is moving off a word, and it splits',
+  // scan, two lines on thirty-seconds, rows slide at 3.75, scatter at 5, WORD lands at 6,
+  // the blade sweeps in on the off-beat and cuts it on the clap at 7
+  sfx: [[0.5, 'riser'], ...typeCues('on this screen', 2), [3.75, 'whoosh'], ...typeCues('is moving', 3.75, 1 / 8), [5, 'crash'], ...typeCues(' off a', 5, 1 / 8), [6, 'boom'], [6.5, 'whoosh'], [7, 'shing']],
   view: (f) => {
     const { L, lb } = f
     const s1: Seg[] = [['on this screen', '']]
@@ -42,10 +43,22 @@ export const pixel: SceneSpec = {
     const word = fit('WORD', (L.W - 2 * L.M) * 0.92, L.H * 0.34)
     const p = centre(L, word, 0.5)
     const on = lb >= 6
+    // the split: a blade crosses at half height, then the halves drift apart
+    const blade = E.outCubic(span(6.5, 7, lb))
+    const cut = lb >= 7
+    const e = E.outExpo(span(7, 7.5, lb)) + 0.6 * span(7.5, 8, lb)
+    const dx = e * word.w * 0.05
+    const dy = e * word.fs * 0.06
     return {
-      cap: lb < 2 ? `pixels = raster(text, ${L.cs})${R ? `  // n=${R.cells.length}` : ''}` : lb < 5 ? 'px.x += row % 2 ? v : −v' : lb < 6 ? 'px.scatter()' : 'word = vector(pixels)',
-      flash: on ? 0.25 * (1 - span(6, 6.35, lb)) : 0,
-      shake: on ? 16 * (1 - span(6, 6.35, lb)) : 0,
+      cap:
+        lb < 2 ? `pixels = raster(text, ${L.cs})${R ? `  // n=${R.cells.length}` : ''}`
+        : lb < 5 ? 'px.x += row % 2 ? v : −v'
+        : lb < 6 ? 'px.scatter()'
+        : lb < 6.5 ? 'word = vector(pixels)'
+        : !cut ? 'blade.cut(y = 0.5)'
+        : `clip(y < 0.5).x += ${dx.toFixed(0)}px`,
+      flash: cut ? 0.12 * (1 - span(7, 7.25, lb)) : on ? 0.25 * (1 - span(6, 6.35, lb)) : 0,
+      shake: cut ? 10 * (1 - span(7, 7.25, lb)) : on ? 16 * (1 - span(6, 6.35, lb)) : 0,
       node: (
         <>
           {lb >= 2 && gone > 0 && (
@@ -54,7 +67,14 @@ export const pixel: SceneSpec = {
               <Code x={x} y={L.TY - L.mono * 2.2} segs={s2} n={n2} caret={lb >= 3.75 && (n2 < 15 ? lb < 4.875 || (lb >= 5 && lb < 5.75) || f.blink : f.blink)} style={{ opacity: gone }} />
             </>
           )}
-          {on && <Word text="WORD" fs={word.fs} x={p.x} y={p.y} style={{ transform: `scale(${lerp(1.3, 1, E.outExpo(span(6, 6.4, lb)))})`, transformOrigin: '50% 60%' }} />}
+          {on && !cut && <Word text="WORD" fs={word.fs} x={p.x} y={p.y} style={{ transform: `scale(${lerp(1.3, 1, E.outExpo(span(6, 6.4, lb)))})`, transformOrigin: '50% 60%' }} />}
+          {cut && (
+            <>
+              <Word text="WORD" fs={word.fs} x={p.x} y={p.y} style={{ clipPath: 'inset(-10% -5% 50% -5%)', transform: `translate(${dx.toFixed(1)}px,${(-dy).toFixed(1)}px) rotate(${(-0.6 * e).toFixed(3)}deg)` }} />
+              <Word text="WORD" fs={word.fs} x={p.x} y={p.y} style={{ clipPath: 'inset(50% -5% -10% -5%)', transform: `translate(${(-dx).toFixed(1)}px,${dy.toFixed(1)}px) rotate(${(0.6 * e).toFixed(3)}deg)` }} />
+            </>
+          )}
+          {blade > 0 && <div className="bar sigbg" style={{ left: 0, top: p.y + word.fs * 0.4 - 1, width: blade * L.W, height: 2, opacity: 1 - span(7.05, 7.5, lb) }} />}
         </>
       ),
     }

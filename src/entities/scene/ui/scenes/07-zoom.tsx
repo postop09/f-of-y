@@ -1,21 +1,23 @@
-// 08 ─ zoom: the camera dives through the O and comes out CLOSE
+// 07 ─ zoom: the camera dives through the O and comes out CLOSE
 import { REDUCE } from '@/shared/config/motion'
 import { E, lerp, span } from '@/shared/lib/math'
 import { SPB } from '@/shared/lib/synth'
 import { memo } from '@/shared/lib/layout'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { measureO } from '@/shared/lib/canvasText'
+import type { Seg } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { centre } from '../../lib/centre'
 import type { Cam, SceneSpec } from '../../model/types'
-import { LINE_IT } from './lineIt'
+
+const LINE_IT: Seg[] = [['scroll and it', '']]
 
 export const zoom: SceneSpec = {
   id: 'zoom',
   len: 6,
   text: 'scroll and it zooms close',
-  // the dive rides a three-beat riser through the breakdown and CLOSE lands on the drop
+  // the dive rides a three-beat riser through the breakdown and CLOSE lands on the drop (synth DROP)
   sfx: [[1, 'blip', 2], [1, 'riser', 3 * SPB], [4, 'boom'], [4, 'crash']],
   view: (f) => {
     const { L, lb } = f
