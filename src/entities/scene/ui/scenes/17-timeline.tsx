@@ -1,11 +1,11 @@
-// 19 ─ no keyframes, no timeline
+// 17 ─ no keyframes, no timeline
 import { E, bump, hash, lerp, range, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './19-timeline.css'
+import './17-timeline.css'
 
 type Clip = [track: number, from: number, to: number, name: string]
 const CLIPS: Clip[] = [

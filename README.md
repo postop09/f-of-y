@@ -1,6 +1,6 @@
 # f-of-y — F(Y) · 스크롤 키네틱 타이포
 
-키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 23장면.
+키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 21장면.
 내리면 재생, 멈추면 정지, 올리면 되감기. 마우스 근처 글자는 굵기·폭이 깎인다.
 `parc-etoile-ui-lab`의 `web/07-scroll/`을 독립 프로젝트로 옮긴 것.
 
@@ -35,7 +35,7 @@ src/app/                  main.tsx, styles/index.css (색·글꼴 토큰)
 src/pages/film/           FilmPage — 스테이지가 곧 페이지
 src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
                           lib/lensPass (커서 근처 글자 축 깎기), lib/worldTransform (카메라·흔들림 → transform)
-src/entities/scene/       model/scenes.ts (23장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
+src/entities/scene/       model/scenes.ts (21장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
                           ui/scenes/NN-id.tsx (장면 하나 = 파일 하나, 전용 클래스는 같은 이름의 .css), ui/scenes.css (여러 장면 공용 클래스),
                           lib/stackScenes (at·TOTAL 누적), lib/findSceneIndex, lib/centre
 src/shared/config/        motion (prefers-reduced-motion), typography (글꼴·색 상수)

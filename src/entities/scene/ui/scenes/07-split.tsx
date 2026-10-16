@@ -1,4 +1,4 @@
-// 08 ─ split: an outline fills, a blade cuts, the halves drift
+// 07 ─ split: an outline fills, a blade cuts, the halves drift
 import { E, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Code } from '@/shared/ui/Code'

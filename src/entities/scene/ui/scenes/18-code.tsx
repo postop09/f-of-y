@@ -1,10 +1,10 @@
-// 20 ─ only code
+// 18 ─ only code
 import { E, pad, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './20-code.css'
+import './18-code.css'
 
 const SOURCE = [
   'const unit = innerHeight * 0.18;   // one scroll unit',
