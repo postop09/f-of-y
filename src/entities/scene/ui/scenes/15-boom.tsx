@@ -1,9 +1,8 @@
-// 14 ─ boom: debris on a closed-form trajectory
+// 15 ─ boom: debris on a closed-form trajectory
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'
-import { centre } from '../../lib/centre'
+import { wordSlot } from '../../lib/wordSlot'
 import type { SceneSpec } from '../../model/types'
 
 export const boom: SceneSpec = {
@@ -14,14 +13,14 @@ export const boom: SceneSpec = {
   sfx: [[0, 'boom'], [0, 'crash']],
   view: (f) => {
     const { L, lb } = f
-    const B = fit('BOOM', (L.W - 2 * L.M) * 0.95, L.H * 0.36)
-    const p = centre(L, B, 0.45)
+    // BOOM takes the exact place and size of the WORD just before it
+    const B = wordSlot(L, 'BOOM')
     const q = lb
     return {
       cap: `impact({ amp: ${Math.max(0, 8 - q * 6).toFixed(1)} })`,
       flash: q > 0 ? 0.35 * Math.exp(-q * 8) : 0,
       shake: q > 0 ? 34 * Math.exp(-q * 4) : 0,
-      node: <Word text="BOOM" fs={B.fs} x={p.x} y={p.y} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(0, 0.3, q))).toFixed(4)})`, transformOrigin: '50% 60%' }} />,
+      node: <Word text="BOOM" fs={B.fs} x={B.x} y={B.y} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(0, 0.3, q))).toFixed(4)})`, transformOrigin: '50% 60%' }} />,
     }
   },
   draw: (g, f) => {
@@ -29,7 +28,7 @@ export const boom: SceneSpec = {
     const q = lb
     if (q <= 0) return
     const cx = L.W / 2
-    const cy = L.H * 0.47
+    const cy = L.H * 0.5 // the middle of the word slot
     const R = Math.max(L.W, L.H)
     const fade = 1 - span(0.9, 1.8, q)
     for (let i = 0; i < 110; i++) {

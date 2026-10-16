@@ -1,4 +1,4 @@
-// 20 ─ outro: NO KEYFRAMES, struck out on paper, then a single line
+// 21 ─ outro: NO KEYFRAMES, struck out on paper, then a single line
 import { E, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
@@ -7,7 +7,7 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
-import './20-outro.css'
+import './21-outro.css'
 
 const FINAL = '// 0 keyframes. 1 file. every frame = f(scrollY).'
 export const outro: SceneSpec = {

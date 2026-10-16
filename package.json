@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "F(Y) · 키프레임 없이 스크롤 위치 하나로만 계산되는 키네틱 타이포그래피 20장면",
+  "description": "F(Y) · 키프레임 없이 스크롤 위치 하나로만 계산되는 키네틱 타이포그래피 21장면",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },

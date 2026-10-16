@@ -1,10 +1,10 @@
-// 18 ─ lands right on cue
+// 19 ─ lands right on cue
 import { E, bump, hash, range, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
 import { Word } from '@/shared/ui/Word'
 import type { Cue, SceneSpec } from '../../model/types'
-import './18-lands.css'
+import './19-lands.css'
 
 // the playhead crosses the ruler over the whole scene, so the three marks fall on beats 2, 3 and 4
 const MARKS = [0.25, 0.5, 0.75]
