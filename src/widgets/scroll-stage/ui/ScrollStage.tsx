@@ -32,6 +32,9 @@ import { Transport } from './Transport'
 import './scrollStage.css'
 
 const jump = (top: number) => window.scrollTo({ top, behavior: REDUCE ? 'auto' : 'smooth' })
+/** the end card asks for a replay with this event; the stage's input effect does the work (no refs read in render) */
+const REPLAY = 'f-of-y:replay'
+const requestReplay = () => window.dispatchEvent(new Event(REPLAY))
 /** keys that would scroll the page; swallowed while the film plays itself */
 const SCROLL_KEYS = new Set([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'])
 
@@ -199,6 +202,18 @@ export const ScrollStage = () => {
       jump(m.jumpTo)
     }
     const onVisibility = () => (document.hidden ? sound.suspend() : sound.resume())
+    // the end card's button: play the whole film again from the top, music and all, with the scroll locked
+    const onReplay = () => {
+      sound.start()
+      sound.restart()
+      m.auto = 0
+      m.go = true
+      m.sfxU = 0
+      m.hits.length = 0
+      m.dirty = true
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener(REPLAY, onReplay)
     window.addEventListener('keydown', onKey)
     window.addEventListener('click', onClick)
     document.addEventListener('visibilitychange', onVisibility)
@@ -208,6 +223,7 @@ export const ScrollStage = () => {
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('click', onClick)
       document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener(REPLAY, onReplay)
       window.removeEventListener('wheel', onBlock)
       window.removeEventListener('touchmove', onBlock)
     }
@@ -222,21 +238,7 @@ export const ScrollStage = () => {
   const idx = sceneAt(fr.u)
   const sc = SCENES[idx]
   const lb = Math.min(fr.u - sc.at, sc.len)
-  // the end card's button: play the whole film again from the top, music and all, with the scroll locked
-  const replay = () => {
-    const m = mRef.current
-    const sound = soundRef.current
-    if (!m || !sound) return
-    sound.start()
-    sound.restart()
-    m.auto = 0
-    m.go = true
-    m.sfxU = 0
-    m.hits.length = 0
-    m.dirty = true
-    window.scrollTo(0, 0)
-  }
-  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx, count: SCENES.length, replay }
+  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx, count: SCENES.length, replay: requestReplay }
   const out = f ? sc.view(f) : null
   const speed = clamp(Math.abs(fr.v) / 1.5)
   const world = worldTransform(out, speed, fr.now)
