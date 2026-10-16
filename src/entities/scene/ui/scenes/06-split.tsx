@@ -1,4 +1,4 @@
-// 06 ─ split: WORD drops in, a blade crosses it, and the halves drift off screen at one steady speed
+// 06 ─ split: WORD drops in, a blade crosses it, and the halves drift apart
 import { E, lerp, span } from '@/shared/lib/math'
 import { Word } from '@/shared/ui/Word'
 import { wordSlot } from '../../lib/wordSlot'
@@ -9,18 +9,18 @@ export const split: SceneSpec = {
   len: 4,
   text: 'a word, and it splits',
   // WORD lands on the downbeat, the blade sweeps in on the off-beat and cuts on beat 2,
-  // then the halves leave at a constant speed and are gone just before the scene ends
+  // then the halves spring apart and keep drifting a little, staying on screen
   sfx: [[0, 'boom'], [0.5, 'whoosh'], [1, 'shing']],
   view: (f) => {
     const { L, lb } = f
     const word = wordSlot(L)
     const blade = E.outCubic(span(0.5, 1, lb))
     const cut = lb >= 1
-    // top half up and right, bottom half down and left
-    const fly = span(1, 3.75, lb)
-    const dx = fly * L.W
-    const dy = fly * L.H * 0.18
-    const rot = 14 * fly
+    // top half up and right, bottom half down and left: a quick crack, then a slow drift
+    const e = E.outExpo(span(1, 1.5, lb)) + 0.6 * span(1.5, 4, lb)
+    const dx = e * word.w * 0.05
+    const dy = e * word.fs * 0.06
+    const rot = 0.6 * e
     return {
       cap: lb < 0.5 ? 'word = vector(pixels)' : !cut ? 'blade.cut(y = 0.5)' : `clip(y < 0.5).x += ${dx.toFixed(0)}px`,
       flash: cut ? 0.12 * (1 - span(1, 1.25, lb)) : 0.25 * (1 - span(0, 0.35, lb)),
