@@ -14,6 +14,8 @@ export type Sound = ReturnType<typeof createSound>
 export const createSound = () => {
   let ac: AudioContext | null = null
   let master: GainNode | null = null
+  /** 모든 소리가 지나는 버스. 다시 재생할 땐 새 버스로 갈아 끼워, 이미 예약된 소리를 끊는다. */
+  let bus: GainNode | null = null
   let S: Synth | null = null
   /** 반주 0번 칸이 울리는 AudioContext 시각 */
   let t0 = 0
@@ -21,7 +23,17 @@ export const createSound = () => {
   let muted = false
 
   const lat = () => (ac ? Math.min(0.06, ac.outputLatency || ac.baseLatency || 0) : 0)
-  const live = () => (ac && master && S && ac.state === 'running' ? { ac, master, S } : null)
+  const live = () => (ac && bus && S && ac.state === 'running' ? { ac, bus, S } : null)
+  const newBus = () => {
+    if (!ac || !master) return
+    const old = bus
+    if (old) {
+      old.gain.setTargetAtTime(0, ac.currentTime, 0.012)
+      setTimeout(() => old.disconnect(), 400)
+    }
+    bus = ac.createGain()
+    bus.connect(master)
+  }
 
   return {
     /** 첫 사용자 입력에서 소리를 켠다. 이미 켜져 있으면 깨우기만 한다. */
@@ -49,6 +61,7 @@ export const createSound = () => {
       master.connect(comp)
       comp.connect(ac.destination)
       S = makeSynth(ac, noiseBuffer(ac))
+      newBus()
       t0 = ac.currentTime + 0.06
       next = 0
       if (ac.state === 'suspended') ac.resume().catch(() => {})
@@ -65,7 +78,7 @@ export const createSound = () => {
       // after a stall, skip what is already past instead of firing it all at once
       if (t0 + next * STEP < now - 0.05) next = Math.ceil((now - t0) / STEP)
       try {
-        for (; t0 + next * STEP < now + AHEAD; next++) music(L.S, L.master, next, Math.max(now, t0 + next * STEP))
+        for (; t0 + next * STEP < now + AHEAD; next++) music(L.S, L.bus, next, Math.max(now, t0 + next * STEP))
       } catch (err) {
         console.warn(err)
       }
@@ -77,7 +90,7 @@ export const createSound = () => {
       if (!L) return
       const now = L.ac.currentTime
       // clock() already subtracts the output latency, so a cue at `at` is heard when clock() reads `at`
-      L.S[kind](L.master, at === undefined ? now + 0.005 : Math.max(now, t0 + at), arg)
+      L.S[kind](L.bus, at === undefined ? now + 0.005 : Math.max(now, t0 + at), arg)
     },
 
     /** 클릭 히트를 다음 16분음표에 예약하고, 소리가 들릴 때까지 남은 초를 돌려준다. */
@@ -86,8 +99,16 @@ export const createSound = () => {
       if (!L) return 0
       const now = L.ac.currentTime
       const q = Math.ceil((now - t0 + 0.01) / STEP) * STEP
-      L.S.hit(L.master, t0 + q)
+      L.S.hit(L.bus, t0 + q)
       return t0 + q + lat() - now
+    },
+
+    /** 반주를 첫 칸부터 다시: 예약해 둔 소리는 끊고, clock()도 0부터 다시 센다. */
+    restart() {
+      if (!ac) return
+      newBus()
+      t0 = ac.currentTime + 0.06
+      next = 0
     },
 
     get muted() {

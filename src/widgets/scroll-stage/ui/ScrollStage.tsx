@@ -222,7 +222,21 @@ export const ScrollStage = () => {
   const idx = sceneAt(fr.u)
   const sc = SCENES[idx]
   const lb = Math.min(fr.u - sc.at, sc.len)
-  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx, count: SCENES.length }
+  // the end card's button: play the whole film again from the top, music and all, with the scroll locked
+  const replay = () => {
+    const m = mRef.current
+    const sound = soundRef.current
+    if (!m || !sound) return
+    sound.start()
+    sound.restart()
+    m.auto = 0
+    m.go = true
+    m.sfxU = 0
+    m.hits.length = 0
+    m.dirty = true
+    window.scrollTo(0, 0)
+  }
+  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx, count: SCENES.length, replay }
   const out = f ? sc.view(f) : null
   const speed = clamp(Math.abs(fr.v) / 1.5)
   const world = worldTransform(out, speed, fr.now)

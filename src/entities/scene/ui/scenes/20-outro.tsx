@@ -1,5 +1,4 @@
 // 20 ─ outro: NO KEYFRAMES, struck out on paper, then a single line
-import { REDUCE } from '@/shared/config/motion'
 import { E, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
@@ -62,9 +61,9 @@ export const outro: SceneSpec = {
               <p className="end-big">f(y)</p>
               <p>스크롤을 위로 올리면 모든 장면이 그대로 되감겨요.</p>
               <p className="dim">{`${f.count} scenes · 0 keyframes · 1 scroll`}</p>
-              {/* the stage is aria-hidden; keyboard users get the same action from the transport bar */}
-              <button type="button" className="end-btn" tabIndex={-1} onClick={() => window.scrollTo({ top: 0, behavior: REDUCE ? 'auto' : 'smooth' })}>
-                처음으로 ↑
+              {/* the stage is aria-hidden; keyboard users rewind with the scroll or the transport bar instead */}
+              <button type="button" className="end-btn" tabIndex={-1} onClick={f.replay}>
+                다시 재생 ↺
               </button>
             </div>
           )}
