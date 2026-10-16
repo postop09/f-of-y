@@ -34,9 +34,6 @@ export const Help = ({ hidden, wait }: Props) => (
           <span>
             <kbd>M</kbd>소리
           </span>
-          <span>
-            <kbd>마우스</kbd>글자 렌즈
-          </span>
         </div>
       </>
     )}

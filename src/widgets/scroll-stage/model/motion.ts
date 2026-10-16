@@ -1,8 +1,6 @@
 // 매 프레임 갱신되는 가변 상태. 렌더를 일으키지 않고 rAF 루프·이벤트 핸들러만 만진다.
 import type { Hit } from '../lib/hits'
 
-export type Pointer = { x: number; y: number; in: boolean }
-
 export type Motion = {
   /** 감쇠된 스크롤 위치 (단위) */
   u: number
@@ -17,7 +15,6 @@ export type Motion = {
   jumpTo: number | null
   jumpAt: number
   scrubbing: boolean
-  ptr: Pointer
   /** 자동 재생 중의 위치 (단위). null이면 스크롤이 시계다. */
   auto: number | null
   /** 글꼴까지 준비됨 */
@@ -40,7 +37,6 @@ export const createMotion = (autoplay = false): Motion => ({
   jumpTo: null,
   jumpAt: 0,
   scrubbing: false,
-  ptr: { x: -1e4, y: -1e4, in: false },
   auto: autoplay ? 0 : null,
   ready: false,
   go: false,

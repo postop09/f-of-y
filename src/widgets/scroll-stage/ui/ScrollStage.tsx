@@ -20,7 +20,6 @@ import { resetCaches } from '@/shared/lib/caches'
 import { type Layout, makeLayout } from '@/shared/lib/layout'
 import { clamp } from '@/shared/lib/math'
 import { drawHits, pruneHits } from '../lib/hits'
-import { lensPass } from '../lib/lensPass'
 import { type Sound, createSound } from '../lib/sound'
 import { flashOpacity, worldTransform } from '../lib/worldTransform'
 import { AUTOPLAY_SPEED, markAutoplayed, shouldAutoplay } from '../model/autoplay'
@@ -40,7 +39,6 @@ export const ScrollStage = () => {
   const stageRef = useRef<HTMLElement>(null)
   const probeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const layerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const [autoplay] = useState(() => shouldAutoplay(REDUCE))
   const mRef = useRef<Motion | null>(null)
@@ -151,7 +149,7 @@ export const ScrollStage = () => {
     }
   }, [])
 
-  // pointer (lens, hits) and keyboard (start, scene jumps, mute)
+  // clicks (start, hits) and keyboard (start, scene jumps, mute)
   useEffect(() => {
     const m = mRef.current
     const sound = soundRef.current
@@ -169,17 +167,6 @@ export const ScrollStage = () => {
       if (begin()) return
       const delay = sound.hit()
       m.hits.push({ x: e.clientX, y: e.clientY, t: performance.now() / 1000 + delay, seed: Math.floor(Math.random() * 1e4) })
-      m.dirty = true
-    }
-    const onMove = (e: globalThis.PointerEvent) => {
-      if (e.pointerType === 'touch') return
-      m.ptr.x = e.clientX
-      m.ptr.y = e.clientY
-      m.ptr.in = true
-      m.dirty = true
-    }
-    const onLeave = () => {
-      m.ptr.in = false
       m.dirty = true
     }
     // the root is overflow:hidden while autoplaying; these also cover iOS touch and keyboard paging
@@ -211,9 +198,6 @@ export const ScrollStage = () => {
       m.jumpAt = performance.now()
       jump(m.jumpTo)
     }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    document.documentElement.addEventListener('pointerleave', onLeave)
-    window.addEventListener('blur', onLeave)
     const onVisibility = () => (document.hidden ? sound.suspend() : sound.resume())
     window.addEventListener('keydown', onKey)
     window.addEventListener('click', onClick)
@@ -221,9 +205,6 @@ export const ScrollStage = () => {
     window.addEventListener('wheel', onBlock, { passive: false })
     window.addEventListener('touchmove', onBlock, { passive: false })
     return () => {
-      window.removeEventListener('pointermove', onMove)
-      document.documentElement.removeEventListener('pointerleave', onLeave)
-      window.removeEventListener('blur', onLeave)
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('click', onClick)
       document.removeEventListener('visibilitychange', onVisibility)
@@ -263,7 +244,6 @@ export const ScrollStage = () => {
     g.clearRect(0, 0, f.L.W, f.L.H)
     if (sc.draw) sc.draw(g, f)
     if (m.hits.length) drawHits(g, m.hits, performance.now() / 1000, out?.paper ? COL.void : COL.sig)
-    lensPass(layerRef.current, m.ptr, f.L)
   })
 
   // ── transport: the bar is a scrubber for the scroll position
@@ -302,7 +282,7 @@ export const ScrollStage = () => {
         <div className="grid" aria-hidden="true" />
         <div className="world" style={{ transform: world }} aria-hidden="true">
           <canvas ref={canvasRef} className="fx" />
-          <div ref={layerRef} className="layer" key={sc.id}>
+          <div className="layer" key={sc.id}>
             {out?.node}
           </div>
           <div className="flash" style={{ opacity: flash.toFixed(3) }} />
