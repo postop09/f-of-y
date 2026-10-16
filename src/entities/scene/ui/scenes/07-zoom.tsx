@@ -17,8 +17,8 @@ export const zoom: SceneSpec = {
   id: 'zoom',
   len: 6,
   text: 'scroll and it zooms close',
-  // the dive rides a three-beat riser through the breakdown and CLOSE lands on the drop (synth DROP)
-  sfx: [[1, 'blip', 2], [1, 'riser', 3 * SPB], [4, 'boom'], [4, 'crash']],
+  // the riser fills the whole breakdown bar, the dive rides it, and CLOSE lands on the drop (synth DROP)
+  sfx: [[0, 'riser', 4 * SPB], [1, 'blip', 2], [4, 'boom'], [4, 'crash']],
   view: (f) => {
     const { L, lb } = f
     const Z = fit('ZOOM', (L.W - 2 * L.M) * 0.8, L.H * 0.3)
