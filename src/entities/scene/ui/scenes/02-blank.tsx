@@ -5,13 +5,15 @@ import { fit } from '@/shared/lib/textMeasure'
 import type { Seg } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
-import type { SceneSpec } from '../../model/types'
+import { typeCues } from '../../lib/cues'
+import type { Cue, SceneSpec } from '../../model/types'
 
 const SCRAMBLE = 'ABCKLNSX#'
 export const blank: SceneSpec = {
   id: 'blank',
   len: 4,
   text: 'it starts with a blank page',
+  sfx: [...typeCues('it starts with a ', 0, 0.9), ...range(0, 4).map((i): Cue => [1.72 + i * 0.14, 'blip', i]), ...typeCues('blank page', 2.7, 0.6)],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [['it starts with a ', ''], ['blank', 'sig'], [' page', '']]

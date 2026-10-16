@@ -4,12 +4,14 @@ import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 export const done: SceneSpec = {
   id: 'done',
   len: 3,
   text: "and it's done. // render complete",
+  sfx: [...typeCues("and it's", 0, 0.45), [1, 'enter'], ...typeCues('// render complete', 1.4, 0.6)],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [["and it's", '']]

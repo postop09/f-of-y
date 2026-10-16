@@ -11,6 +11,7 @@ export const split: SceneSpec = {
   id: 'split',
   len: 3,
   text: 'scroll and it splits',
+  sfx: [[0.9, 'whoosh'], [1.15, 'shing']],
   view: (f) => {
     const { L, lb } = f
     const S = fit('SPLIT', (L.W - 2 * L.M) * 0.86, L.H * 0.3)

@@ -4,6 +4,7 @@ import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './13-render.css'
 
@@ -11,6 +12,7 @@ export const render: SceneSpec = {
   id: 'render',
   len: 3,
   text: 'hit render',
+  sfx: [...typeCues('hit', 0, 0.25), [0.45, 'hit'], [0.75, 'riser'], [2.6, 'blip', 9]],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [['hit', '']]

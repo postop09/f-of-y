@@ -8,6 +8,7 @@ import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { centre } from '../../lib/centre'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 const pixelWords = (L: Layout) =>
@@ -27,6 +28,7 @@ export const pixel: SceneSpec = {
   id: 'pixel',
   len: 5,
   text: 'every pixel on this screen is moving off a word',
+  sfx: [[0.5, 'riser'], ...typeCues('on this screen', 1.8, 0.45), ...typeCues('is moving', 2.4, 0.4), [2.4, 'whoosh'], [3.3, 'crash'], ...typeCues(' off a', 3.35, 0.35), [3.95, 'boom']],
   view: (f) => {
     const { L, lb } = f
     const s1: Seg[] = [['on this screen', '']]

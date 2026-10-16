@@ -25,6 +25,8 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 장면은 `{ id, len, at, view(f), draw?(g, f) }`. `view(f)`는 순수 함수로 이 프레임의 JSX와 카메라·플래시·흔들림·HUD 캡션을 돌려주고, `draw`는 캔버스 층을 그린다.
 - `f.lb`는 장면 안 위치. 시계도 키프레임도 없으니 새로고침해도 같은 프레임에 선다.
 - 조작: 휠·스와이프 재생/되감기, `←` `→` 장면 이동, 하단 바 스크러빙, 마우스 글자 렌즈. `prefers-reduced-motion`이면 카메라·흔들림·플래시가 꺼진다.
+- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 약 52초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
+- 소리는 전부 Web Audio 합성이다(`public/keyframe.html`에서 옮김). 시작한 뒤로는 94 BPM 반주가 계속 돌고, 장면의 효과음(`sfx`)은 자동 재생 중엔 박자에 맞춰 미리 예약되고 스크롤 모드에선 앞으로 지나갈 때 울린다(되감기·점프에선 안 울림). 클릭하면 다음 16분음표에 히트(소리 + 퍼지는 네모)가 들어간다. `M`이나 하단 바 오른쪽 버튼으로 음소거, 탭이 가려지면 소리도 멈춘다.
 
 ## 구조 (Feature-Sliced Design)
 
@@ -33,14 +35,16 @@ app → pages → widgets → features → entities → shared   (import 는 아
 
 src/app/                  main.tsx, styles/index.css (색·글꼴 토큰)
 src/pages/film/           FilmPage — 스테이지가 곧 페이지
-src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
+src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드·자동 재생), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
+                          lib/sound (AudioContext·반주 스케줄러·효과음·히트·음소거), lib/hits (클릭 히트 그리기), model/autoplay (첫 방문 자동 재생 여부·속도)
                           lib/lensPass (커서 근처 글자 축 깎기), lib/worldTransform (카메라·흔들림 → transform)
 src/entities/scene/       model/scenes.ts (21장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
                           ui/scenes/NN-id.tsx (장면 하나 = 파일 하나, 전용 클래스는 같은 이름의 .css), ui/scenes.css (여러 장면 공용 클래스),
-                          lib/stackScenes (at·TOTAL 누적), lib/findSceneIndex, lib/centre
+                          lib/stackScenes (at·TOTAL 누적), lib/cues (typeCues·효과음 신호 펼치기 → CUES), lib/findSceneIndex, lib/centre
 src/shared/config/        motion (prefers-reduced-motion), typography (글꼴·색 상수)
 src/shared/lib/           math (clamp·span·bump·easing·spring·hash), layout (뷰포트 → 레이아웃, memo), textMeasure (DOM 글자 폭),
                           canvasText (캔버스 글자·래스터), typing (타이핑 진행), caches (리사이즈 시 초기화)
+                          synth (Web Audio 신스·94 BPM 반주, keyframe.html에서 옮김)
 src/shared/ui/            Word (글자별 span, 축은 data-w/data-d), Code (모노 한 줄 + 캐럿), Cursor
 scripts/exportSingleFile.ts   npm run export
 ```
@@ -51,4 +55,5 @@ scripts/exportSingleFile.ts   npm run export
 
 `src/entities/scene/ui/scenes/NN-id.tsx`에 `export const id: SceneSpec = { id, len, text, view, draw? }`를 만들고,
 `src/entities/scene/model/scenes.ts`의 배열 원하는 위치에 끼우면 `at`과 `TOTAL`이 자동으로 밀린다. 그 장면에서만 쓰는 클래스는 옆의 `NN-id.css`에 둔다.
+효과음은 `sfx: [[lb, 'boom'], ...typeCues('타이핑한 줄', at, dur)]`처럼 장면 안 위치로 적는다. `typeCues`는 `typing()`과 같은 시간표로 글자마다 틱을 만든다.
 큰 글자는 `<Word>`, 모노 줄은 `<Code>` + `typing()`, 크기 맞춤은 `fit()`을 쓴다. 글자 축(wght/wdth)은 style이 아니라 `Word`의 `w`/`d` 또는 `ch()`로 넘긴다 — 렌즈 패스가 `font-variation-settings`의 유일한 작성자다.

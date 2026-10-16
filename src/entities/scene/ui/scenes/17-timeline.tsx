@@ -4,6 +4,7 @@ import { fit, textW } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './17-timeline.css'
 
@@ -22,6 +23,7 @@ export const timeline: SceneSpec = {
   id: 'timeline',
   len: 6,
   text: 'no keyframes. no timeline. rm -rf ./timeline',
+  sfx: [...typeCues('NO KEYFRAMES', 0, 0.7), [1.7, 'blip', 3], ...typeCues('KEYFRAMES', 2.15, 0.2), ...typeCues('TIMELINE', 2.4, 0.35), [2.95, 'thud'], [3.3, 'whoosh'], ...typeCues('rm -rf ./timeline', 3.7, 0.7), [4.45, 'enter']],
   view: (f) => {
     const { L, lb } = f
     const fs = fit('NO KEYFRAMES', (L.W - 2 * L.M) * 0.9, L.H * 0.12).fs

@@ -5,7 +5,8 @@ import { monoW } from '@/shared/lib/canvasText'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
-import type { SceneSpec } from '../../model/types'
+import { typeCues } from '../../lib/cues'
+import type { Cue, SceneSpec } from '../../model/types'
 import './20-strip.css'
 
 const FRAMES = ['lime', 'solid', 'outline', 'paper', 'lime', 'solid'] // F01–F04 sit in the middle
@@ -13,6 +14,7 @@ export const strip: SceneSpec = {
   id: 'strip',
   len: 5,
   text: 'frame by frame',
+  sfx: [...[0.4, 1.5, 2.6].flatMap((s, i): Cue[] => [[s, 'whoosh'], [s + 0.6, 'thud', i]]), ...typeCues('by', 3.6, 0.2)],
   view: (f) => {
     const { L, lb } = f
     const band = { y: L.H * 0.19, h: L.H * 0.56 }

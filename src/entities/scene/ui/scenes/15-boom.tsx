@@ -10,6 +10,7 @@ export const boom: SceneSpec = {
   id: 'boom',
   len: 2,
   text: 'boom',
+  sfx: [[0.15, 'boom'], [0.15, 'crash']],
   view: (f) => {
     const { L, lb } = f
     const B = fit('BOOM', (L.W - 2 * L.M) * 0.95, L.H * 0.36)

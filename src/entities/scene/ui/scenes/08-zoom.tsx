@@ -14,6 +14,7 @@ export const zoom: SceneSpec = {
   id: 'zoom',
   len: 4,
   text: 'scroll and it zooms close',
+  sfx: [[1, 'blip', 2], [1.3, 'riser'], [3, 'boom'], [3, 'crash']],
   view: (f) => {
     const { L, lb } = f
     const Z = fit('ZOOM', (L.W - 2 * L.M) * 0.8, L.H * 0.3)

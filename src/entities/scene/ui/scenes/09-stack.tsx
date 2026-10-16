@@ -2,12 +2,13 @@
 import { E, bump, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'
-import type { SceneSpec } from '../../model/types'
+import type { Cue, SceneSpec } from '../../model/types'
 
 export const stack: SceneSpec = {
   id: 'stack',
   len: 4,
   text: 'stack it up, flip it',
+  sfx: [...range(0, 3).map((i): Cue => [0.45 + i * 0.42, 'thud', i]), [2, 'blip', 4], [2.6, 'whoosh']],
   view: (f) => {
     const { L, lb } = f
     const S = fit('STACK', (L.W - 2 * L.M) * 0.42, L.H * 0.12)

@@ -2,13 +2,14 @@
 import { lerp, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'
-import type { SceneSpec } from '../../model/types'
+import type { Cue, SceneSpec } from '../../model/types'
 import './11-sixty.css'
 
 export const sixty: SceneSpec = {
   id: 'sixty',
   len: 3,
   text: 'sixty frames per second',
+  sfx: [...range(1, 11).map((k): Cue => [0.2 + ((5 * k - 0.5) / 60) * 2.2, 'tick', k]), [2.4, 'blip', 9], [2.4, 'crash']],
   view: (f) => {
     const { L, lb } = f
     const raw = lerp(0, 60, span(0.2, 2.4, lb))

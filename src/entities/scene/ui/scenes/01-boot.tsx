@@ -2,12 +2,14 @@
 import { pad, range, span } from '@/shared/lib/math'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 export const boot: SceneSpec = {
   id: 'boot',
   len: 3,
   text: '$ scroll(y)',
+  sfx: [...typeCues('scroll(y)', 0.45, 1.3), [2, 'enter']],
   view: (f) => {
     const { L, lb } = f
     const rowH = L.mono * 1.9

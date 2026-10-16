@@ -3,6 +3,7 @@ import { E, lerp, range, span } from '@/shared/lib/math'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Cursor } from '@/shared/ui/Cursor'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './05-bend.css'
 
@@ -11,6 +12,7 @@ export const bend: SceneSpec = {
   id: 'bend',
   len: 4,
   text: "i don't bend a curve",
+  sfx: [...typeCues("i don't bend a curve", 0, 0.8), [0.85, 'blip', 2], [0.9, 'boing'], [2.3, 'whoosh']],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [["i don't bend a ", ''], ['curve', 'sig']]

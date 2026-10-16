@@ -3,6 +3,7 @@ import { E, pad, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './18-code.css'
 
@@ -30,6 +31,7 @@ export const code: SceneSpec = {
   id: 'code',
   len: 4,
   text: 'only code',
+  sfx: [[0.05, 'thud'], ...typeCues('code', 0.6, 0.9), ...typeCues('and', 2.4, 0.3)],
   view: (f) => {
     const { L, lb } = f
     const O = fit('ONLY', (L.W - 2 * L.M) * 0.55, L.H * 0.24)

@@ -4,6 +4,7 @@ import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 type Row = { segs: Seg[]; at: number; dur: number } | null
@@ -11,6 +12,7 @@ export const letters: SceneSpec = {
   id: 'letters',
   len: 4,
   text: 'typed a little logic(); now the letters come alive',
+  sfx: [...typeCues('typed a little logic();', 0, 1), ...typeCues('now the', 1.05, 0.35), [1.4, 'whoosh'], ...typeCues('letters come alive', 2.2, 0.6)],
   view: (f) => {
     const { L, lb } = f
     const rowH = L.mono * 1.55

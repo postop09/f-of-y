@@ -5,12 +5,14 @@ import { fit, textW } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 export const blink: SceneSpec = {
   id: 'blink',
   len: 4,
   text: 'and a blinking cursor',
+  sfx: [...typeCues('and a', 0, 0.45), ...typeCues('BLINKING', 0.5, 1.4), ...typeCues('ING', 2.3, 0.5)],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [['and a', '']]

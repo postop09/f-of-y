@@ -9,6 +9,7 @@ export const take: SceneSpec = {
   id: 'take',
   len: 3,
   text: 'one take',
+  sfx: [[0.1, 'thud', 0], [0.35, 'thud', 1], [0.8, 'hit'], [0.8, 'thud', 2]],
   view: (f) => {
     const { L, lb } = f
     const T = fit('TAKE', (L.W - 2 * L.M) * 0.42, L.H * 0.2)

@@ -3,13 +3,14 @@ import { E, bump, hash, range, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
 import { Word } from '@/shared/ui/Word'
-import type { SceneSpec } from '../../model/types'
+import type { Cue, SceneSpec } from '../../model/types'
 import './19-lands.css'
 
 export const lands: SceneSpec = {
   id: 'lands',
   len: 4,
   text: 'lands right on cue',
+  sfx: [...range(0, 4).map((i): Cue => [0.38 + i * 0.08, 'thud', i]), ...[0.12, 0.5, 0.88].flatMap((m, j): Cue[] => [[1.2 + m * 2.4, 'hit'], [1.2 + m * 2.4, 'blip', j * 2]])],
   view: (f) => {
     const { L, lb } = f
     const LW = fit('LANDS', (L.W - 2 * L.M) * 0.72, L.H * 0.24)

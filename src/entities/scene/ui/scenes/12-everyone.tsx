@@ -4,13 +4,15 @@ import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
-import type { SceneSpec } from '../../model/types'
+import { typeCues } from '../../lib/cues'
+import type { Cue, SceneSpec } from '../../model/types'
 import './12-everyone.css'
 
 export const everyone: SceneSpec = {
   id: 'everyone',
   len: 4,
   text: 'a second, and i wrote every one',
+  sfx: [...typeCues('a second, and i wrote', 0, 0.8), ...range(1, 10).map((k): Cue => [1.2 + (k / 10) * 1.6, 'tick', k]), [1.6, 'whoosh']],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [['a second, and i ', ''], ['wrote', 'sig']]

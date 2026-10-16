@@ -6,6 +6,7 @@ import { monoW } from '@/shared/lib/canvasText'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
+import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './21-outro.css'
 
@@ -14,6 +15,7 @@ export const outro: SceneSpec = {
   id: 'outro',
   len: 7,
   text: 'no keyframes. 0 keyframes, 1 file, every frame is f(scrollY).',
+  sfx: [...typeCues('keyframe', 0.3, 0.6), ...typeCues('KEYFRAMES', 1.2, 0.6), [2.4, 'boom'], [2.6, 'shing'], ...typeCues(FINAL, 3.8, 1.2), [5.1, 'whoosh'], [5.9, 'blip', 0]],
   view: (f) => {
     const { L, lb } = f
     const N = fit('NO', (L.W - 2 * L.M) * 0.42, L.H * 0.26)

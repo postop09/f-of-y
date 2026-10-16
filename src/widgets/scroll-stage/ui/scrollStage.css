@@ -1,3 +1,6 @@
+/* first visit: the film plays itself and the page does not scroll until it ends */
+:root.autoplay { overflow: hidden; }
+
 /* the scroll track: empty, just tall. Its height is the length of the film. */
 .track { position: relative; height: calc(var(--units) * 100vh + 100vh); height: calc(var(--units) * 100lvh + 100lvh); }
 .vh-probe { position: absolute; top: 0; left: 0; width: 1px; height: 100vh; height: 100lvh; visibility: hidden; pointer-events: none; }
@@ -55,6 +58,8 @@
 }
 .transport button:hover { color: var(--fg); }
 .transport svg { width: 14px; height: 14px; fill: currentColor; }
+.transport.locked .home, .transport.locked #scrub { pointer-events: none; }
+.transport.locked .home { opacity: .4; }
 button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); outline-offset: 2px; }
 #scrub { position: relative; flex: 1; height: 100%; margin: 0 8px; cursor: pointer; touch-action: none; outline: none; }
 #scrub i { position: absolute; display: block; }
