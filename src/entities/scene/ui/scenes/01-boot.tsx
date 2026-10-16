@@ -1,26 +1,27 @@
 // 01 ─ boot: a prompt, a command, enter
 import { pad, range, span } from '@/shared/lib/math'
-import { type Seg, typing } from '@/shared/lib/typing'
+import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 export const boot: SceneSpec = {
   id: 'boot',
-  len: 3,
+  len: 4,
   text: '$ scroll(y)',
-  sfx: [...typeCues('scroll(y)', 0.45, 1.3), [2, 'enter']],
+  // the intro bar: no drums yet. Typed on thirty-seconds, enter on beat 4, and the groove comes in with the next scene
+  sfx: [...typeCues('scroll(y)', 1.5), [3, 'enter']],
   view: (f) => {
     const { L, lb } = f
     const rowH = L.mono * 1.9
     const x = L.M
     const y = L.TY
     const segs: Seg[] = [['scroll(', ''], ['y', 'sig'], [')', '']]
-    const t = typing(f, segs, 0.45, 1.3)
-    const fl = span(2.0, 2.45, lb)
+    const t = typeOn(f, segs, 1.5)
+    const fl = span(3, 3.45, lb)
     const hx = Math.max(0, x - L.mono * 3)
     return {
-      cap: lb < 0.45 ? 'await user.scroll()' : lb < 2 ? 'type("scroll(y)")' : 'enter()',
+      cap: lb < 1.5 ? 'await user.scroll()' : lb < 3 ? 'type("scroll(y)")' : 'enter()',
       node: (
         <>
           {range(-3, 4).map((i) => (

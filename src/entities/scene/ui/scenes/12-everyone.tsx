@@ -1,7 +1,7 @@
 // 12 ─ every one: sixty frame cells, filled in order
 import { E, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
-import { type Seg, typing } from '@/shared/lib/typing'
+import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
@@ -12,19 +12,20 @@ export const everyone: SceneSpec = {
   id: 'everyone',
   len: 4,
   text: 'a second, and i wrote every one',
-  sfx: [...typeCues('a second, and i wrote', 0, 0.8), ...range(1, 10).map((k): Cue => [1.2 + (k / 10) * 1.6, 'tick', k]), [1.6, 'whoosh']],
+  // six frames per sixteenth from beat 2; EVERY drops on beat 3, ONE on beat 4
+  sfx: [...typeCues('a second, and i wrote', 0), ...range(1, 10).map((k): Cue => [1 + k / 4, 'tick', k]), [2, 'whoosh'], [3, 'thud']],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [['a second, and i ', ''], ['wrote', 'sig']]
-    const t = typing(f, segs, 0, 0.8)
+    const t = typeOn(f, segs, 0)
     const gy = L.TY + L.mono * 1.4
     const G = { x: L.M, y: gy, w: L.W - 2 * L.M, h: Math.max(120, Math.min(L.H * 0.52, L.H - gy - L.H * 0.14)) }
     const cw = G.w / 10
     const chh = G.h / 6
-    const done = Math.floor(60 * span(1.2, 2.8, lb))
+    const done = Math.floor(60 * span(1, 3.5, lb) + 1e-6)
     const EV = fit('EVERY ONE', G.w * 0.92, G.h * 0.36)
     return {
-      cap: lb < 1.2 ? 'for (f = 0; f < 60; f++)  // 60' : `write(frame[${Math.max(0, done - 1)}])  // ${done}/60`,
+      cap: lb < 1 ? 'for (f = 0; f < 60; f++)  // 60' : `write(frame[${Math.max(0, done - 1)}])  // ${done}/60`,
       node: (
         <>
           <Code x={L.M} y={L.TY - L.mono * 1.2} segs={segs} n={t.n} caret={t.caret} />
@@ -40,7 +41,7 @@ export const everyone: SceneSpec = {
               </div>
             )
           })}
-          {lb >= 1.6 && (
+          {lb >= 2 && (
             <Word
               className="outlined"
               text="EVERY ONE"
@@ -48,7 +49,8 @@ export const everyone: SceneSpec = {
               x={G.x + G.w / 2 - EV.w / 2}
               y={G.y + G.h / 2 - EV.fs * 0.4}
               ch={(i) => {
-                const a = span(i < 6 ? 1.6 + i * 0.04 : 2.3 + (i - 6) * 0.06, i < 6 ? 1.85 + i * 0.04 : 2.55 + (i - 6) * 0.06, lb)
+                const a0 = i < 6 ? 2 + i * 0.125 : 3 + (i - 6) * 0.125
+                const a = span(a0, a0 + 0.25, lb)
                 return { style: { opacity: a > 0 ? 1 : 0, transform: `translateY(${((1 - E.outBack(a)) * 0.5 * EV.fs).toFixed(1)}px)` } }
               }}
             />

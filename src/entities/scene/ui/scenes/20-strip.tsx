@@ -2,7 +2,7 @@
 import { E, bump, pad, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
-import { type Seg, typing } from '@/shared/lib/typing'
+import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
@@ -10,11 +10,14 @@ import type { Cue, SceneSpec } from '../../model/types'
 import './20-strip.css'
 
 const FRAMES = ['lime', 'solid', 'outline', 'paper', 'lime', 'solid'] // F01–F04 sit in the middle
+/** each step starts here and lands three sixteenths later, on beats 2, 3 and 4 */
+const STEPS = [0.25, 1.25, 2.25]
+
 export const strip: SceneSpec = {
   id: 'strip',
-  len: 5,
+  len: 4,
   text: 'frame by frame',
-  sfx: [...[0.4, 1.5, 2.6].flatMap((s, i): Cue[] => [[s, 'whoosh'], [s + 0.6, 'thud', i]]), ...typeCues('by', 3.6, 0.2)],
+  sfx: [...STEPS.flatMap((s, i): Cue[] => [[s, 'whoosh'], [s + 0.75, 'thud', i]]), ...typeCues('by', 3.25)],
   view: (f) => {
     const { L, lb } = f
     const band = { y: L.H * 0.19, h: L.H * 0.56 }
@@ -22,16 +25,16 @@ export const strip: SceneSpec = {
     const fw = Math.min(L.W * 0.64, (band.h - sh * 2) * 2.2)
     const gap = L.W * 0.05
     const fh = band.h - sh * 2 - 16
-    const step = [0.4, 1.5, 2.6].reduce((a, s) => a + E.inOutCubic(span(s, s + 0.8, lb)), 0)
+    const step = STEPS.reduce((a, s) => a + E.inOutCubic(span(s, s + 0.75, lb)), 0)
     const off = L.W / 2 - fw / 2 - (step + 1) * (fw + gap)
     const cur = Math.round(step) + 1
     const W1 = fit('FRAME', fw * 0.86, fh * 0.6)
     const W2 = fit('FRAME', fw * 0.86, fh * 0.7, 900, 62)
     const by: Seg[] = [['by', '']]
-    const fbf = typing(f, by, 3.6, 0.2)
+    const fbf = typeOn(f, by, 3.25)
     return {
       cap: `strip.step(${cur})  // frame ${cur} of 4`,
-      shake: 5 * [0.4, 1.5, 2.6].reduce((a, s) => a + bump(s + 0.6, s + 0.85, lb), 0),
+      shake: 5 * STEPS.reduce((a, s) => a + bump(s + 0.7, s + 0.9, lb), 0),
       node: (
         <>
           <div className="strip" style={{ top: band.y, height: band.h, opacity: span(0, 0.25, lb) }}>
@@ -49,7 +52,7 @@ export const strip: SceneSpec = {
               )
             })}
           </div>
-          <Code x={L.W / 2 - monoW('by', L.mono) / 2} y={band.y + band.h + L.mono * 1.4} segs={by} n={fbf.n} caret={lb >= 3.6 && fbf.caret} />
+          <Code x={L.W / 2 - monoW('by', L.mono) / 2} y={band.y + band.h + L.mono * 1.4} segs={by} n={fbf.n} caret={lb >= 3.25 && fbf.caret} />
         </>
       ),
     }

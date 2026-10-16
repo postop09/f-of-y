@@ -1,6 +1,7 @@
 // 08 ─ zoom: the camera dives through the O and comes out CLOSE
 import { REDUCE } from '@/shared/config/motion'
 import { E, lerp, span } from '@/shared/lib/math'
+import { SPB } from '@/shared/lib/synth'
 import { memo } from '@/shared/lib/layout'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { measureO } from '@/shared/lib/canvasText'
@@ -12,9 +13,10 @@ import { LINE_IT } from './lineIt'
 
 export const zoom: SceneSpec = {
   id: 'zoom',
-  len: 4,
+  len: 6,
   text: 'scroll and it zooms close',
-  sfx: [[1, 'blip', 2], [1.3, 'riser'], [3, 'boom'], [3, 'crash']],
+  // the dive rides a three-beat riser through the breakdown and CLOSE lands on the drop
+  sfx: [[1, 'blip', 2], [1, 'riser', 3 * SPB], [4, 'boom'], [4, 'crash']],
   view: (f) => {
     const { L, lb } = f
     const Z = fit('ZOOM', (L.W - 2 * L.M) * 0.8, L.H * 0.3)
@@ -23,9 +25,9 @@ export const zoom: SceneSpec = {
     const ox = p.x + textW('ZO', Z.fs) + m.cx * Z.fs
     const oy = p.y + 0.734 * Z.fs + m.cy * Z.fs
     const S = (1.15 * Math.hypot(L.W, L.H)) / 2 / (Math.min(m.cw, m.ch) * Z.fs)
-    const fill = E.inOutCubic(span(0.2, 0.8, lb))
-    const k = span(1.3, 3, lb)
-    const close = lb >= 3
+    const fill = E.inOutCubic(span(0, 1, lb))
+    const k = span(1, 4, lb)
+    const close = lb >= 4
     let cam: Cam | null = null
     let s = 1
     if (k > 0 && !close) {
@@ -40,14 +42,14 @@ export const zoom: SceneSpec = {
     const cp = centre(L, C, 0.5)
     return {
       cam,
-      cap: lb < 1.3 ? 'focus(word[2])' : `camera.zoom = ${Math.round((close ? S : s) * 100)}%`,
-      flash: close ? 0.3 * (1 - span(3, 3.3, lb)) : 0,
-      shake: close ? 22 * (1 - span(3, 3.3, lb)) : 0,
+      cap: lb < 1 ? 'focus(word[2])' : `camera.zoom = ${Math.round((close ? S : s) * 100)}%`,
+      flash: close ? 0.3 * (1 - span(4, 4.3, lb)) : 0,
+      shake: close ? 22 * (1 - span(4, 4.3, lb)) : 0,
       node: close ? (
-        <Word text="CLOSE" fs={C.fs} x={cp.x} y={cp.y} d={62} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(3, 3.45, lb))).toFixed(4)})`, transformOrigin: '50% 50%' }} />
+        <Word text="CLOSE" fs={C.fs} x={cp.x} y={cp.y} d={62} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(4, 4.45, lb))).toFixed(4)})`, transformOrigin: '50% 50%' }} />
       ) : (
         <div style={REDUCE ? { opacity: 1 - k } : undefined}>
-          <Code x={L.M} y={L.TY} segs={LINE_IT} caret={f.blink && lb < 1.3} />
+          <Code x={L.M} y={L.TY} segs={LINE_IT} caret={f.blink && lb < 1} />
           <Word className="ghost" text="ZOOM" fs={Z.fs} x={p.x} y={p.y} />
           <Word text="ZOOM" fs={Z.fs} x={p.x} y={p.y} style={{ clipPath: `inset(-10% ${((1 - fill) * 105).toFixed(2)}% -10% -5%)` }} ch={(i) => ({ sig: i === 2 && lb > 1 })} />
         </div>

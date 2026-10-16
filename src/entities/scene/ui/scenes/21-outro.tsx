@@ -3,7 +3,7 @@ import { REDUCE } from '@/shared/config/motion'
 import { E, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
-import { type Seg, typing } from '@/shared/lib/typing'
+import { type Seg, countOn, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
@@ -13,44 +13,45 @@ import './21-outro.css'
 const FINAL = '// 0 keyframes. 1 file. every frame = f(scrollY).'
 export const outro: SceneSpec = {
   id: 'outro',
-  len: 7,
+  len: 13,
   text: 'no keyframes. 0 keyframes, 1 file, every frame is f(scrollY).',
-  sfx: [...typeCues('keyframe', 0.3, 0.6), ...typeCues('KEYFRAMES', 1.2, 0.6), [2.4, 'boom'], [2.6, 'shing'], ...typeCues(FINAL, 3.8, 1.2), [5.1, 'whoosh'], [5.9, 'blip', 0]],
+  // paper on the downbeat at 4, the struck-out word on the next sixteenth, then the last line on thirty-seconds
+  sfx: [...typeCues('keyframe', 0.25), ...typeCues('KEYFRAMES', 2.25, 1 / 8), [4, 'boom'], [4.25, 'shing'], ...typeCues(FINAL, 5.5), [11.75, 'whoosh'], [12.25, 'blip', 0]],
   view: (f) => {
     const { L, lb } = f
     const N = fit('NO', (L.W - 2 * L.M) * 0.42, L.H * 0.26)
     const y = L.H * 0.17
     const kfSeg: Seg[] = [['keyframe', '']]
-    const kf = typing(f, kfSeg, 0.3, 0.6, 1.2)
+    const kf = typeOn(f, kfSeg, 0.25, 2.25)
     const K = fit('KEYFRAMES', (L.W - 2 * L.M) * 0.95, L.H * 0.24, 900, 62)
     const ky = y + N.fs * 0.95
-    const shown = 'KEYFRAMES'.slice(0, Math.round(9 * span(1.2, 1.8, lb)))
-    const paper = lb >= 2.4 && lb < 3.6
-    const strike = E.outCubic(span(2.6, 3.1, lb))
+    const shown = 'KEYFRAMES'.slice(0, countOn(lb, 2.25, 9, 1 / 8))
+    const paper = lb >= 4 && lb < 5.5
+    const strike = E.outCubic(span(4.25, 4.75, lb))
     const fsz = L.mono * 1.15
     const fw = monoW(FINAL, fsz)
     const fx = Math.max(L.M, L.W / 2 - fw / 2)
     const fy = L.H * 0.47
     const fin: Seg[] = [[FINAL, '']]
-    const ft = typing(f, fin, 3.8, 1.2)
-    const wipe = E.outCubic(span(5.1, 5.35, lb))
-    const wipeOut = E.inCubic(span(5.45, 5.85, lb))
-    const end = span(5.9, 6.3, lb)
-    const A = lb < 3.6
-    const C = lb >= 3.6 && lb < 5.45
+    const ft = typeOn(f, fin, 5.5)
+    const wipe = E.outCubic(span(11.75, 12, lb))
+    const wipeOut = E.inCubic(span(12, 12.25, lb))
+    const end = span(12.25, 12.75, lb)
+    const A = lb < 5.5
+    const C = lb >= 5.5 && lb < 12
     return {
       paper,
-      cap: lb < 1.2 ? 'export const keyframes = [];' : lb < 2.4 ? 'type("KEYFRAMES")' : lb < 3.6 ? 'keyframes.length  // 0' : lb < 5.1 ? 'render complete  // exit 0' : 'clear()',
-      flash: lb >= 2.4 ? 0.2 * (1 - span(2.4, 2.6, lb)) : 0,
-      shake: lb >= 2.4 ? 10 * (1 - span(2.4, 2.6, lb)) : 0,
+      cap: lb < 2.25 ? 'export const keyframes = [];' : lb < 4 ? 'type("KEYFRAMES")' : lb < 5.5 ? 'keyframes.length  // 0' : lb < 11.75 ? 'render complete  // exit 0' : 'clear()',
+      flash: lb >= 4 ? 0.2 * (1 - span(4, 4.2, lb)) : 0,
+      shake: lb >= 4 ? 10 * (1 - span(4, 4.2, lb)) : 0,
       node: (
         <>
           {A && (
             <>
-              <Word text="NO" fs={N.fs} x={L.M} y={y} style={{ transform: `scale(${E.outBack(span(0, 0.3, lb)).toFixed(4)})`, transformOrigin: '0% 100%' }} />
-              {lb < 1.2 && <Code x={L.M} y={ky} segs={kfSeg} n={kf.n} caret={kf.caret} style={{ fontSize: L.mono * 1.3 }} />}
-              {lb >= 1.2 && <Word text={shown} fs={K.fs} x={L.M} y={ky} d={62} />}
-              {lb >= 1.2 && !paper && <div className="bigcaret" style={{ left: L.M + textW(shown, K.fs, 900, 62) + K.fs * 0.04, top: ky + K.fs * 0.03, width: K.fs * 0.06, height: K.fs * 0.72, visibility: lb < 1.8 || f.blink ? 'visible' : 'hidden' }} />}
+              <Word text="NO" fs={N.fs} x={L.M} y={y} style={{ transform: `scale(${E.outBack(span(0, 0.25, lb)).toFixed(4)})`, transformOrigin: '0% 100%' }} />
+              {lb < 2.25 && <Code x={L.M} y={ky} segs={kfSeg} n={kf.n} caret={kf.caret} style={{ fontSize: L.mono * 1.3 }} />}
+              {lb >= 2.25 && <Word text={shown} fs={K.fs} x={L.M} y={ky} d={62} />}
+              {lb >= 2.25 && !paper && <div className="bigcaret" style={{ left: L.M + textW(shown, K.fs, 900, 62) + K.fs * 0.04, top: ky + K.fs * 0.03, width: K.fs * 0.06, height: K.fs * 0.72, visibility: lb < 3.375 || f.blink ? 'visible' : 'hidden' }} />}
               {strike > 0 && <div className="bar fgbg" style={{ left: L.M - K.fs * 0.05, top: ky + K.fs * 0.34, width: (K.w + K.fs * 0.1) * strike, height: Math.max(4, K.fs * 0.075) }} />}
             </>
           )}

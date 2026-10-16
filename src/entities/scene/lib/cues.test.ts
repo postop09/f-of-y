@@ -2,15 +2,19 @@ import { describe, expect, it } from 'vitest'
 import { collectCues, cuesBetween, typeCues } from './cues'
 
 describe('typeCues', () => {
-  it('ticks once per visible character, when typing() reveals it', () => {
-    expect(typeCues('ab c', 1, 2)).toEqual([
-      [1.25, 'tick', 0],
-      [1.75, 'tick', 1],
-      [2.75, 'tick', 3],
+  it('ticks once per visible character, on the sixteenth typeOn() shows it', () => {
+    expect(typeCues('ab c', 1)).toEqual([
+      [1, 'tick', 0],
+      [1.25, 'tick', 1],
+      [1.75, 'tick', 3],
     ])
   })
+  it('uses thirty-seconds for long lines, or the step given', () => {
+    expect(typeCues('abcdefghijklmnopq', 0)[1][0]).toBe(0.125)
+    expect(typeCues('abc', 0, 0.5)[2][0]).toBe(1)
+  })
   it('reads segments the same as plain text', () => {
-    expect(typeCues([['ab', ''], [' c', 'sig']], 1, 2)).toEqual(typeCues('ab c', 1, 2))
+    expect(typeCues([['ab', ''], [' c', 'sig']], 1)).toEqual(typeCues('ab c', 1))
   })
 })
 

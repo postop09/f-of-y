@@ -25,7 +25,7 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 장면은 `{ id, len, at, view(f), draw?(g, f) }`. `view(f)`는 순수 함수로 이 프레임의 JSX와 카메라·플래시·흔들림·HUD 캡션을 돌려주고, `draw`는 캔버스 층을 그린다.
 - `f.lb`는 장면 안 위치. 시계도 키프레임도 없으니 새로고침해도 같은 프레임에 선다.
 - 조작: 휠·스와이프 재생/되감기, `←` `→` 장면 이동, 하단 바 스크러빙. `prefers-reduced-motion`이면 카메라·흔들림·플래시가 꺼진다.
-- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 약 52초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
+- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 109박, 약 70초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
 - 소리는 전부 Web Audio 합성이다(`public/keyframe.html`에서 옮김). 시작한 뒤로는 94 BPM 반주가 계속 돌고, 장면의 효과음(`sfx`)은 자동 재생 중엔 박자에 맞춰 미리 예약되고 스크롤 모드에선 앞으로 지나갈 때 울린다(되감기·점프에선 안 울림). 클릭하면 다음 16분음표에 히트(소리 + 퍼지는 네모)가 들어간다. `M`이나 하단 바 오른쪽 버튼으로 음소거, 탭이 가려지면 소리도 멈춘다.
 
 ## 구조 (Feature-Sliced Design)
@@ -55,5 +55,9 @@ scripts/exportSingleFile.ts   npm run export
 
 `src/entities/scene/ui/scenes/NN-id.tsx`에 `export const id: SceneSpec = { id, len, text, view, draw? }`를 만들고,
 `src/entities/scene/model/scenes.ts`의 배열 원하는 위치에 끼우면 `at`과 `TOTAL`이 자동으로 밀린다. 그 장면에서만 쓰는 클래스는 옆의 `NN-id.css`에 둔다.
-효과음은 `sfx: [[lb, 'boom'], ...typeCues('타이핑한 줄', at, dur)]`처럼 장면 안 위치로 적는다. `typeCues`는 `typing()`과 같은 시간표로 글자마다 틱을 만든다.
-큰 글자는 `<Word>`, 모노 줄은 `<Code>` + `typing()`, 크기 맞춤은 `fit()`을 쓴다. 글자 축(wght/wdth)은 style이 아니라 `Word`의 `w`/`d` 또는 `ch()`로 넘긴다.
+효과음은 `sfx: [[lb, 'boom'], ...typeCues('타이핑한 줄', at)]`처럼 장면 안 위치로 적는다. `typeCues`는 `typeOn()`과 같은 시간표로 글자마다 틱을 만든다.
+
+### 박자에 맞추기
+
+`lb` 1 = 1박이다. 장면 길이는 4박(짧으면 2박) 단위라 장면은 마디 첫 박(최소한 반 마디)에서 바뀐다. 장면 안의 사건은 16분음표(0.25) 격자에, 큰 충격은 정박에 둔다. 타이핑은 `typeOn(f, line, at)`으로: 8자 이하는 16분음표, 그보다 긴 줄은 32분음표마다 한 글자(`LONG_LINE`). 반주는 첫 마디(0–4박)가 드럼 없는 인트로, 36–40박이 숨 고르기, 40박에서 다시 터진다. zoom의 CLOSE가 그 40박에 떨어진다. `scenes.test.ts`가 장면 경계와 효과음이 격자에 있는지 검사한다.
+큰 글자는 `<Word>`, 모노 줄은 `<Code>` + `typeOn()`, 크기 맞춤은 `fit()`을 쓴다. 글자 축(wght/wdth)은 style이 아니라 `Word`의 `w`/`d` 또는 `ch()`로 넘긴다.

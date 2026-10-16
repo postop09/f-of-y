@@ -1,6 +1,6 @@
 // 05 ─ bend: a curve whose handle is pulled by the scroll; the word rides it
 import { E, lerp, range, span } from '@/shared/lib/math'
-import { type Seg, typing } from '@/shared/lib/typing'
+import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Cursor } from '@/shared/ui/Cursor'
 import { typeCues } from '../../lib/cues'
@@ -12,27 +12,28 @@ export const bend: SceneSpec = {
   id: 'bend',
   len: 4,
   text: "i don't bend a curve",
-  sfx: [...typeCues("i don't bend a curve", 0, 0.8), [0.85, 'blip', 2], [0.9, 'boing'], [2.3, 'whoosh']],
+  // the handle is grabbed on beat 2, as "bend" is typed; the word rides the curve for the last two beats
+  sfx: [...typeCues("i don't bend a curve", 0), [1, 'blip', 2], [1, 'boing'], [2, 'whoosh']],
   view: (f) => {
     const { L, lb } = f
     const segs: Seg[] = [["i don't bend a ", ''], ['curve', 'sig']]
-    const t = typing(f, segs, 0, 0.8)
+    const t = typeOn(f, segs, 0)
     const gx = L.M + L.mono * 1.2
     const gy = L.TY + L.mono * 2.4
     const G = { x: gx, y: gy, w: L.W - L.M - gx, h: Math.max(120, Math.min(L.H * 0.5, L.H - gy - L.H * 0.14 - 20)) }
     const P0: Pt = [G.x, G.y + G.h * 0.92]
     const P3: Pt = [G.x + G.w, G.y + G.h * 0.06]
-    const k = E.outBack(span(0.9, 2.2, lb))
+    const k = E.outBack(span(1, 2, lb))
     const mix = (a: Pt, b2: Pt, m: number): Pt => [lerp(a[0], b2[0], m), lerp(a[1], b2[1], m)]
     const H1 = mix(mix(P0, P3, 1 / 3), [G.x + G.w * 0.56, P0[1] + G.h * 0.03], k)
     const H2 = mix(mix(P0, P3, 2 / 3), [G.x + G.w * 0.44, P3[1]], k)
     const d = `M${P0} C${H1} ${H2} ${P3}`
-    const off = lerp(14, 58, E.inOutCubic(span(2.3, 3.9, lb)))
-    const op = span(0.7, 1, lb)
+    const off = lerp(14, 58, E.inOutCubic(span(2, 4, lb)))
+    const op = span(0.5, 1, lb)
     const fs = Math.max(20, Math.min(G.h * 0.17, G.w * 0.09))
-    const grab = lb > 0.85 && lb < 2.3
+    const grab = lb >= 1 && lb < 2
     return {
-      cap: lb < 0.9 ? `type("i don't bend a curve")` : lb < 2.3 ? `curve.bend(${(k * 1.05).toFixed(2)})` : `text.along(curve, ${off.toFixed(0)}%)`,
+      cap: lb < 1 ? `type("i don't bend a curve")` : lb < 2 ? `curve.bend(${(k * 1.05).toFixed(2)})` : `text.along(curve, ${off.toFixed(0)}%)`,
       node: (
         <>
           <Code x={L.M} y={L.TY} segs={segs} n={t.n} caret={t.caret} />

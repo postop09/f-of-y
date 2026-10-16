@@ -10,22 +10,23 @@ export const boom: SceneSpec = {
   id: 'boom',
   len: 2,
   text: 'boom',
-  sfx: [[0.15, 'boom'], [0.15, 'crash']],
+  // straight on the downbeat
+  sfx: [[0, 'boom'], [0, 'crash']],
   view: (f) => {
     const { L, lb } = f
     const B = fit('BOOM', (L.W - 2 * L.M) * 0.95, L.H * 0.36)
     const p = centre(L, B, 0.45)
-    const q = lb - 0.15
+    const q = lb
     return {
-      cap: q < 0 ? 'impact.arm()' : `impact({ amp: ${Math.max(0, 8 - q * 6).toFixed(1)} })`,
+      cap: `impact({ amp: ${Math.max(0, 8 - q * 6).toFixed(1)} })`,
       flash: q > 0 ? 0.35 * Math.exp(-q * 8) : 0,
       shake: q > 0 ? 34 * Math.exp(-q * 4) : 0,
-      node: q >= 0 && <Word text="BOOM" fs={B.fs} x={p.x} y={p.y} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(0, 0.3, q))).toFixed(4)})`, transformOrigin: '50% 60%' }} />,
+      node: <Word text="BOOM" fs={B.fs} x={p.x} y={p.y} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(0, 0.3, q))).toFixed(4)})`, transformOrigin: '50% 60%' }} />,
     }
   },
   draw: (g, f) => {
     const { L, lb } = f
-    const q = lb - 0.15
+    const q = lb
     if (q <= 0) return
     const cx = L.W / 2
     const cy = L.H * 0.47
