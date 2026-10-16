@@ -1,9 +1,9 @@
-// 14 ─ sixty: a counter you drive with the wheel
+// 13 ─ sixty: a counter you drive with the wheel
 import { lerp, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './14-sixty.css'
+import './13-sixty.css'
 
 export const sixty: SceneSpec = {
   id: 'sixty',

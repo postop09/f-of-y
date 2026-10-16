@@ -1,4 +1,4 @@
-// 11 ─ snap back: two springs, stretched by their own velocity
+// 10 ─ snap back: two springs, stretched by their own velocity
 import { clamp, lerp, springAt } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'

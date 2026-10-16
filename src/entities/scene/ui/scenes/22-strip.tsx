@@ -1,4 +1,4 @@
-// 23 ─ frame by frame: a film strip that steps one frame per notch
+// 22 ─ frame by frame: a film strip that steps one frame per notch
 import { E, bump, pad, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
@@ -6,7 +6,7 @@ import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './23-strip.css'
+import './22-strip.css'
 
 const FRAMES = ['lime', 'solid', 'outline', 'paper', 'lime', 'solid'] // F01–F04 sit in the middle
 export const strip: SceneSpec = {

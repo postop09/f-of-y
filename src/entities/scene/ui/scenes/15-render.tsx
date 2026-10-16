@@ -1,11 +1,11 @@
-// 16 ─ hit render
+// 15 ─ hit render
 import { bump, pad, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './16-render.css'
+import './15-render.css'
 
 export const render: SceneSpec = {
   id: 'render',

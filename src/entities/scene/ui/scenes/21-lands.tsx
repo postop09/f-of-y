@@ -1,10 +1,10 @@
-// 22 ─ lands right on cue
+// 21 ─ lands right on cue
 import { E, bump, hash, range, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './22-lands.css'
+import './21-lands.css'
 
 export const lands: SceneSpec = {
   id: 'lands',

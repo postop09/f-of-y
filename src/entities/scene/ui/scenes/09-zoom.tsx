@@ -1,4 +1,4 @@
-// 10 ─ zoom: the camera dives through the O and comes out CLOSE
+// 09 ─ zoom: the camera dives through the O and comes out CLOSE
 import { REDUCE } from '@/shared/config/motion'
 import { E, lerp, span } from '@/shared/lib/math'
 import { memo } from '@/shared/lib/layout'

@@ -1,4 +1,4 @@
-// 18 ─ boom: debris on a closed-form trajectory
+// 17 ─ boom: debris on a closed-form trajectory
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'

@@ -1,11 +1,11 @@
-// 15 ─ every one: sixty frame cells, filled in order
+// 14 ─ every one: sixty frame cells, filled in order
 import { E, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './15-everyone.css'
+import './14-everyone.css'
 
 export const everyone: SceneSpec = {
   id: 'everyone',

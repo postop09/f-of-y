@@ -1,4 +1,4 @@
-// 07 ─ pixel: a scan line turns the word into cells, rows slide, they scatter
+// 06 ─ pixel: a scan line turns the word into cells, rows slide, they scatter
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
 import { type Layout, memo } from '@/shared/lib/layout'

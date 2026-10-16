@@ -1,10 +1,10 @@
-// 06 ─ bend: a curve whose handle is pulled by the scroll; the word rides it
+// 05 ─ bend: a curve whose handle is pulled by the scroll; the word rides it
 import { E, lerp, range, span } from '@/shared/lib/math'
 import { type Seg, typing } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Cursor } from '@/shared/ui/Cursor'
 import type { SceneSpec } from '../../model/types'
-import './06-bend.css'
+import './05-bend.css'
 
 type Pt = [number, number]
 export const bend: SceneSpec = {

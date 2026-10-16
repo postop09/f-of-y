@@ -1,4 +1,4 @@
-// 12 ─ stack up, flip
+// 11 ─ stack up, flip
 import { E, bump, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'

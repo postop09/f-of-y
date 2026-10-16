@@ -1,9 +1,9 @@
-// 17 ─ one take
+// 16 ─ one take
 import { E, span, springAt } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './17-take.css'
+import './16-take.css'
 
 export const take: SceneSpec = {
   id: 'take',

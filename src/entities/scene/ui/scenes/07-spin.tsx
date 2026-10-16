@@ -1,4 +1,4 @@
-// 08 ─ spin
+// 07 ─ spin
 import { E, clamp, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { typing } from '@/shared/lib/typing'
