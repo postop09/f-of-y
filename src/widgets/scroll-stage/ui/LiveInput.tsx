@@ -70,7 +70,7 @@ export const LiveInput = ({ x, y, mono, word, inputRef, onWord, onEnter, onExplo
         </button>
       )}
       <div className="code dim live-hint" style={{ left: x, top: hy }}>
-        # 입력칸을 눌러 단어를 바꾸고 Enter
+        # EXPLORE 를 입력하면 다음 화면으로 이동합니다.
       </div>
       <div className="code dim live-hint" style={{ left: x, top: hy + mono * 0.95 }}>
         # 화면을 누르면 터졌다가 제자리로 돌아와요 · 스크롤을 올리면 되감겨요
