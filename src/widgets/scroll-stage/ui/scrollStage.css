@@ -69,7 +69,6 @@ button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); ou
 #scrub .tk { top: 50%; width: 1px; height: 5px; margin-top: -2px; background: var(--sub); opacity: .55; }
 #scrub .tk.big { height: 9px; margin-top: -4px; opacity: .95; }
 #scrub .head { top: 50%; width: 2px; height: 14px; margin: -7px 0 0 -1px; background: var(--sig); }
-.scene-lb { min-width: 11ch; padding-right: 8px; text-align: right; font-size: 10px; letter-spacing: .12em; }
 
 /* live: the input line at the end of the film (outside the aria-hidden world) */
 .live-line { z-index: 3; pointer-events: auto; }

@@ -2,7 +2,6 @@
 // 자동 재생 중(locked)에는 진행만 보여 주고 처음으로·스크러버는 받지 않는다. 소리 버튼은 언제나 된다.
 import type { PointerEvent, Ref } from 'react'
 import type { Scene } from '@/entities/scene/model/types'
-import { pad } from '@/shared/lib/math'
 
 type Props = {
   scenes: readonly Scene[]
@@ -62,7 +61,6 @@ export const Transport = ({ scenes, total, idx, prog, trackRef, locked, ended, m
         <i className="fill" style={{ width: `${prog * 100}%` }} />
         <i className="head" style={{ left: `${prog * 100}%` }} />
       </div>
-      <span className="scene-lb">{`${pad(idx + 1, 2)} ${sc.id.toUpperCase()}`}</span>
       <button type="button" aria-label={muted ? '소리 켜기' : '소리 끄기'} aria-pressed={muted} onClick={onMute}>
         <svg viewBox="0 0 16 14" aria-hidden="true">
           <path d="M1 4.5h3l4-3.5v12l-4-3.5H1z" />
