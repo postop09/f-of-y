@@ -1,4 +1,9 @@
 // 단일 페이지: 스크롤 스테이지가 곧 페이지다.
 import { ScrollStage } from '@/widgets/scroll-stage/ui/ScrollStage'
 
-export const FilmPage = () => <ScrollStage />
+type Props = {
+  startAtEnd?: boolean
+  onExplore: () => void
+}
+
+export const FilmPage = ({ startAtEnd, onExplore }: Props) => <ScrollStage startAtEnd={startAtEnd} onExplore={onExplore} />

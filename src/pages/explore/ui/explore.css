@@ -1,0 +1,65 @@
+/* explore: the same dark terminal as the film's stage (#stage), but an ordinary page that scrolls */
+.explore {
+  --bg: var(--void); --fg: var(--ink); --sub: var(--dim); --ln: var(--rule);
+  --pad: clamp(12px, 2.2vw, 26px); --mono: 18px;
+  position: relative; min-height: 100vh; min-height: 100dvh; padding-bottom: 96px;
+  background: var(--bg); color: var(--fg); font-family: var(--mono-fam);
+}
+.explore .dots {
+  position: fixed; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle at center, var(--ln) 1px, transparent 1.6px);
+  background-size: 28px 28px; background-position: center;
+}
+.explore .dim { color: var(--sub); }
+
+/* the prompt rows: laid out like the film's first scene (absolute, from makeLayout) */
+.prompt-rows { position: relative; }
+.prompt-rows > div { position: absolute; }
+.prompt-rows .ln, .prompt-rows .rowhl { user-select: none; -webkit-user-select: none; }
+
+/* everything printed under the prompt */
+.explore-out { position: relative; max-width: 980px; font-size: calc(var(--mono) * .78); line-height: 1.6; animation: ex-in .35s ease-out both; }
+@keyframes ex-in { from { opacity: 0; transform: translateY(6px); } }
+.explore-out p { margin: 0; }
+.explore-out section { margin-top: 28px; }
+
+.ex-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.ex-chips button {
+  appearance: none; font: inherit; cursor: pointer; padding: 5px 12px; margin: 0;
+  color: var(--sub); background: transparent; border: 1px solid var(--ln);
+}
+.ex-chips button:hover { color: var(--fg); border-color: var(--sub); }
+.ex-chips button[aria-pressed="true"] { color: var(--void); background: var(--sig); border-color: var(--sig); }
+
+.ex-examples { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
+.ex-examples button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); }
+.ex-examples button:hover { text-decoration: underline; }
+.ex-examples button:disabled { opacity: .5; cursor: default; text-decoration: none; }
+
+.ex-result { margin-top: 40px; scroll-margin-top: 24px; }
+.ex-decision { margin-bottom: 18px; }
+.ex-cat-probs { list-style: none; margin: 6px 0; padding: 0; }
+.ex-cat-probs li { display: flex; align-items: center; gap: 10px; color: var(--sub); white-space: pre; }
+.ex-cat-probs li.top { color: var(--fg); }
+.ex-arrow { color: var(--sig); width: 1ch; }
+.ex-cat-label { min-width: 8em; }
+.ex-cat-probs li:not(.top) .cellbar i.on { background: var(--sub); }
+.ex-num { font-variant-numeric: tabular-nums; }
+.ex-miss { color: var(--fg); margin: 6px 0 !important; }
+.ex-src { font-size: .86em; }
+.ex-cards { display: grid; gap: 30px; margin-top: 18px; }
+
+.explore button:focus-visible, .explore a:focus-visible { outline: 1.5px solid var(--sig); outline-offset: 2px; }
+
+.explore-back {
+  position: fixed; left: calc(var(--pad) + 8px); bottom: calc(var(--pad) + 4px); z-index: 2;
+  appearance: none; border: 0; background: var(--bg); padding: 8px; cursor: pointer;
+  font: inherit; font-size: calc(var(--mono) * .68); color: var(--sub);
+}
+.explore-back:hover { color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) { .explore-out { animation: none; } }
+@media (max-width: 640px) {
+  .explore { --mono: 16px; }
+  .ex-cat-label { min-width: 6.5em; }
+}

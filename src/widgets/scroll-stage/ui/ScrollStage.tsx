@@ -13,7 +13,8 @@
 //
 // At the very end the film hands over: the YOURS cells become a live field that
 // runs on time, not scroll. The cursor pushes them, a click bursts them, they
-// breathe on the beat, and the input line turns them into any word.
+// breathe on the beat, and the input line turns them into any word. Typing
+// "explore" there brings up the way out to the next screen.
 import { type CSSProperties, type PointerEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { cuesBetween } from '@/entities/scene/lib/cues'
 import { CUES, SCENES, TOTAL, sceneAt } from '@/entities/scene/model/scenes'
@@ -47,7 +48,14 @@ const SCROLL_KEYS = new Set([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRig
 /** the scroll counts as "at the end" from here (it can stop a fraction of a pixel short) */
 const END = TOTAL - 0.02
 
-export const ScrollStage = () => {
+type Props = {
+  /** open on the last frame (coming back from the next screen) instead of where the scroll is */
+  startAtEnd?: boolean
+  /** the live input's explore button */
+  onExplore: () => void
+}
+
+export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
   const stageRef = useRef<HTMLElement>(null)
   const probeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -62,6 +70,7 @@ export const ScrollStage = () => {
   /** the current layout for the loop and handlers (the render reads the state) */
   const layoutRef = useRef<Layout | null>(null)
   const liveInputRef = useRef<HTMLInputElement>(null)
+  const startAtEndRef = useRef(startAtEnd)
   const [L, setL] = useState<Layout | null>(null)
   const [fr, setFr] = useState<FrameState>({ u: 0, v: 0, now: 0, blink: true, unitPx: 0, auto: autoplay, wait: autoplay, live: null })
   const [muted, setMuted] = useState(false)
@@ -78,7 +87,10 @@ export const ScrollStage = () => {
     const measure = () => {
       const r = stage.getBoundingClientRect()
       const unitPx = probe.getBoundingClientRect().height * UNIT
-      if (!m.unitPx) m.u = m.auto ?? window.scrollY / unitPx // start where the browser restored the scroll
+      if (!m.unitPx) {
+        if (startAtEndRef.current && m.auto === null) window.scrollTo(0, TOTAL * unitPx)
+        m.u = m.auto ?? window.scrollY / unitPx // start where the browser restored the scroll
+      }
       else if (Math.abs(unitPx - m.unitPx) > 0.5) window.scrollTo(0, (window.scrollY / m.unitPx) * unitPx)
       m.unitPx = unitPx
       resetCaches()
@@ -178,6 +190,7 @@ export const ScrollStage = () => {
     return () => {
       cancelAnimationFrame(raf)
       clearInterval(timer)
+      sound.close() // leaving for another screen: cut the music
     }
   }, [])
 
@@ -391,6 +404,7 @@ export const ScrollStage = () => {
               fld.boom(L, b.x + b.w / 2, b.y + b.h / 2, performance.now() / 1000)
               soundRef.current?.fx('boom')
             }}
+            onExplore={onExplore}
           />
         )}
         <Hud idx={idx} count={SCENES.length} quarter={quarter} cap={fr.live?.cap ?? out?.cap ?? 'await fonts.ready'} vpx={vpx} y={Math.round(fr.u * fr.unitPx)} />

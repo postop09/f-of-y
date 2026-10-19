@@ -82,6 +82,17 @@ button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); ou
 }
 .live-word input:focus-visible { box-shadow: 0 2px 0 var(--sig); }
 .live-hint { z-index: 3; font-size: calc(var(--mono) * .68); }
+/* typing "explore" brings up the way to the next screen */
+.live-go {
+  z-index: 3; pointer-events: auto; cursor: pointer; appearance: none; margin: 0;
+  font: inherit; font-size: calc(var(--mono) * .82); font-weight: 500; line-height: 1;
+  color: var(--sig); background: transparent; border: 1px solid var(--sig); padding: .55em .9em;
+  animation: live-go-in .22s ease-out both;
+}
+.live-go .p { color: inherit; opacity: .6; }
+.live-go:hover { color: var(--void); background: var(--sig); }
+@keyframes live-go-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .live-go { animation: none; } }
 
 /* help */
 .help {

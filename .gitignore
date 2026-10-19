@@ -7,3 +7,4 @@ export
 .tmp/
 .vercel
 .DS_Store
+private/

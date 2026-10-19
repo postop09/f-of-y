@@ -13,6 +13,14 @@ npm run build && npm run preview
 npm run export       # export/f-of-y.html — 서버 없이 더블클릭으로 열리는 단일 파일
 ```
 
+explore 화면의 질문은 TypeSafe의 Jev가 고른다. 키는 서버 쪽에만 둔다.
+
+```bash
+echo 'TYPESAFE_API_KEY=…' > .env.local   # npm run dev 가 /api/explore 에서 읽는다 (.gitignore 됨)
+```
+
+배포(Vercel)에서는 프로젝트 환경변수에 `TYPESAFE_API_KEY`를 등록한다. 키가 없거나 Jev에 닿지 않으면(단일 HTML export 포함) 키워드 매칭으로 대신 고른다.
+
 ## 검증
 
 ```bash
@@ -29,13 +37,26 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 소리는 전부 Web Audio 합성이다(`public/keyframe.html`에서 옮김). 시작한 뒤로는 94 BPM 반주가 계속 돌고, 장면의 효과음(`sfx`)은 자동 재생 중엔 박자에 맞춰 미리 예약되고 스크롤 모드에선 앞으로 지나갈 때 울린다(되감기·점프에선 안 울림). 클릭하면 다음 16분음표에 히트(소리 + 퍼지는 네모)가 들어간다. `M`이나 하단 바 오른쪽 버튼으로 음소거, 탭이 가려지면 소리도 멈춘다.
 - 영상 끝(yours 장면 다음)에서는 live 필드가 된다(`public/keyframe.html`의 live를 옮김). YOURS 픽셀이 시간으로 움직이는 상태가 되어, 커서에 밀리고, 클릭하면 터졌다가 스프링으로 돌아오고, 반주 박마다 부푼다. `$ type("…")` 입력칸에 단어를 치면 픽셀이 그 단어로 옮겨 간다(Enter면 바로, 아니면 입력이 멈춘 뒤). 스크롤을 올리면 다시 영상으로 돌아가고, 바꾼 단어는 다음에 돌아올 때도 남는다. 구현은 `widgets/scroll-stage/lib/liveField.ts`(물리)와 `ui/LiveInput.tsx`(입력 줄).
 
+## explore: 이력서 탐색
+
+- 영상 끝 live 입력칸에 `explore`를 치면 `$ run explore` 버튼이 생기고, 누르면 `#explore` 화면으로 간다(`app/App.tsx`가 해시로 화면을 고름, 뒤로 가기·`cd ..`·Esc면 영상의 마지막 프레임으로 돌아옴).
+- 화면은 01 boot와 같은 자리의 줄 번호와 강조된 현재 줄로 시작한다. 그 줄이 곧 입력칸이라 `$`와 깜빡이는 블록 캐럿만 있고, 친 글자가 캐럿 앞에 쌓인다. 그 아래에 예시 질문 → 카테고리 칩 → 결과가 이어진다.
+- 방문자가 질문을 치면 `POST /api/explore`(`api/explore.ts`, Vercel 함수)가 Jev에 묻는다. Jev는 글을 쓰지 않고 정해진 형식으로만 답하는 모델이라, 세 가지를 확률로 고르게 한다: 카테고리(choice), 경력 항목(choice, `none` 포함), 이력서에 대한 질문인지(noul). 서버는 id와 확률만 돌려주고, 화면이 `entities/resume/model/resume.ts`의 데이터로 카드를 그린다.
+- 카테고리: 사용자 경험 · UI 개선 · AI 활용 · 구조·아키텍처 · 운영 안정성 · 협업·프로세스. 항목 하나가 여러 카테고리에 들 수 있고, 칩은 Jev 없이 바로 거른다.
+- 이력서 원본 PDF는 `private/`(gitignore)에 둔다. 연락처·주소가 있어 `public/`에 두면 배포에 그대로 공개되기 때문. 화면 데이터에는 이메일·GitHub·포트폴리오만 싣는다.
+- `api/`는 Vercel이 파일마다 따로 컴파일하는 Node ESM이라, 서버가 읽는 `entities/resume/lib/jev.ts`·`model/resume.ts`의 런타임 상대 import에는 `.js`를 붙인다.
+
 ## 구조 (Feature-Sliced Design)
 
 ```
 app → pages → widgets → features → entities → shared   (import 는 아래 방향으로만, eslint boundaries 로 강제)
 
-src/app/                  main.tsx, styles/index.css (색·글꼴 토큰)
+src/app/                  main.tsx, App.tsx (해시로 화면 고르기), styles/index.css (색·글꼴 토큰)
 src/pages/film/           FilmPage — 스테이지가 곧 페이지
+src/pages/explore/        ExplorePage (이력서 탐색), PromptRows (줄 번호 + 현재 줄), lib/useViewportLayout
+src/features/explore-resume/  api/ask (/api/explore → 실패하면 키워드 매칭), ui/AskLine (`$ ▮` 입력 줄)
+src/entities/resume/      model/resume.ts (소개·카테고리·경력 항목), lib/jev (Jev 요청·응답 ↔ ExploreResult), lib/localMatch (키워드 대체 경로), ui/ResumeItemCard
+api/explore.ts            Vercel 함수: TYPESAFE_API_KEY로 Jev 호출 (개발 중엔 vite.config.ts 플러그인이 같은 함수를 서빙)
 src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드·자동 재생), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
                           lib/sound (AudioContext·반주 스케줄러·효과음·히트·음소거), lib/hits (클릭 히트 그리기), lib/liveField + ui/LiveInput (끝의 live 필드), model/autoplay (첫 방문 자동 재생 여부·속도)
                           lib/worldTransform (카메라·흔들림 → transform)
@@ -46,7 +67,7 @@ src/shared/config/        motion (prefers-reduced-motion), typography (글꼴·�
 src/shared/lib/           math (clamp·span·bump·easing·spring·hash), layout (뷰포트 → 레이아웃, memo), textMeasure (DOM 글자 폭),
                           canvasText (캔버스 글자·래스터), typing (타이핑 진행), caches (리사이즈 시 초기화)
                           synth (Web Audio 신스·94 BPM 반주, keyframe.html에서 옮김)
-src/shared/ui/            Word (글자별 span, 기본 축이 아닌 글자만 font-variation-settings), Code (모노 한 줄 + 캐럿), Cursor
+src/shared/ui/            Word (글자별 span, 기본 축이 아닌 글자만 font-variation-settings), Code (모노 한 줄 + 캐럿), Cursor, CellBar (0..1 → 네모 칸 막대)
 scripts/exportSingleFile.ts   npm run export
 ```
 

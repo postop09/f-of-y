@@ -1,0 +1,18 @@
+/* a resume item, printed like terminal output: a rule on the left, dim comments for the steps */
+.ri { position: relative; padding: 2px 0 2px 18px; border-left: 1px solid var(--ln); font-size: calc(var(--mono) * .78); line-height: 1.6; }
+.ri::before { content: ""; position: absolute; left: -2px; top: .55em; width: 3px; height: 1.1em; background: var(--sig); }
+.ri-meta { color: var(--sub); font-size: .86em; }
+.ri-p { color: var(--sig); }
+.ri h3 { margin: 2px 0 10px; font-size: 1.22em; font-weight: 500; color: var(--fg); line-height: 1.35; }
+.ri-step { margin: 0 0 8px; }
+.ri-step h4 { margin: 0; font-size: .86em; font-weight: 400; color: var(--sub); }
+.ri-step ul { margin: 0; padding: 0; list-style: none; }
+.ri-step li { position: relative; padding-left: 1.3em; color: var(--fg); }
+.ri-step li::before { content: "-"; position: absolute; left: .2em; color: var(--sub); }
+.ri-step.result li { color: var(--fg); }
+.ri-step.result li::before { content: "→"; left: 0; color: var(--sig); }
+.ri footer { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; font-size: .86em; }
+.ri-tag { color: var(--sub); }
+.ri-tag::before { content: "#"; opacity: .6; }
+.ri-link { color: var(--sig); text-decoration: none; }
+.ri-link:hover { text-decoration: underline; }

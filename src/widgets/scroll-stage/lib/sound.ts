@@ -120,6 +120,12 @@ export const createSound = () => {
       return muted
     },
 
+    /** 화면을 떠날 때: 소리를 끊고 컨텍스트를 닫는다. 다음 start()는 새로 연다. */
+    close() {
+      void ac?.close().catch(() => {})
+      ac = master = bus = S = null
+    },
+
     /** 탭이 가려지면 멈추고, 돌아오면 이어서 */
     suspend: () => void ac?.suspend().catch(() => {}),
     resume: () => void ac?.resume().catch(() => {}),
