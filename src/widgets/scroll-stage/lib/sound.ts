@@ -70,6 +70,9 @@ export const createSound = () => {
     /** 반주가 시작된 뒤 귀에 들리는 시각 (초). 소리를 못 켰으면 null. */
     clock: () => (ac ? Math.max(0, ac.currentTime - lat() - t0) : null),
 
+    /** 소리를 켰는데 컨텍스트가 돌지 않는다(resume 실패, iOS interrupted 등): clock()이 멈춰 있다. 다음 사용자 입력의 start()가 깨운다. */
+    stalled: () => ac !== null && ac.state !== 'running',
+
     /** 반주를 AHEAD만큼 앞서 예약한다. rAF와 타이머 양쪽에서 불러도 된다. */
     pump() {
       const L = live()

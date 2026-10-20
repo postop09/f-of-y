@@ -54,6 +54,14 @@ describe('readJevResponse', () => {
     expect(r?.aboutResume).toBe(0.93)
     expect(isExploreResult(r)).toBe(true)
   })
+  it('keeps probabilities inside 0..1', () => {
+    const r = readJevResponse(jevAnswer({ ai: 1.2, team: -0.1 }, { 'bigglz-ai': 1.5 }, 1.01))
+    expect(r?.categories.ai).toBe(1)
+    expect(r?.categories.team).toBe(0)
+    expect(r?.items[0]).toEqual({ id: 'bigglz-ai', p: 1 })
+    expect(r?.aboutResume).toBe(1)
+    expect(isExploreResult(r)).toBe(true)
+  })
   it('returns null for a response of another shape', () => {
     expect(readJevResponse({ answers: {} })).toBeNull()
     expect(readJevResponse(null)).toBeNull()
@@ -62,11 +70,21 @@ describe('readJevResponse', () => {
 })
 
 describe('isExploreResult', () => {
-  it('rejects unknown categories and malformed items', () => {
-    const ok = { source: 'jev', category: 'ux', categories: {}, items: [{ id: 'a', p: 0.5 }], aboutResume: 1 }
+  const categories = Object.fromEntries(CATEGORIES.map((c) => [c.id, 0.1]))
+  const ok = { source: 'jev', category: 'ux', categories, items: [{ id: 'a', p: 0.5 }], aboutResume: 1 }
+  it('accepts a complete result', () => {
     expect(isExploreResult(ok)).toBe(true)
+  })
+  it('rejects unknown categories and malformed items', () => {
     expect(isExploreResult({ ...ok, category: 'sales' })).toBe(false)
     expect(isExploreResult({ ...ok, items: [{ id: 1 }] })).toBe(false)
     expect(isExploreResult({ error: 'jev_not_configured' })).toBe(false)
+  })
+  it('rejects missing or out-of-range probabilities (the page draws them as they are)', () => {
+    expect(isExploreResult({ ...ok, categories: {} })).toBe(false)
+    expect(isExploreResult({ ...ok, categories: { ...categories, ai: '0.5' } })).toBe(false)
+    expect(isExploreResult({ ...ok, categories: { ...categories, ai: Number.NaN } })).toBe(false)
+    expect(isExploreResult({ ...ok, items: [{ id: 'a', p: 2 }] })).toBe(false)
+    expect(isExploreResult({ ...ok, aboutResume: -1 })).toBe(false)
   })
 })

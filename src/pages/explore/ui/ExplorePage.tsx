@@ -108,7 +108,8 @@ export const ExplorePage = ({ onBack }: Props) => {
       const r = await ask(q, ctl.signal)
       setTurns((ts) => ts.map((t) => (t.id === id && t.kind === 'ask' ? { ...t, r } : t)))
     } catch {
-      // left the page
+      // cut short (left the page, cleared, or a newer question took over): drop the turn rather than leave it deciding forever
+      setTurns((ts) => ts.filter((t) => t.id !== id))
     } finally {
       if (abortRef.current === ctl) setBusy(false)
     }

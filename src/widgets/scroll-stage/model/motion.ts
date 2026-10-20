@@ -21,6 +21,8 @@ export type Motion = {
   ready: boolean
   /** 사용자가 클릭·Space로 재생을 시작함 (소리를 켤 수 있는 첫 입력) */
   go: boolean
+  /** 자동 재생 중 반주 시계가 멈춰 있던 시간 (초). 길어지면 다시 클릭을 청한다. */
+  stall: number
   /** 효과음을 여기(u)까지 울렸거나 예약했다 */
   sfxU: number
   hits: Hit[]
@@ -44,6 +46,7 @@ export const createMotion = (autoplay = false): Motion => ({
   auto: autoplay ? 0 : null,
   ready: false,
   go: false,
+  stall: 0,
   sfxU: 0,
   hits: [],
   ptr: { x: -1e4, y: -1e4, in: false },
@@ -59,6 +62,8 @@ export type FrameState = {
   unitPx: number
   auto: boolean
   wait: boolean
+  /** 자동 재생 중인데 소리(시계)가 멈춰 있음: 클릭이나 Space로 이어 간다 */
+  paused: boolean
   /** live 필드가 돌고 있으면 그 HUD 줄과 클릭의 흔들림·번쩍임 */
   live: { cap: string; shake: number; flash: number } | null
 }
