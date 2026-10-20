@@ -3,6 +3,7 @@
 export const COMMANDS = [
   { name: 'help', desc: '명령어 목록' },
   { name: 'categories', desc: '카테고리 목록 (눌러서 그 카테고리 항목 보기)' },
+  { name: 'all', desc: '모든 카테고리의 항목 전체 보기' },
   { name: 'clear', desc: '상태 초기화' },
   { name: 'cd ..', desc: '이전으로 돌아가기' },
 ] as const

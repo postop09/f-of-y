@@ -1,7 +1,7 @@
 // explore: 영상 끝 live 입력칸에 explore 를 치고 버튼을 누르면 오는 이력서 탐색 화면.
 // 채팅처럼 입력 줄(`$ ▮`)은 화면 맨 아래에 붙어 있고, 질문과 결과는 그 위에 차례로 쌓인다(새 것이 아래).
 // 질문은 Jev(/api/explore)가 카테고리와 경력 항목을 골라 확률과 함께 돌려주고, 화면은 그 항목을 이력서 데이터로 그린다.
-// help · categories · clear · cd .. 는 질문 대신 명령으로 처리한다. categories 목록에서 고른 카테고리는 Jev 없이 바로 그 항목을 쌓는다.
+// help · categories · all · clear · cd .. 는 질문 대신 명령으로 처리한다. categories 목록에서 고른 카테고리는 Jev 없이 바로 그 항목을, all 은 모든 항목을 쌓는다.
 import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ExploreResult } from '@/entities/resume/lib/jev'
 import { CATEGORIES, CATEGORY, ITEM, ITEMS } from '@/entities/resume/model/resume'
@@ -22,12 +22,13 @@ const MIN_P = 0.15
 /** 이보다 낮으면 이력서와 무관한 질문으로 본다 */
 const MIN_ABOUT = 0.4
 
-/** 쌓이는 한 차례: 질문(답을 기다리는 중이면 r = null), 카테고리 보기, 명령어 */
+/** 쌓이는 한 차례: 질문(답을 기다리는 중이면 r = null), 카테고리 보기, 명령어(all 은 모든 카테고리 보기) */
 type TurnKind =
   | { kind: 'ask'; q: string; r: ExploreResult | null }
   | { kind: 'cat'; cat: CategoryId }
   | { kind: 'help' }
   | { kind: 'categories' }
+  | { kind: 'all' }
 
 /** 차례 맨 위에 다시 찍는 명령 줄 */
 const commandLine = (t: TurnKind) =>
@@ -185,7 +186,14 @@ const TurnBody = ({ turn, onCategory }: { turn: Turn; onCategory: (cat: Category
   if (turn.kind === 'help') return <HelpList />
   if (turn.kind === 'categories') return <CategoryList onCategory={onCategory} />
   if (turn.kind === 'ask' && !turn.r) return <p className="dim ex-wait"># jev is deciding…</p>
-  const cards = turn.kind === 'ask' && turn.r ? picked(turn.r) : turn.kind === 'cat' ? ITEMS.filter((it) => it.categories.includes(turn.cat)).map((item) => ({ item, p: undefined })) : []
+  const cards =
+    turn.kind === 'ask' && turn.r
+      ? picked(turn.r)
+      : turn.kind === 'cat'
+        ? ITEMS.filter((it) => it.categories.includes(turn.cat)).map((item) => ({ item, p: undefined }))
+        : turn.kind === 'all'
+          ? ITEMS.map((item) => ({ item, p: undefined }))
+          : []
   return (
     <>
       {turn.kind === 'ask' && turn.r && <Decision r={turn.r} empty={!cards.length} />}
@@ -210,7 +218,7 @@ const HelpList = () => (
         </div>
       ))}
     </dl>
-    <p className="dim"># 그 밖의 입력은 이력서에 대한 질문으로 보고, Jev가 맞는 경력 항목을 골라 줘요.</p>
+    <p className="dim"># 이력서에 대해 자유롭게 질문해보세요.</p>
   </div>
 )
 
@@ -252,7 +260,6 @@ const Decision = ({ r, empty }: { r: ExploreResult; empty: boolean }) => {
           ))}
         </ul>
       )}
-      <p className="dim ex-src">{r.source === 'jev' ? `# via ${r.model ?? 'jev'}` : '# offline match — Jev에 닿지 않아 키워드로 골랐어요'}</p>
     </div>
   )
 }
