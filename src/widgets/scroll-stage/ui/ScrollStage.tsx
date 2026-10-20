@@ -4,35 +4,77 @@
 // scroll offset becomes u (scroll units), u picks a scene, and that scene's
 // pure view(f) is rendered. Scrolling plays, stopping freezes, scrolling up
 // rewinds, and a reload lands on exactly the same frame.
+//
+// The first visit plays once like a video: a click (or Space) starts it with
+// sound, scrolling is locked, u runs on the music clock from 0 to the end, then
+// the scroll position is parked on that last frame and handed back to the reader.
+// The 94 BPM loop keeps going after that; scene sound effects fire as the scroll
+// passes them, and a click drops a hit on the next sixteenth note.
+//
+// At the very end the film hands over: the YOURS cells become a live field that
+// runs on time, not scroll. The cursor pushes them, a click bursts them, they
+// breathe on the beat, and the input line turns them into any word. Typing
+// "explore" there brings up the way out to the next screen.
 import { type CSSProperties, type PointerEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { SCENES, TOTAL, sceneAt } from '@/entities/scene/model/scenes'
+import { cuesBetween } from '@/entities/scene/lib/cues'
+import { CUES, SCENES, TOTAL, sceneAt } from '@/entities/scene/model/scenes'
 import type { Frame } from '@/entities/scene/model/types'
 import { REDUCE } from '@/shared/config/motion'
+import { COL } from '@/shared/config/typography'
 import { resetCaches } from '@/shared/lib/caches'
 import { type Layout, makeLayout } from '@/shared/lib/layout'
 import { clamp } from '@/shared/lib/math'
-import { lensPass } from '../lib/lensPass'
+import { SPB } from '@/shared/lib/synth'
+import { drawHits, pruneHits } from '../lib/hits'
+import { LIVE_START, type LiveField, createLiveField } from '../lib/liveField'
+import { type Sound, createSound } from '../lib/sound'
 import { flashOpacity, worldTransform } from '../lib/worldTransform'
+import { AUTOPLAY_SPEED, markAutoplayed, shouldAutoplay } from '../model/autoplay'
 import { type FrameState, type Motion, createMotion } from '../model/motion'
 import { UNIT } from '../model/unit'
 import { Help } from './Help'
 import { Hud } from './Hud'
+import { LiveInput } from './LiveInput'
 import { ScriptOutline } from './ScriptOutline'
 import { Transport } from './Transport'
 import './scrollStage.css'
 
 const jump = (top: number) => window.scrollTo({ top, behavior: REDUCE ? 'auto' : 'smooth' })
+/** the transport asks for a replay with this event; the stage's input effect does the work (no refs read in render) */
+const REPLAY = 'f-of-y:replay'
+const requestReplay = () => window.dispatchEvent(new Event(REPLAY))
+/** keys that would scroll the page; swallowed while the film plays itself */
+const SCROLL_KEYS = new Set([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'])
+/** the scroll counts as "at the end" from here (it can stop a fraction of a pixel short) */
+const END = TOTAL - 0.02
 
-export const ScrollStage = () => {
+type Props = {
+  /** open on the last frame (coming back from the next screen) instead of where the scroll is */
+  startAtEnd?: boolean
+  /** the live input's explore button */
+  onExplore: () => void
+}
+
+export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
   const stageRef = useRef<HTMLElement>(null)
   const probeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const layerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
+  const [autoplay] = useState(() => shouldAutoplay(REDUCE))
   const mRef = useRef<Motion | null>(null)
-  if (mRef.current === null) mRef.current = createMotion()
+  if (mRef.current === null) mRef.current = createMotion(autoplay)
+  const soundRef = useRef<Sound | null>(null)
+  if (soundRef.current === null) soundRef.current = createSound()
+  const fieldRef = useRef<LiveField | null>(null)
+  if (fieldRef.current === null) fieldRef.current = createLiveField()
+  /** the current layout for the loop and handlers (the render reads the state) */
+  const layoutRef = useRef<Layout | null>(null)
+  const liveInputRef = useRef<HTMLInputElement>(null)
+  const startAtEndRef = useRef(startAtEnd)
   const [L, setL] = useState<Layout | null>(null)
-  const [fr, setFr] = useState<FrameState>({ u: 0, v: 0, now: 0, blink: true, unitPx: 0 })
+  const [fr, setFr] = useState<FrameState>({ u: 0, v: 0, now: 0, blink: true, unitPx: 0, auto: autoplay, wait: autoplay, live: null })
+  const [muted, setMuted] = useState(false)
+  const [liveWord, setLiveWord] = useState(LIVE_START)
 
   // layout: stage size, scroll unit, fonts
   useLayoutEffect(() => {
@@ -45,11 +87,16 @@ export const ScrollStage = () => {
     const measure = () => {
       const r = stage.getBoundingClientRect()
       const unitPx = probe.getBoundingClientRect().height * UNIT
-      if (!m.unitPx) m.u = window.scrollY / unitPx // start where the browser restored the scroll
+      if (!m.unitPx) {
+        if (startAtEndRef.current && m.auto === null) window.scrollTo(0, TOTAL * unitPx)
+        m.u = m.auto ?? window.scrollY / unitPx // start where the browser restored the scroll
+      }
       else if (Math.abs(unitPx - m.unitPx) > 0.5) window.scrollTo(0, (window.scrollY / m.unitPx) * unitPx)
       m.unitPx = unitPx
       resetCaches()
-      setL(makeLayout(r.width, r.height, ++ver))
+      const lay = makeLayout(r.width, r.height, ++ver)
+      layoutRef.current = lay
+      setL(lay)
       m.dirty = true
     }
     measure()
@@ -60,7 +107,11 @@ export const ScrollStage = () => {
       new Promise((r) => setTimeout(r, 3000)),
     ])
       .catch(() => {})
-      .then(() => alive && measure())
+      .then(() => {
+        if (!alive) return
+        m.ready = true
+        measure()
+      })
     return () => {
       alive = false
       ro.disconnect()
@@ -70,47 +121,142 @@ export const ScrollStage = () => {
   // the loop: follow the scroll with a little damping, re-render only on change
   useEffect(() => {
     const m = mRef.current
-    if (!m) return
+    const sound = soundRef.current
+    const field = fieldRef.current
+    if (!m || !sound || !field) return
     let raf = 0
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop)
+      sound.pump()
       if (!m.unitPx) return
       const dt = clamp((now - (m.last || now)) / 1000, 0.001, 0.25)
       m.last = now
-      const target = clamp(window.scrollY / m.unitPx, 0, TOTAL)
+      // while autoplaying the music is the clock (wall time if there is no sound); it waits for the fonts and the first click
+      if (m.auto !== null && m.ready && m.go) {
+        const c = sound.clock()
+        m.auto = Math.min(TOTAL, c === null ? m.auto + dt * AUTOPLAY_SPEED : c * AUTOPLAY_SPEED)
+      }
+      const target = m.auto ?? clamp(window.scrollY / m.unitPx, 0, TOTAL)
       const prev = m.u
-      m.u = REDUCE || Math.abs(target - m.u) < 1e-3 ? target : m.u + (target - m.u) * (1 - Math.exp(-dt * 11))
+      m.u = m.auto !== null || REDUCE || Math.abs(target - m.u) < 1e-3 ? target : m.u + (target - m.u) * (1 - Math.exp(-dt * 11))
       m.v += ((m.u - prev) / dt - m.v) * (1 - Math.exp(-dt * 12))
       if (Math.abs(m.v) < 0.005) m.v = 0
+      // sound effects: booked ahead on the beat while autoplaying, fired as the scroll passes them otherwise
+      if (m.auto !== null) {
+        if (m.go) {
+          const until = Math.min(TOTAL, m.auto + 0.15 * AUTOPLAY_SPEED)
+          for (const c of cuesBetween(CUES, m.sfxU, until)) sound.fx(c.kind, c.arg, c.u / AUTOPLAY_SPEED)
+          m.sfxU = Math.max(m.sfxU, until)
+        }
+      } else {
+        // forward only, and not on a jump: a scrub across the film should not fire every cue at once
+        const du = m.u - m.sfxU
+        if (du > 0 && du < 2) for (const c of cuesBetween(CUES, m.sfxU, m.u).slice(0, 8)) sound.fx(c.kind, c.arg)
+        m.sfxU = m.u
+      }
+      if (m.hits.length) {
+        pruneHits(m.hits, now / 1000)
+        m.dirty = true
+      }
+      if (m.auto !== null && m.auto >= TOTAL) {
+        // the end: park the scroll on the last frame and hand it over
+        m.auto = null
+        m.dirty = true
+        markAutoplayed()
+        window.scrollTo(0, TOTAL * m.unitPx)
+      }
+      // the live field takes over at the very end and runs on time from there
+      const lay = layoutRef.current
+      const live = m.auto === null && m.u >= END && lay !== null
+      if (live !== m.live) m.dirty = true
+      if (live) {
+        if (!m.live) field.enter(lay)
+        const c = sound.clock()
+        field.step(lay, Math.min(dt, 1 / 30), m.ptr, c === null ? null : c / SPB)
+        m.dirty = true
+      }
+      m.live = live
       const blink = now % 1060 < 560
       if (m.u !== prev || m.v !== m.lastV || blink !== m.blink || m.dirty) {
         m.dirty = false
         m.blink = blink
         m.lastV = m.v
-        setFr({ u: m.u, v: m.v, now: now / 1000, blink, unitPx: m.unitPx })
+        setFr({ u: m.u, v: m.v, now: now / 1000, blink, unitPx: m.unitPx, auto: m.auto !== null, wait: m.auto !== null && !m.go, live: live ? field.status(now / 1000) : null })
       }
     }
     raf = requestAnimationFrame(loop)
-    return () => cancelAnimationFrame(raf)
+    // keep the music booked while rAF is throttled
+    const timer = setInterval(sound.pump, 25)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearInterval(timer)
+      sound.close() // leaving for another screen: cut the music
+    }
   }, [])
 
-  // pointer (lens) and keyboard (scene jumps)
+  // clicks (start, hits, live bursts), the pointer (live field) and keyboard (start, scene jumps, mute)
   useEffect(() => {
     const m = mRef.current
-    if (!m) return
+    const sound = soundRef.current
+    const field = fieldRef.current
+    if (!m || !sound || !field) return
+    // the first click or key is also what lets the browser make sound
+    const begin = () => {
+      sound.start()
+      if (m.auto === null || m.go) return false
+      m.go = true
+      m.dirty = true
+      return true
+    }
+    const onClick = (e: MouseEvent) => {
+      if (e.target instanceof Element && e.target.closest('button, #scrub, input')) return
+      if (begin()) return
+      const lay = layoutRef.current
+      if (m.live && lay) {
+        // live: the cells burst away from the click and spring back
+        field.boom(lay, e.clientX, e.clientY, performance.now() / 1000)
+        sound.fx('boom')
+        m.dirty = true
+        return
+      }
+      const delay = sound.hit()
+      m.hits.push({ x: e.clientX, y: e.clientY, t: performance.now() / 1000 + delay, seed: Math.floor(Math.random() * 1e4) })
+      m.dirty = true
+    }
+    // the root is overflow:hidden while autoplaying; these also cover iOS touch and keyboard paging
+    const onBlock = (e: Event) => {
+      if (m.auto !== null) e.preventDefault()
+    }
     const onMove = (e: globalThis.PointerEvent) => {
       if (e.pointerType === 'touch') return
       m.ptr.x = e.clientX
       m.ptr.y = e.clientY
       m.ptr.in = true
-      m.dirty = true
     }
     const onLeave = () => {
       m.ptr.in = false
-      m.dirty = true
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey || !m.unitPx) return
+      if (e.target instanceof HTMLInputElement) return // typing a word, not driving the film
+      const mod = e.metaKey || e.ctrlKey || e.altKey
+      const onButton = e.target instanceof Element && e.target.closest('button') !== null
+      if (!mod && (e.key === 'm' || e.key === 'M')) {
+        setMuted(sound.toggleMute())
+        return
+      }
+      if (m.auto !== null) {
+        if (!mod && !onButton && (e.key === ' ' || e.key === 'Enter')) begin()
+        if (SCROLL_KEYS.has(e.key)) e.preventDefault()
+        return
+      }
+      if (mod || !m.unitPx) return
+      sound.start()
+      // live: any letter goes to the word
+      if (m.live && e.key.length === 1 && /\S/.test(e.key)) {
+        liveInputRef.current?.focus()
+        liveInputRef.current?.select()
+        return
+      }
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return
       e.preventDefault()
       // a second press while a smooth jump is still travelling counts from where it is going
@@ -122,27 +268,55 @@ export const ScrollStage = () => {
       m.jumpAt = performance.now()
       jump(m.jumpTo)
     }
+    const onVisibility = () => (document.hidden ? sound.suspend() : sound.resume())
+    // the transport's replay: play the whole film again from the top, music and all, with the scroll locked
+    const onReplay = () => {
+      sound.start()
+      sound.restart()
+      m.auto = 0
+      m.go = true
+      m.sfxU = 0
+      m.hits.length = 0
+      m.dirty = true
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener(REPLAY, onReplay)
     window.addEventListener('pointermove', onMove, { passive: true })
     document.documentElement.addEventListener('pointerleave', onLeave)
     window.addEventListener('blur', onLeave)
     window.addEventListener('keydown', onKey)
+    window.addEventListener('click', onClick)
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('wheel', onBlock, { passive: false })
+    window.addEventListener('touchmove', onBlock, { passive: false })
     return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('click', onClick)
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener(REPLAY, onReplay)
       window.removeEventListener('pointermove', onMove)
       document.documentElement.removeEventListener('pointerleave', onLeave)
       window.removeEventListener('blur', onLeave)
-      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('wheel', onBlock)
+      window.removeEventListener('touchmove', onBlock)
     }
   }, [])
+
+  // lock the page scroll for as long as the film plays itself
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle('autoplay', fr.auto)
+  }, [fr.auto])
 
   // ── this frame
   const idx = sceneAt(fr.u)
   const sc = SCENES[idx]
   const lb = Math.min(fr.u - sc.at, sc.len)
-  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx, count: SCENES.length }
+  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx }
   const out = f ? sc.view(f) : null
   const speed = clamp(Math.abs(fr.v) / 1.5)
-  const world = worldTransform(out, speed, fr.now)
-  const flash = flashOpacity(out, speed)
+  // the live field shakes on its own clicks, not on the scroll speed
+  const world = fr.live ? worldTransform(fr.live, 1, fr.now) : worldTransform(out, speed, fr.now)
+  const flash = fr.live ? flashOpacity(fr.live, 1) : flashOpacity(out, speed)
 
   useLayoutEffect(() => {
     const c = canvasRef.current
@@ -158,21 +332,24 @@ export const ScrollStage = () => {
     if (!g) return
     g.setTransform(f.L.dpr, 0, 0, f.L.dpr, 0, 0)
     g.clearRect(0, 0, f.L.W, f.L.H)
-    if (sc.draw) sc.draw(g, f)
-    lensPass(layerRef.current, m.ptr, f.L)
+    if (fr.live) {
+      const c = soundRef.current?.clock()
+      fieldRef.current?.draw(g, f.L, c == null ? null : c / SPB)
+    } else if (sc.draw) sc.draw(g, f)
+    if (m.hits.length) drawHits(g, m.hits, performance.now() / 1000, out?.paper ? COL.void : COL.sig)
   })
 
   // ── transport: the bar is a scrubber for the scroll position
   const scrubTo = (x: number) => {
     const m = mRef.current
     const track = trackRef.current
-    if (!m || !track) return
+    if (!m || !track || m.auto !== null) return
     const r = track.getBoundingClientRect()
     window.scrollTo(0, clamp((x - r.left) / r.width) * TOTAL * m.unitPx)
   }
   const onScrubDown = (e: PointerEvent<HTMLDivElement>) => {
     const m = mRef.current
-    if (!m) return
+    if (!m || m.auto !== null) return
     m.scrubbing = true
     e.currentTarget.setPointerCapture(e.pointerId)
     scrubTo(e.clientX)
@@ -198,21 +375,52 @@ export const ScrollStage = () => {
         <div className="grid" aria-hidden="true" />
         <div className="world" style={{ transform: world }} aria-hidden="true">
           <canvas ref={canvasRef} className="fx" />
-          <div ref={layerRef} className="layer" key={sc.id}>
-            {out?.node}
+          <div className="layer" key={sc.id}>
+            {!fr.live && out?.node}
           </div>
           <div className="flash" style={{ opacity: flash.toFixed(3) }} />
         </div>
 
-        <Hud idx={idx} count={SCENES.length} quarter={quarter} cap={out?.cap ?? 'await fonts.ready'} vpx={vpx} y={Math.round(fr.u * fr.unitPx)} />
-        <Help hidden={fr.u > 0.3} />
+        {fr.live && L && (
+          <LiveInput
+            x={L.M}
+            // high up, out of the way of the centred word (clear of the HUD's top row)
+            y={Math.max(56, Math.round(L.H * 0.12))}
+            mono={L.mono}
+            word={liveWord}
+            inputRef={liveInputRef}
+            onWord={(w) => {
+              const fld = fieldRef.current
+              if (!fld) return
+              fld.setWord(L, w, true)
+              setLiveWord(fld.word)
+            }}
+            onEnter={(w) => {
+              const fld = fieldRef.current
+              if (!fld) return
+              fld.setWord(L, w, true)
+              setLiveWord(fld.word)
+              const b = fld.bbox
+              fld.boom(L, b.x + b.w / 2, b.y + b.h / 2, performance.now() / 1000)
+              soundRef.current?.fx('boom')
+            }}
+            onExplore={onExplore}
+          />
+        )}
+        <Hud idx={idx} count={SCENES.length} quarter={quarter} cap={fr.live?.cap ?? out?.cap ?? 'await fonts.ready'} vpx={vpx} y={Math.round(fr.u * fr.unitPx)} />
+        <Help wait={fr.wait} hidden={fr.auto ? !fr.wait : fr.u > 0.3} />
         <Transport
           scenes={SCENES}
           total={TOTAL}
           idx={idx}
           prog={prog}
           trackRef={trackRef}
+          locked={fr.auto}
+          ended={fr.u >= END}
+          muted={muted}
+          onMute={() => soundRef.current && setMuted(soundRef.current.toggleMute())}
           onHome={() => jump(0)}
+          onReplay={requestReplay}
           onPointerDown={onScrubDown}
           onPointerMove={onScrubMove}
           onPointerUp={onScrubUp}

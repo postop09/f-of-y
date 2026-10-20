@@ -1,0 +1,91 @@
+/* explore: the same dark terminal as the film's stage (#stage), laid out like a chat:
+   the log grows upward from a prompt docked at the bottom */
+.explore {
+  --bg: var(--void); --fg: var(--ink); --sub: var(--dim); --ln: var(--rule);
+  --pad: clamp(12px, 2.2vw, 26px); --mono: 18px;
+  position: relative; min-height: 100vh; min-height: 100dvh;
+  background: var(--bg); color: var(--fg); font-family: var(--mono-fam);
+}
+.explore .dots {
+  position: fixed; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle at center, var(--ln) 1px, transparent 1.6px);
+  background-size: 28px 28px; background-position: center;
+}
+.explore .dim { color: var(--sub); }
+.explore p { margin: 0; }
+
+/* line numbers in the gutter, left of the text column (left is set inline from the layout) */
+.ex-ln {
+  position: absolute; top: .2em; font-size: calc(var(--mono) * .78); line-height: 1.35; font-weight: 500;
+  color: var(--sub); opacity: .5; user-select: none; -webkit-user-select: none;
+}
+.ex-ln.cur { opacity: 1; color: var(--fg); }
+
+/* the log: bottom-anchored, so a short one sits right above the prompt */
+.ex-log {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 44px;
+  max-width: 1080px; padding-top: 72px; padding-bottom: 28px;
+  font-size: calc(var(--mono) * .78); line-height: 1.6;
+}
+.ex-empty { display: grid; gap: 6px; }
+.ex-examples { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
+.ex-examples button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); }
+.ex-examples button:hover { text-decoration: underline; }
+
+.ex-turn { position: relative; scroll-margin-top: 64px; animation: ex-in .3s ease-out both; }
+@keyframes ex-in { from { opacity: 0; transform: translateY(8px); } }
+.ex-cmd { position: relative; font-size: var(--mono); font-weight: 500; line-height: 1.35; white-space: pre-wrap; word-break: break-word; }
+.ex-cmd .ex-ln { top: .14em; }
+.ex-wait { margin-top: 10px !important; color: var(--sig) !important; }
+
+.ex-decision { margin: 12px 0 6px; }
+.ex-cat-probs { list-style: none; margin: 0 0 6px; padding: 0; }
+.ex-cat-probs li { display: flex; align-items: center; gap: 10px; color: var(--sub); white-space: pre; }
+.ex-cat-probs li.top { color: var(--fg); }
+.ex-arrow { color: var(--sig); width: 1ch; }
+.ex-cat-label { min-width: 8em; }
+.ex-cat-probs li:not(.top) .cellbar i.on { background: var(--sub); }
+.ex-num { font-variant-numeric: tabular-nums; }
+.ex-miss { color: var(--fg); }
+.ex-src { font-size: .86em; }
+.ex-cards { display: grid; gap: 30px; margin-top: 18px; }
+
+/* help and categories: a two-column listing, name then description */
+.ex-list { margin-top: 10px; display: grid; gap: 8px; }
+.ex-list dl { margin: 0; display: grid; gap: 2px; }
+.ex-list dl > div { display: flex; gap: 2ch; }
+.ex-list dt { min-width: 12ch; color: var(--fg); }
+.ex-list dd { margin: 0; }
+.ex-list dt button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); text-align: left; }
+.ex-list dt button:hover { text-decoration: underline; }
+
+/* the dock: the prompt row, pinned to the bottom like a chat input */
+.ex-dock {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 2;
+  padding-top: 28px; padding-bottom: max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, transparent, var(--bg) 26px);
+}
+/* the prompt row looks like the film's current line: a faint band with a signal edge.
+   --row-out / --row-end (set inline) stretch it past the text column the way the film's band does */
+.ex-prompt { position: relative; padding: .55em 0; }
+.ex-prompt::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: calc(-1 * var(--row-out, 3em)); right: calc(-1 * var(--row-end, 1em));
+  background: rgba(231, 231, 223, .045); box-shadow: inset 3px 0 0 var(--sig);
+}
+.ex-prompt .ex-ln { top: .75em; }
+.ex-prompt .ask-line { position: relative; }
+
+.explore button:focus-visible, .explore a:focus-visible { outline: 1.5px solid var(--sig); outline-offset: 2px; }
+
+.explore-back {
+  position: fixed; left: calc(var(--pad) + 8px); top: calc(var(--pad) + 4px); z-index: 3;
+  appearance: none; border: 0; background: var(--bg); padding: 8px; cursor: pointer;
+  font: inherit; font-size: calc(var(--mono) * .68); color: var(--sub);
+}
+.explore-back:hover { color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) { .ex-turn { animation: none; } }
+@media (max-width: 640px) {
+  .explore { --mono: 16px; }
+  .ex-cat-label { min-width: 6.5em; }
+}

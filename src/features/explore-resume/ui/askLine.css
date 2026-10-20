@@ -1,0 +1,15 @@
+/* $ ▮ — the input sits on an invisible copy of its own text, which sets the width; the block caret follows it */
+.ask-line { display: flex; align-items: baseline; white-space: pre; font-size: var(--mono); line-height: 1.35; font-weight: 500; color: var(--fg); cursor: text; }
+.ask-line .p { color: var(--sub); }
+.ask-word { display: inline-grid; min-width: 0; max-width: calc(100% - 3ch); overflow: hidden; }
+.ask-word::after { content: attr(data-value); grid-area: 1 / 1; visibility: hidden; white-space: pre; }
+.ask-word input {
+  grid-area: 1 / 1; width: 100%; min-width: 0;
+  font: inherit; color: var(--fg); background: transparent; border: 0; padding: 0; margin: 0; outline: none;
+  caret-color: transparent;
+}
+/* the same block as the film's caret (shared/ui/code.css), blinking on the same 1060ms beat */
+.ask-caret { flex: none; display: inline-block; width: .6em; height: 1.12em; margin-left: .06em; align-self: center; background: var(--sig); animation: ask-blink 1.06s steps(1, end) infinite; }
+.ask-caret.busy { animation: none; }
+@keyframes ask-blink { 0% { opacity: 1; } 52.8% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ask-caret { animation: none; } }

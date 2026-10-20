@@ -1,7 +1,11 @@
-// 큰 Archivo 단어. 글자마다 span 하나씩, 축(wght/wdth)은 style이 아니라 data-w / data-d로 넘긴다.
-// font-variation-settings를 쓰는 곳은 스테이지의 렌즈 패스 하나뿐이라서 (커서 근처 글자를 깎는다).
+// 큰 Archivo 단어. 글자마다 span 하나씩, 축(wght/wdth)은 w / d 또는 ch()로 넘긴다.
+// 기본 축(900 / 125)은 .word가 갖고, 다른 글자만 font-variation-settings를 직접 단다.
 import type { CSSProperties } from 'react'
+import { clamp } from '@/shared/lib/math'
 import './word.css'
+
+const axes = (w: number, d: number): CSSProperties | undefined =>
+  w === 900 && d === 125 ? undefined : { fontVariationSettings: `"wght" ${clamp(w, 100, 900) | 0}, "wdth" ${clamp(d, 62, 125).toFixed(1)}` }
 
 /** ch(i, c)가 돌려주는 글자별 덮어쓰기 */
 export type Glyph = {
@@ -30,7 +34,7 @@ export const Word = ({ text, fs, x, y, w = 900, d = 125, className = '', style, 
       const o = (ch && ch(i, c)) || {}
       const g = o.text ?? c
       return (
-        <span key={i} className={`ch${o.sig ? ' sig' : ''}`} data-w={o.w ?? w} data-d={o.d ?? d} style={o.style}>
+        <span key={i} className={`ch${o.sig ? ' sig' : ''}`} style={{ ...axes(o.w ?? w, o.d ?? d), ...o.style }}>
           {g === ' ' ? '\u00a0' : g}
         </span>
       )

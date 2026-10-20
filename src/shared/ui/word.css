@@ -1,4 +1,4 @@
-/* big words: one span per glyph, axes set per glyph by the lens pass */
+/* big words: one span per glyph; glyphs off the default axes carry their own font-variation-settings */
 .word {
   position: absolute; left: 0; top: 0; white-space: nowrap; line-height: .8; color: var(--fg);
   font-family: var(--fam); font-variation-settings: "wght" 900, "wdth" 125;

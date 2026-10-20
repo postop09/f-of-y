@@ -1,0 +1,163 @@
+// 조윤식 이력서 (private/resume.pdf에서 옮김). 전화번호·주소·생년은 싣지 않는다.
+// 서버 함수(api/explore.ts)도 이 파일을 읽으므로 alias 없는 순수 데이터로 둔다.
+import type { Category, CategoryId, Profile, ResumeItem } from './types'
+
+export const PROFILE: Profile = {
+  name: '조윤식',
+  role: '프론트엔드 개발자',
+  years: '3년 11개월',
+  intro: '서비스의 기획부터 개발, 운영까지 End-To-End로 참여하고, 단편적인 문제 해결을 넘어 원인을 파악해 구조부터 개선합니다.',
+  skills: ['TypeScript', 'React', 'Next.js', 'TanStack Query', 'Zustand', 'React Native', 'Tailwind CSS', 'Styled-Components', 'Chart.js'],
+  links: {
+    email: 'postop09@naver.com',
+    github: 'https://github.com/postop09',
+    portfolio: 'https://portfolio-cys.vercel.app/',
+  },
+}
+
+export const CATEGORIES: readonly Category[] = [
+  { id: 'ux', label: '사용자 경험', hint: 'User experience: user feedback, usability, data-driven service improvement, analytics, customer satisfaction' },
+  { id: 'ui', label: 'UI 개선', hint: 'User interface: UI components, design systems, visual consistency, redesigns, data visualization' },
+  { id: 'ai', label: 'AI 활용', hint: 'Using AI tools (Cursor, Claude) in development: AI coding rules, AI code generation and review, AI prototyping' },
+  { id: 'arch', label: '구조·아키텍처', hint: 'Code structure and architecture: monorepo, FSD, TypeScript adoption, refactoring, maintainability, reusable modules' },
+  { id: 'ops', label: '운영 안정성', hint: 'Service reliability and operations: error monitoring, Sentry, incident response, stability, deployment' },
+  { id: 'team', label: '협업·프로세스', hint: 'Teamwork and process: issue tracking, git conventions, onboarding, documentation, communication tools, leadership' },
+]
+
+export const CATEGORY: Record<CategoryId, Category> = Object.fromEntries(CATEGORIES.map((c) => [c.id, c])) as Record<CategoryId, Category>
+
+export const ITEMS: readonly ResumeItem[] = [
+  {
+    id: 'bigglz-ai',
+    company: '㈜비글즈',
+    period: '2026.03 ~ 재직중',
+    title: 'AI 기반 개발 환경 구축 및 활용 방안 수립',
+    summary: 'Built project rules and guidelines for AI coding tools (Cursor, Claude) so AI-generated code is consistent, and used AI to prototype service demos fast',
+    problem: ['AI 도구 활용 시 결과물 품질과 코드 스타일 편차 발생', '반복적인 수정 및 리뷰 과정으로 생산성 향상 효과 제한'],
+    solution: ['일관된 결과물 생성을 위한 개발 규칙 및 가이드라인 수립'],
+    impl: ['프로젝트별 Cursor/Claude 설계 및 관리', '코드 스타일, 폴더 구조, 아키텍처 원칙 정의', 'AI 기반 코드 생성 및 검증 프로세스 구축'],
+    result: [
+      'AI 생성 코드의 품질 및 일관성 향상',
+      '반복 수정 및 코드 관리 비용 감소',
+      'AI를 활용한 서비스 데모 및 프로토타입 제작으로 사업 아이디어 검증 기간 단축',
+      '신규 서비스 제안 및 프로젝트 발굴 프로세스 효율화',
+    ],
+    categories: ['ai', 'team'],
+    keywords: ['ai', '인공지능', 'cursor', 'claude', '프롬프트', '생성', '프로토타입', '데모', '가이드라인', 'llm'],
+  },
+  {
+    id: 'sm-monorepo',
+    company: '석세스모드',
+    period: '2024.05 ~ 2026.02',
+    title: '송금·환급 웹 서비스 통합 및 구조 설계 주도',
+    summary: 'Merged separate remittance web projects into one Turborepo monorepo with shared components and unified conventions, cutting dev and maintenance load about 30%',
+    problem: [
+      '송금 관련 프로젝트가 기능·서비스별로 분리되어 운영',
+      '프로젝트마다 코드 구조, Git 브랜치 전략, 컨벤션이 상이해 유지보수 비용 증가',
+      '공통 기능의 중복 구현으로 개발 리소스 낭비',
+      '이슈 및 태스크 관리 체계 부재로 요청 누락과 휴먼 에러 반복',
+    ],
+    solution: [
+      '원인을 개발 속도가 아닌 프로젝트 구조와 관리 방식의 문제로 정의',
+      '단일 코드베이스로의 통합이 필요하다고 판단해 Monorepo 도입 제안',
+      '팀원들과 논의를 거쳐 Turborepo 기반 구조를 설계하고 통합 작업 주도',
+    ],
+    impl: ['Turborepo 기반 Monorepo 환경 구성', '공통 컴포넌트 및 비즈니스 로직 분리', '배포 및 개발, 운영 프로세스 통합', '커밋, 컨벤션, 이슈 및 태스크 관리 체계 통합'],
+    result: ['신규 기능 개발 및 유지보수 시 개발 부담 약 30% 감소', '배포 및 운영 프로세스 안정화로 관리 효율 향상', '이슈 관리 체계 정립으로 일정 관리 정확도 및 이슈 처리 흐름 개선'],
+    categories: ['arch', 'team'],
+    keywords: ['monorepo', '모노레포', 'turborepo', '통합', '구조', '아키텍처', '공통', '중복', '유지보수', '송금'],
+    link: 'https://enormous-algebra-1c0.notion.site/Mono-repo-2b82037042838030bb51fa470f1884c6',
+  },
+  {
+    id: 'sm-sentry',
+    company: '석세스모드',
+    period: '2024.05 ~ 2026.02',
+    title: 'Sentry 도입 및 서비스 운영 안정성 향상',
+    summary: 'Introduced Sentry error monitoring with error levels and priorities so failures are caught before users report them',
+    problem: ['사용자 문의 발생 이후에야 장애를 인지하는 구조', '브라우저, 환경별 오류 재현 및 원인 파악의 어려움'],
+    solution: ['사전 장애 인지와 원인 추적이 가능한 환경 필요성 제안', '서버팀과 협업하여 에러 분류 기준과 수집 전략 논의'],
+    impl: ['Sentry 도입 및 에러 모니터링 환경 구축', '에러 레벨 분류 및 우선순위 기준 정의', '핵심 비즈니스 로직 중심의 모니터링 강화'],
+    result: ['브라우저·디바이스별 에러 분석으로 원인 파악 속도 단축 및 대응 정확도 향상', '사용자 문의 이전에 문제를 인지할 수 있는 체계 구축', '에러 빈도 분석을 통한 서비스 품질 개선'],
+    categories: ['ops'],
+    keywords: ['sentry', '센트리', '에러', '오류', '장애', '모니터링', '안정', '운영', '버그', '디버깅'],
+    link: 'https://enormous-algebra-1c0.notion.site/Sentry-2b820370428380b08bf4fcbf3dc070cf',
+  },
+  {
+    id: 'sm-e2e',
+    company: '석세스모드',
+    period: '2024.05 ~ 2026.02',
+    title: '환급, 쿠폰, 예약 등 신규 서비스 End-to-End 개발',
+    summary: 'Shipped refund, coupon and booking services end to end as MVPs with LIFF and Next.js on an FSD architecture, then ran three UI/UX renewals from user feedback',
+    problem: ['경쟁사의 공격적인 리베이트 전략으로 가맹점 이탈 위험 증가', '병원 및 일반 가맹점을 대상으로 한 차별화된 프로모션 수단 필요'],
+    solution: ['핵심 기능에 집중한 MVP 방식 개발 전략 선택', '서비스 성격에 맞춰 LIFF, Next.js 등 기술 스택 선정', '빠른 출시 이후 운영 피드백을 통해 점진적 개선 방향 수립'],
+    impl: ['FSD 아키텍처 기반 프로젝트 설계', '커스텀 환급 서비스 신규 구축', '쿠폰 발행 및 매장 광고 기능 개발', 'MVP 출시 후 총 3차례 UI/UX 리뉴얼 진행'],
+    result: [
+      'FSD 아키텍처 도입으로 프로젝트 가독성 및 유지보수성 향상',
+      'MVP 출시 후 사용자 피드백으로 핵심 기능의 사용성을 개선해 사용자 만족도 향상',
+      '가맹점 수 약 180곳까지 확대, 비즈니스 요구사항을 빠르게 반영해 서비스 경쟁력 강화',
+    ],
+    categories: ['ux', 'ui', 'arch'],
+    keywords: ['mvp', '신규', '출시', 'fsd', 'next', 'liff', '환급', '쿠폰', '예약', '리뉴얼', '피드백', '사용성', 'e2e', '가맹점'],
+  },
+  {
+    id: 'sm-process',
+    company: '석세스모드',
+    period: '2024.05 ~ 2026.02',
+    title: '업무 관리 및 커뮤니케이션 환경 개선 주도',
+    summary: 'Set up branch strategy and commit conventions, GitHub Organization and Projects issue tracking, a team messenger, docs and onboarding',
+    problem: ['브랜치 전략과 커밋 컨벤션이 통일되지 않아 협업 비용 증가', '프로젝트 및 개발 요청 관리 체계 부재', '팀 규모 확장에 비해 커뮤니케이션 수단 부족'],
+    solution: ['협업 효율 저하의 원인을 업무 관리 체계 부재로 판단', '개발 히스토리 관리, 요청 추적, 커뮤니케이션 개선을 목표로 환경 개선 추진'],
+    impl: [
+      '브랜치 전략 수립 및 커밋 메시지 컨벤션 정리',
+      'GitHub Organization으로 프로젝트 이전 및 통합',
+      'GitHub Project 기반 이슈 관리 체계 도입',
+      '잔디(JANDI) 메신저 도입 및 요청 체계 정의',
+      '문서화 및 OJT 진행',
+    ],
+    result: ['개발 히스토리 가시성 향상 및 협업 효율 개선', '프로젝트 일정 관리 및 업무 진행도 추적 향상', '기획-디자인-개발 간 커뮤니케이션 비용 감소 및 업무 흐름 안정화'],
+    categories: ['team'],
+    keywords: ['협업', '커뮤니케이션', '소통', 'github', '깃허브', '이슈', '컨벤션', '브랜치', '커밋', '온보딩', 'ojt', '문서', '잔디', '프로세스', '팀'],
+  },
+  {
+    id: 'tuneit-ds',
+    company: '㈜튠잇',
+    period: '2022.07 ~ 2023.12',
+    title: '디자인 시스템 도입 주도',
+    summary: 'Led a shared UI component library published on npm as the company design system, with a docs site, for consistent UX across projects',
+    problem: ['프로젝트별 중복 컴포넌트 생성으로 개발 리소스 분산', '기획, 디자이너, 백엔드와의 컴포넌트 기준 소통 어려움'],
+    solution: ['컴포넌트 표준화 필요성 제안', '디자인팀과 협업하여 디자인 시스템 도입 추진'],
+    impl: ['UI 컴포넌트 라이브러리 설계 및 개발', 'npm 기반 사내 디자인 시스템 배포', '디자인 시스템 홈페이지 개발'],
+    result: ['기획부터 개발까지 평균 1일 이상 작업 시간 단축', '재사용 가능한 컴포넌트 라이브러리로 신규 기능 개발 속도 향상', '컴포넌트 문서화로 개발팀과 디자인팀 간 소통 비용 감소'],
+    categories: ['ui', 'ux', 'arch'],
+    keywords: ['디자인 시스템', '디자인시스템', 'design system', '컴포넌트', 'component', 'ui', 'npm', '라이브러리', '재사용', '일관성', '디자이너'],
+  },
+  {
+    id: 'tuneit-achaki',
+    company: '㈜튠잇',
+    period: '2022.07 ~ 2023.12',
+    title: '아차키 서비스 환경 개선',
+    summary: 'Designed Firebase Analytics events to improve the service from user behavior data, introduced TypeScript with a hooks refactor, and documented the project',
+    problem: ['사용자 요구사항 증가에 따른 서비스 개선 필요', '협업 및 유지보수를 고려한 개발 환경 부족'],
+    solution: ['데이터 기반 개선과 구조 안정화를 목표로 환경 개선 추진'],
+    impl: ['Firebase Analytics 이벤트 설계 및 연동', 'TypeScript 도입 및 Hooks 기반 리팩터링', '프로젝트 구조와 히스토리 문서화'],
+    result: ['사용자 행동 분석 기반의 서비스 고도화', '코드 안정성 및 가독성 향상', '온보딩 및 유지보수 러닝커브 감소'],
+    categories: ['ux', 'arch', 'team'],
+    keywords: ['firebase', 'analytics', '분석', '데이터', '사용자 행동', 'typescript', '타입스크립트', 'hooks', '리팩터링', '리팩토링', '문서화'],
+  },
+  {
+    id: 'tuneit-fleet',
+    company: '㈜튠잇',
+    period: '2022.07 ~ 2023.12',
+    title: '차량 관제 시스템 개발',
+    summary: 'Built a vehicle monitoring dashboard: real-time driving data charts with Chart.js, live location and routes on Google Maps over SSE, and polling-based remote control',
+    // the PDF lists only what was built for this one
+    problem: [],
+    solution: [],
+    impl: ['Chart.js로 차량의 실시간 주행 데이터 시각화', 'Google Maps와 SSE를 연동해 차량 위치 및 이동 경로 실시간 표시', 'Polling 기반 원격 차량 제어 기능 개발'],
+    result: [],
+    categories: ['ui'],
+    keywords: ['차량', '관제', '실시간', 'chart', '차트', '시각화', 'google maps', '지도', 'sse', 'polling', '대시보드'],
+  },
+]
+
+export const ITEM: Record<string, ResumeItem> = Object.fromEntries(ITEMS.map((it) => [it.id, it]))

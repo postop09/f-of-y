@@ -1,3 +1,6 @@
+/* first visit: the film plays itself and the page does not scroll until it ends */
+:root.autoplay { overflow: hidden; }
+
 /* the scroll track: empty, just tall. Its height is the length of the film. */
 .track { position: relative; height: calc(var(--units) * 100vh + 100vh); height: calc(var(--units) * 100lvh + 100lvh); }
 .vh-probe { position: absolute; top: 0; left: 0; width: 1px; height: 100vh; height: 100lvh; visibility: hidden; pointer-events: none; }
@@ -55,6 +58,8 @@
 }
 .transport button:hover { color: var(--fg); }
 .transport svg { width: 14px; height: 14px; fill: currentColor; }
+.transport.locked .home, .transport.locked #scrub { pointer-events: none; }
+.transport.locked .home { opacity: .4; }
 button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); outline-offset: 2px; }
 #scrub { position: relative; flex: 1; height: 100%; margin: 0 8px; cursor: pointer; touch-action: none; outline: none; }
 #scrub i { position: absolute; display: block; }
@@ -64,7 +69,30 @@ button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); ou
 #scrub .tk { top: 50%; width: 1px; height: 5px; margin-top: -2px; background: var(--sub); opacity: .55; }
 #scrub .tk.big { height: 9px; margin-top: -4px; opacity: .95; }
 #scrub .head { top: 50%; width: 2px; height: 14px; margin: -7px 0 0 -1px; background: var(--sig); }
-.scene-lb { min-width: 11ch; padding-right: 8px; text-align: right; font-size: 10px; letter-spacing: .12em; }
+
+/* live: the input line at the end of the film (outside the aria-hidden world) */
+.live-line { z-index: 3; pointer-events: auto; }
+/* the input sits on top of an invisible copy of its own text: the copy sets the width, in the real font */
+.live-word { display: inline-grid; vertical-align: top; }
+.live-word::after { content: attr(data-value); padding-right: 2px; grid-area: 1 / 1; visibility: hidden; white-space: pre; text-transform: uppercase; } /* 2px: just room for the caret */
+.live-word input {
+  grid-area: 1 / 1; width: 100%; min-width: 1ch;
+  font: inherit; color: var(--fg); background: transparent; border: 0; padding: 0; margin: 0; outline: none;
+  text-transform: uppercase; caret-color: var(--sig);
+}
+.live-word input:focus-visible { box-shadow: 0 2px 0 var(--sig); }
+.live-hint { z-index: 3; font-size: calc(var(--mono) * .68); }
+/* typing "explore" brings up the way to the next screen */
+.live-go {
+  z-index: 3; pointer-events: auto; cursor: pointer; appearance: none; margin: 0;
+  font: inherit; font-size: calc(var(--mono) * .82); font-weight: 500; line-height: 1;
+  color: var(--sig); background: transparent; border: 1px solid var(--sig); padding: .55em .9em;
+  animation: live-go-in .22s ease-out both;
+}
+.live-go .p { color: inherit; opacity: .6; }
+.live-go:hover { color: var(--void); background: var(--sig); }
+@keyframes live-go-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .live-go { animation: none; } }
 
 /* help */
 .help {
