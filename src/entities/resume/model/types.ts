@@ -25,12 +25,3 @@ export type ResumeItem = {
   keywords: readonly string[]
   link?: string
 }
-
-export type Profile = {
-  name: string
-  role: string
-  years: string
-  intro: string
-  skills: readonly string[]
-  links: { email: string; github: string; portfolio: string }
-}

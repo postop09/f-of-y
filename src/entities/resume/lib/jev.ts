@@ -65,7 +65,10 @@ const probs = (v: unknown): Record<string, number> | null => {
 }
 const CATEGORY_IDS = CATEGORIES.map((c) => c.id)
 
-const byP = (a: { p: number }, b: { p: number }) => b.p - a.p
+/** 확률 순으로 많아야 TOP개 (Jev 결과, 키워드 매칭, 화면의 카테고리 막대가 같이 쓴다) */
+export const top = <T extends { p: number }>(xs: T[]) => xs.sort((a, b) => b.p - a.p).slice(0, TOP)
+/** 확률이 가장 높은 카테고리 */
+export const bestCategory = (categories: Record<CategoryId, number>) => top(CATEGORY_IDS.map((id) => ({ id, p: categories[id] })))[0].id
 
 /** Jev 응답 → 탐색 결과. 모양이 다르면 null */
 export const readJevResponse = (json: unknown): ExploreResult | null => {
@@ -76,11 +79,8 @@ export const readJevResponse = (json: unknown): ExploreResult | null => {
   const ip = probs(item.probabilities)
   if (!cp || !ip || typeof about_resume.noul !== 'number' || !Number.isFinite(about_resume.noul)) return null
   const categories = Object.fromEntries(CATEGORY_IDS.map((id) => [id, cp[id] ?? 0])) as Record<CategoryId, number>
-  const best = CATEGORY_IDS.slice().sort((a, b) => categories[b] - categories[a])[0]
-  const items = ITEMS.map((it) => ({ id: it.id, p: ip[it.id] ?? 0 }))
-    .sort(byP)
-    .slice(0, TOP)
-  return { source: 'jev', model: typeof json.model === 'string' ? json.model : undefined, category: best, categories, items, aboutResume: unit(about_resume.noul) }
+  const items = top(ITEMS.map((it) => ({ id: it.id, p: ip[it.id] ?? 0 })))
+  return { source: 'jev', model: typeof json.model === 'string' ? json.model : undefined, category: bestCategory(categories), categories, items, aboutResume: unit(about_resume.noul) }
 }
 
 /** 서버 응답 검사 (화면 쪽): 모든 카테고리의 확률까지 맞아야 통과. 화면은 이 값들을 그대로 그린다. */
