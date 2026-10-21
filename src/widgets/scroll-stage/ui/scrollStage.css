@@ -70,29 +70,33 @@ button:focus-visible, #scrub:focus-visible { outline: 1.5px solid var(--sig); ou
 #scrub .tk.big { height: 9px; margin-top: -4px; opacity: .95; }
 #scrub .head { top: 50%; width: 2px; height: 14px; margin: -7px 0 0 -1px; background: var(--sig); }
 
-/* live: the input line at the end of the film (outside the aria-hidden world) */
-.live-line { z-index: 3; pointer-events: auto; }
-/* the input sits on top of an invisible copy of its own text: the copy sets the width, in the real font */
-.live-word { display: inline-grid; vertical-align: top; }
-.live-word::after { content: attr(data-value); padding-right: 2px; grid-area: 1 / 1; visibility: hidden; white-space: pre; text-transform: uppercase; } /* 2px: just room for the caret */
-.live-word input {
-  grid-area: 1 / 1; width: 100%; min-width: 1ch;
+/* the command lines the visitor types on (the first scene's, and live's at the end), outside the aria-hidden world.
+   The input sits on top of an invisible copy of its own text, which sets the width in the real font;
+   the browser's caret is hidden and the film's block caret follows the text. */
+.boot-line, .live-line { z-index: 3; }
+/* each line's whole highlighted row is its input's label and takes the tap (the first scene draws its own row; live draws one below) */
+.boot-row, .live-row { position: absolute; z-index: 3; pointer-events: auto; cursor: text; }
+.live-word, .boot-word { display: inline-grid; vertical-align: top; min-width: 0; }
+.live-word::after, .boot-word::after { content: attr(data-value); grid-area: 1 / 1; visibility: hidden; white-space: pre; }
+.live-word input, .boot-word input {
+  grid-area: 1 / 1; width: 100%; min-width: 0;
   font: inherit; color: var(--fg); background: transparent; border: 0; padding: 0; margin: 0; outline: none;
-  text-transform: uppercase; caret-color: var(--sig);
+  caret-color: transparent;
 }
-.live-word input:focus-visible { box-shadow: 0 2px 0 var(--sig); }
-.live-hint { z-index: 3; font-size: calc(var(--mono) * .68); }
-/* typing "explore" brings up the way to the next screen */
-.live-go {
-  z-index: 3; pointer-events: auto; cursor: pointer; appearance: none; margin: 0;
-  font: inherit; font-size: calc(var(--mono) * .82); font-weight: 500; line-height: 1;
-  color: var(--sig); background: transparent; border: 1px solid var(--sig); padding: .55em .9em;
-  animation: live-go-in .22s ease-out both;
+.live-word::after, .live-word input { text-transform: uppercase; }
+/* live's line sits on the same highlighted row as the first scene's (entities/scene/ui/scenes.css .rowhl); the whole row takes the tap */
+.live-row { background: rgba(231, 231, 223, .045); }
+.live-row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--sig); }
+.live-hint, .boot-hint { z-index: 3; font-size: calc(var(--mono) * .68); }
+.boot-hint { white-space: normal; line-height: 1.5; }
+/* "explore": the typed letters flash lime, then fly apart and fade (BootInput's SCATTER_MS), and the next screen comes */
+.boot-bit { display: inline-block; animation: boot-scatter .64s cubic-bezier(.2, .7, .3, 1) both; }
+@keyframes boot-scatter {
+  12% { transform: translateY(-.12em) scale(1.12); color: var(--sig); opacity: 1; }
+  to { transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(.35); color: var(--sig); opacity: 0; filter: blur(1.5px); }
 }
-.live-go .p { color: inherit; opacity: .6; }
-.live-go:hover { color: var(--void); background: var(--sig); }
-@keyframes live-go-in { from { opacity: 0; transform: translateY(-4px); } }
-@media (prefers-reduced-motion: reduce) { .live-go { animation: none; } }
+.boot-hint.leaving { animation: boot-fade .4s ease-out both; }
+@keyframes boot-fade { to { opacity: 0; } }
 
 /* help */
 .help {

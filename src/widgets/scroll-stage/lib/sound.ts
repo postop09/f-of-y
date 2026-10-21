@@ -106,12 +106,12 @@ export const createSound = () => {
       return t0 + q + lat() - now
     },
 
-    /** 반주를 첫 칸부터 다시: 예약해 둔 소리는 끊고, clock()도 0부터 다시 센다. */
-    restart() {
+    /** 반주를 처음부터 다시: 예약해 둔 소리는 끊고, clock()도 다시 센다. at(초)을 주면 그 자리부터 (박자는 그대로 맞는다). */
+    restart(at = 0) {
       if (!ac) return
       newBus()
-      t0 = ac.currentTime + 0.06
-      next = 0
+      t0 = ac.currentTime + 0.06 - at
+      next = Math.ceil(at / STEP - 1e-6)
     },
 
     get muted() {
