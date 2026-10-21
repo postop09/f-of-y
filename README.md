@@ -44,6 +44,10 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 방문자가 질문을 치면 `POST /api/explore`(`api/explore.ts`, Vercel 함수)가 Jev에 묻는다. Jev는 글을 쓰지 않고 정해진 형식으로만 답하는 모델이라, 세 가지를 확률로 고르게 한다: 카테고리(choice), 경력 항목(choice, `none` 포함), 이력서에 대한 질문인지(noul). 서버는 id와 확률만 돌려주고, 화면이 `entities/resume/model/resume.ts`의 데이터로 카드를 그린다.
 - 카테고리: 사용자 경험 · UI 개선 · AI 활용 · 구조·아키텍처 · 운영 안정성 · 협업·프로세스. 항목 하나가 여러 카테고리에 들 수 있고, `categories` 목록에서 고르면 Jev 없이 바로 거른다.
 - 이력서 원본 PDF는 `private/`(gitignore)에 둔다. 연락처·주소가 있어 `public/`에 두면 배포에 그대로 공개되기 때문. 화면 데이터에는 연락처를 싣지 않고 경력 항목만 둔다.
+- 이미지: 항목에 `images`를 달면 카드의 제목 아래에 썸네일 줄이 생기고, 누르면 라이트박스(`shared/ui/Lightbox`)로 크게 본다(←/→ 넘기기, 이미지를 누르면 원본 크기, Esc로 닫기). 파일은 `public/work/<항목 id>/`에 두고(webp, 긴 변 2000px 안팎), 경로는 import 하지 않고 문자열로 적는다(서버 함수도 이 데이터를 읽음). `w`·`h`는 원본 크기로, 불러오기 전에 자리를 잡아 둔다. `model/resume.test.ts`가 파일이 실제로 있는지와 alt·크기를 확인한다.
+  ```ts
+  images: [{ src: '/work/sm-monorepo/structure.webp', alt: '모노레포 패키지 구조도', caption: '패키지 구조', w: 1600, h: 1000 }],
+  ```
 - `api/`는 Vercel이 파일마다 따로 컴파일하는 Node ESM이라, 서버가 읽는 `entities/resume/lib/jev.ts`·`model/resume.ts`의 런타임 상대 import에는 `.js`를 붙인다.
 
 ## 구조 (Feature-Sliced Design)
@@ -55,7 +59,7 @@ src/app/                  main.tsx, App.tsx (해시로 화면 고르기), styles
 src/pages/film/           FilmPage — 스테이지가 곧 페이지
 src/pages/explore/        ExplorePage (이력서 탐색: 아래 붙은 입력 줄 + 위로 쌓이는 결과), lib/useViewportLayout
 src/features/explore-resume/  api/ask (/api/explore → 실패하면 키워드 매칭), model/commands (help·categories·all·clear·cd ..), ui/AskLine (`$ ▮` 입력 줄)
-src/entities/resume/      model/resume.ts (카테고리·경력 항목·itemsIn), lib/jev (Jev 요청·응답 ↔ ExploreResult), lib/localMatch (키워드 대체 경로), ui/ResumeItemCard
+src/entities/resume/      model/resume.ts (카테고리·경력 항목·itemsIn), lib/jev (Jev 요청·응답 ↔ ExploreResult), lib/localMatch (키워드 대체 경로), ui/ResumeItemCard (썸네일 + 라이트박스)
 api/explore.ts            Vercel 함수: TYPESAFE_API_KEY로 Jev 호출 (개발 중엔 vite.config.ts 플러그인이 같은 함수를 서빙)
 src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드·자동 재생), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
                           lib/sound (AudioContext·반주 스케줄러·효과음·히트·음소거), lib/hits (클릭 히트 그리기), lib/liveField + ui/LiveInput (끝의 live 필드), model/autoplay (첫 방문 자동 재생 여부·속도)

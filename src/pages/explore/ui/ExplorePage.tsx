@@ -86,7 +86,8 @@ export const ExplorePage = ({ onBack }: Props) => {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !(e.target instanceof HTMLInputElement)) onBack()
+      // defaultPrevented: 라이트박스처럼 먼저 Esc 를 받아 닫은 것이 있으면 영상으로 가지 않는다
+      if (e.key === 'Escape' && !e.defaultPrevented && !(e.target instanceof HTMLInputElement)) onBack()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
