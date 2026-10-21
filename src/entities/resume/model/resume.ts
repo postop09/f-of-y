@@ -117,6 +117,7 @@ export const ITEMS: readonly ResumeItem[] = [
     result: ['기획부터 개발까지 평균 1일 이상 작업 시간 단축', '재사용 가능한 컴포넌트 라이브러리로 신규 기능 개발 속도 향상', '컴포넌트 문서화로 개발팀과 디자인팀 간 소통 비용 감소'],
     categories: ['ui', 'ux', 'arch'],
     keywords: ['디자인 시스템', '디자인시스템', 'design system', '컴포넌트', 'component', 'ui', 'npm', '라이브러리', '재사용', '일관성', '디자이너'],
+    link: 'https://enormous-algebra-1c0.notion.site/d7f2b988121e4495b5be7fe2c55a4551?source=copy_link',
   },
   {
     id: 'tuneit-achaki',
