@@ -2,7 +2,7 @@
 // 서버 함수가 없거나(npm run export의 단일 HTML) 키가 없거나 Jev가 실패했을 때 쓴다.
 import { CATEGORIES, ITEMS } from '../model/resume'
 import type { CategoryId } from '../model/types'
-import type { ExploreResult } from './jev'
+import { type ExploreResult, bestCategory, top } from './jev'
 
 /** 카테고리 이름·별칭이 질문에 그대로 나오면 그 카테고리 쪽으로 기운다 */
 const CATEGORY_WORDS: Record<CategoryId, readonly string[]> = {
@@ -13,8 +13,6 @@ const CATEGORY_WORDS: Record<CategoryId, readonly string[]> = {
   ops: ['운영', '안정', '장애', '에러', '모니터링', 'sentry'],
   team: ['협업', '프로세스', '팀', '소통', '커뮤니케이션', '문서', '온보딩', '리더'],
 }
-
-const TOP = 3
 
 // latin words match whole (so "ai" is not found in "detail"), Hangul anywhere (particles stick to it: "AI를")
 const has = (q: string, w: string) =>
@@ -31,14 +29,9 @@ export const localMatch = (query: string): ExploreResult => {
   const total = (xs: number[]) => xs.reduce((a, b) => a + b, 0)
   const ct = total(Object.values(catScore))
   const categories = Object.fromEntries(CATEGORIES.map((c) => [c.id, ct ? catScore[c.id] / ct : 1 / CATEGORIES.length])) as Record<CategoryId, number>
-  const category = CATEGORIES.map((c) => c.id).sort((a, b) => categories[b] - categories[a])[0]
 
   const it = total(itemScore.map((x) => x.s))
-  const items = itemScore
-    .filter((x) => x.s > 0)
-    .map((x) => ({ id: x.id, p: x.s / it }))
-    .sort((a, b) => b.p - a.p)
-    .slice(0, TOP)
+  const items = top(itemScore.filter((x) => x.s > 0).map((x) => ({ id: x.id, p: x.s / it })))
 
-  return { source: 'local', category, categories, items, aboutResume: ct > 0 ? 0.9 : 0.1 }
+  return { source: 'local', category: bestCategory(categories), categories, items, aboutResume: ct > 0 ? 0.9 : 0.1 }
 }

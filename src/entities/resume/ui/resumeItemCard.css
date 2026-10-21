@@ -9,7 +9,6 @@
 .ri-step ul { margin: 0; padding: 0; list-style: none; }
 .ri-step li { position: relative; padding-left: 1.3em; color: var(--fg); }
 .ri-step li::before { content: "-"; position: absolute; left: .2em; color: var(--sub); }
-.ri-step.result li { color: var(--fg); }
 .ri-step.result li::before { content: "→"; left: 0; color: var(--sig); }
 .ri footer { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; font-size: .86em; }
 .ri-tag { color: var(--sub); }

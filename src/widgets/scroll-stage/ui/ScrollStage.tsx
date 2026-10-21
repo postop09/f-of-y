@@ -60,7 +60,8 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
   const probeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
-  const [autoplay] = useState(() => shouldAutoplay(REDUCE))
+  // coming back from the next screen opens on the last frame, so it never plays itself
+  const [autoplay] = useState(() => !startAtEnd && shouldAutoplay(REDUCE))
   const mRef = useRef<Motion | null>(null)
   if (mRef.current === null) mRef.current = createMotion(autoplay)
   const soundRef = useRef<Sound | null>(null)
@@ -72,7 +73,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
   const liveInputRef = useRef<HTMLInputElement>(null)
   const startAtEndRef = useRef(startAtEnd)
   const [L, setL] = useState<Layout | null>(null)
-  const [fr, setFr] = useState<FrameState>({ u: 0, v: 0, now: 0, blink: true, unitPx: 0, auto: autoplay, wait: autoplay, live: null })
+  const [fr, setFr] = useState<FrameState>({ u: 0, v: 0, now: 0, blink: true, unitPx: 0, auto: autoplay, wait: autoplay, paused: false, live: null })
   const [muted, setMuted] = useState(false)
   const [liveWord, setLiveWord] = useState(LIVE_START)
 
@@ -88,7 +89,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
       const r = stage.getBoundingClientRect()
       const unitPx = probe.getBoundingClientRect().height * UNIT
       if (!m.unitPx) {
-        if (startAtEndRef.current && m.auto === null) window.scrollTo(0, TOTAL * unitPx)
+        if (startAtEndRef.current) window.scrollTo(0, TOTAL * unitPx)
         m.u = m.auto ?? window.scrollY / unitPx // start where the browser restored the scroll
       }
       else if (Math.abs(unitPx - m.unitPx) > 0.5) window.scrollTo(0, (window.scrollY / m.unitPx) * unitPx)
@@ -135,6 +136,10 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
       if (m.auto !== null && m.ready && m.go) {
         const c = sound.clock()
         m.auto = Math.min(TOTAL, c === null ? m.auto + dt * AUTOPLAY_SPEED : c * AUTOPLAY_SPEED)
+        // the music clock stopped (resume refused, iOS interrupted): ask for the click that wakes it, a moment later so a normal resume does not flash it
+        const stall = sound.stalled() ? m.stall + dt : 0
+        if (stall > 0.5 !== m.stall > 0.5) m.dirty = true
+        m.stall = stall
       }
       const target = m.auto ?? clamp(window.scrollY / m.unitPx, 0, TOTAL)
       const prev = m.u
@@ -181,7 +186,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
         m.dirty = false
         m.blink = blink
         m.lastV = m.v
-        setFr({ u: m.u, v: m.v, now: now / 1000, blink, unitPx: m.unitPx, auto: m.auto !== null, wait: m.auto !== null && !m.go, live: live ? field.status(now / 1000) : null })
+        setFr({ u: m.u, v: m.v, now: now / 1000, blink, unitPx: m.unitPx, auto: m.auto !== null, wait: m.auto !== null && !m.go, paused: m.auto !== null && m.stall > 0.5, live: live ? field.status(now / 1000) : null })
       }
     }
     raf = requestAnimationFrame(loop)
@@ -203,6 +208,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
     // the first click or key is also what lets the browser make sound
     const begin = () => {
       sound.start()
+      if (m.auto !== null && m.go && sound.stalled()) return true // the click only wakes the stalled music
       if (m.auto === null || m.go) return false
       m.go = true
       m.dirty = true
@@ -302,9 +308,11 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
     }
   }, [])
 
-  // lock the page scroll for as long as the film plays itself
+  // lock the page scroll for as long as the film plays itself (and never leave it locked for the next screen)
   useLayoutEffect(() => {
-    document.documentElement.classList.toggle('autoplay', fr.auto)
+    const root = document.documentElement
+    root.classList.toggle('autoplay', fr.auto)
+    return () => root.classList.remove('autoplay')
   }, [fr.auto])
 
   // ── this frame
@@ -408,7 +416,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
           />
         )}
         <Hud idx={idx} count={SCENES.length} quarter={quarter} cap={fr.live?.cap ?? out?.cap ?? 'await fonts.ready'} vpx={vpx} y={Math.round(fr.u * fr.unitPx)} />
-        <Help wait={fr.wait} hidden={fr.auto ? !fr.wait : fr.u > 0.3} />
+        <Help wait={fr.wait} paused={fr.paused} hidden={fr.auto ? !fr.wait && !fr.paused : fr.u > 0.3} />
         <Transport
           scenes={SCENES}
           total={TOTAL}

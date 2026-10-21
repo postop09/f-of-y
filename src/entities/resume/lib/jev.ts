@@ -54,15 +54,21 @@ export const buildJevRequest = (query: string) => ({
 
 type Rec = Record<string, unknown>
 const isRec = (v: unknown): v is Rec => typeof v === 'object' && v !== null && !Array.isArray(v)
+/** 확률로 쓸 수 있는 값: 0..1의 유한수 */
+const isP = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1
+const unit = (p: number) => Math.min(1, Math.max(0, p))
 const probs = (v: unknown): Record<string, number> | null => {
   if (!isRec(v)) return null
   const out: Record<string, number> = {}
-  for (const [k, p] of Object.entries(v)) if (typeof p === 'number' && Number.isFinite(p)) out[k] = p
+  for (const [k, p] of Object.entries(v)) if (typeof p === 'number' && Number.isFinite(p)) out[k] = unit(p)
   return out
 }
 const CATEGORY_IDS = CATEGORIES.map((c) => c.id)
 
-const byP = (a: { p: number }, b: { p: number }) => b.p - a.p
+/** 확률 순으로 많아야 TOP개 (Jev 결과, 키워드 매칭, 화면의 카테고리 막대가 같이 쓴다) */
+export const top = <T extends { p: number }>(xs: T[]) => xs.sort((a, b) => b.p - a.p).slice(0, TOP)
+/** 확률이 가장 높은 카테고리 */
+export const bestCategory = (categories: Record<CategoryId, number>) => top(CATEGORY_IDS.map((id) => ({ id, p: categories[id] })))[0].id
 
 /** Jev 응답 → 탐색 결과. 모양이 다르면 null */
 export const readJevResponse = (json: unknown): ExploreResult | null => {
@@ -71,22 +77,20 @@ export const readJevResponse = (json: unknown): ExploreResult | null => {
   if (!isRec(category) || !isRec(item) || !isRec(about_resume)) return null
   const cp = probs(category.probabilities)
   const ip = probs(item.probabilities)
-  if (!cp || !ip || typeof about_resume.noul !== 'number') return null
+  if (!cp || !ip || typeof about_resume.noul !== 'number' || !Number.isFinite(about_resume.noul)) return null
   const categories = Object.fromEntries(CATEGORY_IDS.map((id) => [id, cp[id] ?? 0])) as Record<CategoryId, number>
-  const best = CATEGORY_IDS.slice().sort((a, b) => categories[b] - categories[a])[0]
-  const items = ITEMS.map((it) => ({ id: it.id, p: ip[it.id] ?? 0 }))
-    .sort(byP)
-    .slice(0, TOP)
-  return { source: 'jev', model: typeof json.model === 'string' ? json.model : undefined, category: best, categories, items, aboutResume: about_resume.noul }
+  const items = top(ITEMS.map((it) => ({ id: it.id, p: ip[it.id] ?? 0 })))
+  return { source: 'jev', model: typeof json.model === 'string' ? json.model : undefined, category: bestCategory(categories), categories, items, aboutResume: unit(about_resume.noul) }
 }
 
-/** 서버 응답 검사 (화면 쪽): 모양이 맞으면 그대로, 아니면 null */
+/** 서버 응답 검사 (화면 쪽): 모든 카테고리의 확률까지 맞아야 통과. 화면은 이 값들을 그대로 그린다. */
 export const isExploreResult = (v: unknown): v is ExploreResult =>
   isRec(v) &&
   (v.source === 'jev' || v.source === 'local') &&
   typeof v.category === 'string' &&
   (CATEGORY_IDS as string[]).includes(v.category) &&
   isRec(v.categories) &&
+  CATEGORY_IDS.every((id) => isP((v.categories as Rec)[id])) &&
   Array.isArray(v.items) &&
-  v.items.every((it) => isRec(it) && typeof it.id === 'string' && typeof it.p === 'number') &&
-  typeof v.aboutResume === 'number'
+  v.items.every((it) => isRec(it) && typeof it.id === 'string' && isP(it.p)) &&
+  isP(v.aboutResume)

@@ -29,8 +29,9 @@
 }
 .ex-empty { display: grid; gap: 6px; }
 .ex-examples { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
-.ex-examples button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); }
-.ex-examples button:hover { text-decoration: underline; }
+/* link-like buttons: the examples and the category names */
+.ex-examples button, .ex-list dt button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); text-align: left; }
+.ex-examples button:hover, .ex-list dt button:hover { text-decoration: underline; }
 
 .ex-turn { position: relative; scroll-margin-top: 64px; animation: ex-in .3s ease-out both; }
 @keyframes ex-in { from { opacity: 0; transform: translateY(8px); } }
@@ -47,7 +48,6 @@
 .ex-cat-probs li:not(.top) .cellbar i.on { background: var(--sub); }
 .ex-num { font-variant-numeric: tabular-nums; }
 .ex-miss { color: var(--fg); }
-.ex-src { font-size: .86em; }
 .ex-cards { display: grid; gap: 30px; margin-top: 18px; }
 
 /* help and categories: a two-column listing, name then description */
@@ -56,8 +56,6 @@
 .ex-list dl > div { display: flex; gap: 2ch; }
 .ex-list dt { min-width: 12ch; color: var(--fg); }
 .ex-list dd { margin: 0; }
-.ex-list dt button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); text-align: left; }
-.ex-list dt button:hover { text-decoration: underline; }
 
 /* the dock: the prompt row, pinned to the bottom like a chat input */
 .ex-dock {

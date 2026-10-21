@@ -1,19 +1,6 @@
 // 조윤식 이력서 (private/resume.pdf에서 옮김). 전화번호·주소·생년은 싣지 않는다.
 // 서버 함수(api/explore.ts)도 이 파일을 읽으므로 alias 없는 순수 데이터로 둔다.
-import type { Category, CategoryId, Profile, ResumeItem } from './types'
-
-export const PROFILE: Profile = {
-  name: '조윤식',
-  role: '프론트엔드 개발자',
-  years: '3년 11개월',
-  intro: '서비스의 기획부터 개발, 운영까지 End-To-End로 참여하고, 단편적인 문제 해결을 넘어 원인을 파악해 구조부터 개선합니다.',
-  skills: ['TypeScript', 'React', 'Next.js', 'TanStack Query', 'Zustand', 'React Native', 'Tailwind CSS', 'Styled-Components', 'Chart.js'],
-  links: {
-    email: 'postop09@naver.com',
-    github: 'https://github.com/postop09',
-    portfolio: 'https://portfolio-cys.vercel.app/',
-  },
-}
+import type { Category, CategoryId, ResumeItem } from './types'
 
 export const CATEGORIES: readonly Category[] = [
   { id: 'ux', label: '사용자 경험', hint: 'User experience: user feedback, usability, data-driven service improvement, analytics, customer satisfaction' },
@@ -161,3 +148,6 @@ export const ITEMS: readonly ResumeItem[] = [
 ]
 
 export const ITEM: Record<string, ResumeItem> = Object.fromEntries(ITEMS.map((it) => [it.id, it]))
+
+/** 한 카테고리에 드는 항목 (이력서 순서 그대로) */
+export const itemsIn = (cat: CategoryId) => ITEMS.filter((it) => it.categories.includes(cat))

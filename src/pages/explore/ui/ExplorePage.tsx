@@ -3,8 +3,8 @@
 // 질문은 Jev(/api/explore)가 카테고리와 경력 항목을 골라 확률과 함께 돌려주고, 화면은 그 항목을 이력서 데이터로 그린다.
 // help · categories · all · clear · cd .. 는 질문 대신 명령으로 처리한다. categories 목록에서 고른 카테고리는 Jev 없이 바로 그 항목을, all 은 모든 항목을 쌓는다.
 import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { ExploreResult } from '@/entities/resume/lib/jev'
-import { CATEGORIES, CATEGORY, ITEM, ITEMS } from '@/entities/resume/model/resume'
+import { type ExploreResult, top } from '@/entities/resume/lib/jev'
+import { CATEGORIES, CATEGORY, ITEM, ITEMS, itemsIn } from '@/entities/resume/model/resume'
 import type { CategoryId, ResumeItem } from '@/entities/resume/model/types'
 import { ResumeItemCard } from '@/entities/resume/ui/ResumeItemCard'
 import { ask } from '@/features/explore-resume/api/ask'
@@ -39,7 +39,7 @@ type Turn = TurnKind & { id: number }
 const picked = (r: ExploreResult): { item: ResumeItem; p?: number }[] => {
   if (r.aboutResume < MIN_ABOUT) return []
   const hits = r.items.filter((it) => it.p >= MIN_P).map((it) => ({ item: ITEM[it.id], p: it.p }))
-  return hits.length ? hits : ITEMS.filter((it) => it.categories.includes(r.category)).map((item) => ({ item }))
+  return hits.length ? hits : itemsIn(r.category).map((item) => ({ item }))
 }
 
 type Props = {
@@ -108,7 +108,8 @@ export const ExplorePage = ({ onBack }: Props) => {
       const r = await ask(q, ctl.signal)
       setTurns((ts) => ts.map((t) => (t.id === id && t.kind === 'ask' ? { ...t, r } : t)))
     } catch {
-      // left the page
+      // cut short (left the page, cleared, or a newer question took over): drop the turn rather than leave it deciding forever
+      setTurns((ts) => ts.filter((t) => t.id !== id))
     } finally {
       if (abortRef.current === ctl) setBusy(false)
     }
@@ -190,7 +191,7 @@ const TurnBody = ({ turn, onCategory }: { turn: Turn; onCategory: (cat: Category
     turn.kind === 'ask' && turn.r
       ? picked(turn.r)
       : turn.kind === 'cat'
-        ? ITEMS.filter((it) => it.categories.includes(turn.cat)).map((item) => ({ item, p: undefined }))
+        ? itemsIn(turn.cat).map((item) => ({ item, p: undefined }))
         : turn.kind === 'all'
           ? ITEMS.map((item) => ({ item, p: undefined }))
           : []
@@ -232,25 +233,23 @@ const CategoryList = ({ onCategory }: { onCategory: (cat: CategoryId) => void })
               {c.label}
             </button>
           </dt>
-          <dd className="dim">{`${ITEMS.filter((it) => it.categories.includes(c.id)).length}개 항목`}</dd>
+          <dd className="dim">{`${itemsIn(c.id).length}개 항목`}</dd>
         </div>
       ))}
     </dl>
   </div>
 )
 
-/** what Jev decided: the top categories as cell bars, and where the answer came from */
+/** what Jev decided: the top categories as cell bars */
 const Decision = ({ r, empty }: { r: ExploreResult; empty: boolean }) => {
-  const top = CATEGORIES.map((c) => ({ c, p: r.categories[c.id] }))
-    .sort((a, b) => b.p - a.p)
-    .slice(0, 3)
+  const cats = top(CATEGORIES.map((c) => ({ c, p: r.categories[c.id] })))
   return (
     <div className="ex-decision">
       {empty ? (
         <p className="ex-miss"># 이력서와 관련된 질문을 해 주세요. categories 로 카테고리별로 둘러볼 수도 있어요.</p>
       ) : (
         <ul className="ex-cat-probs">
-          {top.map(({ c, p }, i) => (
+          {cats.map(({ c, p }, i) => (
             <li key={c.id} className={i === 0 ? 'top' : ''}>
               <span className="ex-arrow">{i === 0 ? '→' : ' '}</span>
               <span className="ex-cat-label">{c.label}</span>
