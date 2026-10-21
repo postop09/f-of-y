@@ -145,6 +145,10 @@ export const ITEMS: readonly ResumeItem[] = [
     result: [],
     categories: ['ui'],
     keywords: ['차량', '관제', '실시간', 'chart', '차트', '시각화', 'google maps', '지도', 'sse', 'polling', '대시보드'],
+    images: [
+      { src: '/work/tuneit-fleet/test.png', alt: '지도 위에 두 구간을 빨간 선으로 표시한 테스트 이미지', caption: '테스트 이미지', w: 3090, h: 1600 },
+      { src: '/work/tuneit-fleet/test2.png', alt: '출발지에서 도착지까지 교통 상황별 색으로 표시한 경로 지도 테스트 이미지', caption: '테스트 이미지 2', w: 1310, h: 1558 },
+    ],
   },
 ]
 
