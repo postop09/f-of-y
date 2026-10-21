@@ -9,6 +9,18 @@ export type Category = {
   hint: string
 }
 
+/** 카드 썸네일과 라이트박스에 보이는 이미지. 파일은 public/work/<항목 id>/ 에 둔다 */
+export type ResumeImage = {
+  /** public 기준 경로 (예: '/work/sm-monorepo/structure.webp'). 서버 함수도 이 파일을 읽으므로 import 하지 않고 문자열로 둔다 */
+  src: string
+  alt: string
+  /** 썸네일 아래·라이트박스에 'fig.N 캡션'으로 */
+  caption?: string
+  /** 원본 크기: 불러오기 전에 자리를 잡아 두고 썸네일 비율로도 쓴다 */
+  w: number
+  h: number
+}
+
 export type ResumeItem = {
   id: string
   company: string
@@ -24,4 +36,6 @@ export type ResumeItem = {
   /** 로컬 매칭용 단어 (소문자) */
   keywords: readonly string[]
   link?: string
+  /** 제품 화면·구조도. 없으면 카드는 글만 */
+  images?: readonly ResumeImage[]
 }

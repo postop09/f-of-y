@@ -11,10 +11,12 @@
 // The 94 BPM loop keeps going after that; scene sound effects fire as the scroll
 // passes them, and a click drops a hit on the next sixteenth note.
 //
+// Before the first scene starts typing, its command line is a real input: "start" plays the film from the
+// enter beat (the visitor typed the command, so the film does not type it again), "explore" goes straight on.
+//
 // At the very end the film hands over: the YOURS cells become a live field that
 // runs on time, not scroll. The cursor pushes them, a click bursts them, they
-// breathe on the beat, and the input line turns them into any word. Typing
-// "explore" there brings up the way out to the next screen.
+// breathe on the beat, and the input line turns them into any word.
 import { type CSSProperties, type PointerEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { cuesBetween } from '@/entities/scene/lib/cues'
 import { CUES, SCENES, TOTAL, sceneAt } from '@/entities/scene/model/scenes'
@@ -32,6 +34,7 @@ import { flashOpacity, worldTransform } from '../lib/worldTransform'
 import { AUTOPLAY_SPEED, markAutoplayed, shouldAutoplay } from '../model/autoplay'
 import { type FrameState, type Motion, createMotion } from '../model/motion'
 import { UNIT } from '../model/unit'
+import { BootInput } from './BootInput'
 import { Help } from './Help'
 import { Hud } from './Hud'
 import { LiveInput } from './LiveInput'
@@ -40,28 +43,30 @@ import { Transport } from './Transport'
 import './scrollStage.css'
 
 const jump = (top: number) => window.scrollTo({ top, behavior: REDUCE ? 'auto' : 'smooth' })
-/** the transport asks for a replay with this event; the stage's input effect does the work (no refs read in render) */
+/** the transport (and the first scene's input) ask for a replay with this event; the stage's input effect does the work (no refs read in render) */
 const REPLAY = 'f-of-y:replay'
-const requestReplay = () => window.dispatchEvent(new Event(REPLAY))
+/** at: where to start (scroll units) */
+const requestReplay = (at = 0) => window.dispatchEvent(new CustomEvent(REPLAY, { detail: at }))
+/** the first scene's input is up until here (its typing starts at 1.5) */
+const PROMPT_UNTIL = 1
+/** "start" plays from the first scene's enter beat */
+const START_AT = 3
 /** keys that would scroll the page; swallowed while the film plays itself */
 const SCROLL_KEYS = new Set([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'])
 /** the scroll counts as "at the end" from here (it can stop a fraction of a pixel short) */
 const END = TOTAL - 0.02
 
 type Props = {
-  /** open on the last frame (coming back from the next screen) instead of where the scroll is */
-  startAtEnd?: boolean
-  /** the live input's explore button */
+  /** the way to the next screen: "explore" typed on the first scene's line */
   onExplore: () => void
 }
 
-export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
+export const ScrollStage = ({ onExplore }: Props) => {
   const stageRef = useRef<HTMLElement>(null)
   const probeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
-  // coming back from the next screen opens on the last frame, so it never plays itself
-  const [autoplay] = useState(() => !startAtEnd && shouldAutoplay(REDUCE))
+  const [autoplay] = useState(() => shouldAutoplay(REDUCE))
   const mRef = useRef<Motion | null>(null)
   if (mRef.current === null) mRef.current = createMotion(autoplay)
   const soundRef = useRef<Sound | null>(null)
@@ -71,7 +76,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
   /** the current layout for the loop and handlers (the render reads the state) */
   const layoutRef = useRef<Layout | null>(null)
   const liveInputRef = useRef<HTMLInputElement>(null)
-  const startAtEndRef = useRef(startAtEnd)
+  const bootInputRef = useRef<HTMLInputElement>(null)
   const [L, setL] = useState<Layout | null>(null)
   const [fr, setFr] = useState<FrameState>({ u: 0, v: 0, now: 0, blink: true, unitPx: 0, auto: autoplay, wait: autoplay, paused: false, live: null })
   const [muted, setMuted] = useState(false)
@@ -88,10 +93,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
     const measure = () => {
       const r = stage.getBoundingClientRect()
       const unitPx = probe.getBoundingClientRect().height * UNIT
-      if (!m.unitPx) {
-        if (startAtEndRef.current) window.scrollTo(0, TOTAL * unitPx)
-        m.u = m.auto ?? window.scrollY / unitPx // start where the browser restored the scroll
-      }
+      if (!m.unitPx) m.u = m.auto ?? window.scrollY / unitPx // start where the browser restored the scroll
       else if (Math.abs(unitPx - m.unitPx) > 0.5) window.scrollTo(0, (window.scrollY / m.unitPx) * unitPx)
       m.unitPx = unitPx
       resetCaches()
@@ -215,7 +217,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
       return true
     }
     const onClick = (e: MouseEvent) => {
-      if (e.target instanceof Element && e.target.closest('button, #scrub, input')) return
+      if (e.target instanceof Element && e.target.closest('button, #scrub, input, .boot-row, .live-row')) return
       if (begin()) return
       const lay = layoutRef.current
       if (m.live && lay) {
@@ -250,6 +252,11 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
         setMuted(sound.toggleMute())
         return
       }
+      // the first scene's command line is up: any letter goes to it
+      if (bootInputRef.current && !mod && e.key.length === 1 && /\S/.test(e.key)) {
+        bootInputRef.current.focus({ preventScroll: true })
+        return
+      }
       if (m.auto !== null) {
         if (!mod && !onButton && (e.key === ' ' || e.key === 'Enter')) begin()
         if (SCROLL_KEYS.has(e.key)) e.preventDefault()
@@ -275,13 +282,14 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
       jump(m.jumpTo)
     }
     const onVisibility = () => (document.hidden ? sound.suspend() : sound.resume())
-    // the transport's replay: play the whole film again from the top, music and all, with the scroll locked
-    const onReplay = () => {
+    // the transport's replay: play the whole film again from the top (or from detail, in scroll units), music and all, with the scroll locked
+    const onReplay = (e: Event) => {
+      const at = e instanceof CustomEvent && typeof e.detail === 'number' ? e.detail : 0
       sound.start()
-      sound.restart()
-      m.auto = 0
+      sound.restart(at / AUTOPLAY_SPEED)
+      m.auto = at
       m.go = true
-      m.sfxU = 0
+      m.sfxU = Math.max(0, at - 0.01) // a cue right on `at` (the enter) still sounds
       m.hits.length = 0
       m.dirty = true
       window.scrollTo(0, 0)
@@ -319,7 +327,9 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
   const idx = sceneAt(fr.u)
   const sc = SCENES[idx]
   const lb = Math.min(fr.u - sc.at, sc.len)
-  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx }
+  // the first scene's command line takes typing while the film waits at the top (not while it plays itself)
+  const prompt = idx === 0 && fr.u < PROMPT_UNTIL && (!fr.auto || fr.wait) && !fr.live
+  const f: Frame | null = L && { lb, p: lb / sc.len, len: sc.len, at: sc.at, u: fr.u, v: fr.v, blink: fr.blink, L, y: fr.u * fr.unitPx, unitPx: fr.unitPx, prompt }
   const out = f ? sc.view(f) : null
   const speed = clamp(Math.abs(fr.v) / 1.5)
   // the live field shakes on its own clicks, not on the scroll speed
@@ -389,12 +399,26 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
           <div className="flash" style={{ opacity: flash.toFixed(3) }} />
         </div>
 
+        {prompt && L && (
+          <BootInput
+            x={L.M}
+            y={L.TY}
+            mono={L.mono}
+            W={L.W}
+            blink={fr.blink}
+            inputRef={bootInputRef}
+            onStart={() => requestReplay(START_AT)}
+            onExplore={onExplore}
+          />
+        )}
         {fr.live && L && (
           <LiveInput
             x={L.M}
             // high up, out of the way of the centred word (clear of the HUD's top row)
             y={Math.max(56, Math.round(L.H * 0.12))}
             mono={L.mono}
+            W={L.W}
+            blink={fr.blink}
             word={liveWord}
             inputRef={liveInputRef}
             onWord={(w) => {
@@ -412,7 +436,6 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
               fld.boom(L, b.x + b.w / 2, b.y + b.h / 2, performance.now() / 1000)
               soundRef.current?.fx('boom')
             }}
-            onExplore={onExplore}
           />
         )}
         <Hud idx={idx} count={SCENES.length} quarter={quarter} cap={fr.live?.cap ?? out?.cap ?? 'await fonts.ready'} vpx={vpx} y={Math.round(fr.u * fr.unitPx)} />
@@ -428,7 +451,7 @@ export const ScrollStage = ({ startAtEnd = false, onExplore }: Props) => {
           muted={muted}
           onMute={() => soundRef.current && setMuted(soundRef.current.toggleMute())}
           onHome={() => jump(0)}
-          onReplay={requestReplay}
+          onReplay={() => requestReplay()}
           onPointerDown={onScrubDown}
           onPointerMove={onScrubMove}
           onPointerUp={onScrubUp}

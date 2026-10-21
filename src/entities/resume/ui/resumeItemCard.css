@@ -1,9 +1,18 @@
 /* a resume item, printed like terminal output: a rule on the left, dim comments for the steps */
-.ri { position: relative; padding: 2px 0 2px 18px; border-left: 1px solid var(--ln); font-size: calc(var(--mono) * .78); line-height: 1.6; }
+.ri { position: relative; min-width: 0; padding: 2px 0 2px 18px; border-left: 1px solid var(--ln); font-size: calc(var(--mono) * .78); line-height: 1.6; }
 .ri::before { content: ""; position: absolute; left: -2px; top: .55em; width: 3px; height: 1.1em; background: var(--sig); }
 .ri-meta { color: var(--sub); font-size: .86em; }
 .ri-p { color: var(--sig); }
 .ri h3 { margin: 2px 0 10px; font-size: 1.22em; font-weight: 500; color: var(--fg); line-height: 1.35; }
+/* figures: a row of fixed-height thumbnails, each as wide as its own ratio (diagrams are never cropped); a long row scrolls sideways */
+.ri-figs { --fig-h: 7.5em; display: flex; gap: 12px; margin: 0 0 12px; padding-bottom: 4px; overflow-x: auto; scrollbar-width: thin; }
+/* min-content: the caption wraps to the thumbnail's width instead of stretching it */
+.ri-figs figure { flex: none; width: min-content; margin: 0; }
+.ri-figs button { display: block; padding: 0; border: 1px solid var(--ln); background: none; cursor: zoom-in; }
+.ri-figs button:hover, .ri-figs button:focus-visible { border-color: var(--sig); outline: none; }
+.ri-figs img { display: block; width: auto; max-width: min(24em, 70vw); height: var(--fig-h); object-fit: contain; background: var(--ln); }
+.ri-figs figcaption { margin-top: 4px; max-width: 100%; color: var(--sub); font-size: .86em; line-height: 1.4; }
+.ri-fig-n { color: var(--sig); }
 .ri-step { margin: 0 0 8px; }
 .ri-step h4 { margin: 0; font-size: .86em; font-weight: 400; color: var(--sub); }
 .ri-step ul { margin: 0; padding: 0; list-style: none; }
@@ -15,3 +24,4 @@
 .ri-tag::before { content: "#"; opacity: .6; }
 .ri-link { color: var(--sig); text-decoration: none; }
 .ri-link:hover { text-decoration: underline; }
+@media (max-width: 640px) { .ri-figs { --fig-h: 6em; } }

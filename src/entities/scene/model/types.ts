@@ -23,6 +23,8 @@ export type Frame = Clock & {
   y: number
   /** 1 스크롤 단위의 px */
   unitPx: number
+  /** 방문자가 1번 장면의 명령 줄을 직접 치는 중: 그 자리에 진짜 입력칸이 떠 있으니 장면은 그 줄을 그리지 않는다 */
+  prompt?: boolean
 }
 
 /** 카메라: 초점(fx, fy)을 (px, py)로 옮기며 s배 확대 */

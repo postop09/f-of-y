@@ -1,4 +1,5 @@
 // 01 ─ boot: a prompt, a command, enter
+// Before the typing starts the visitor can type the command instead (ScrollStage puts a real input on this line, f.prompt).
 import { pad, range, span } from '@/shared/lib/math'
 import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
@@ -22,7 +23,7 @@ export const boot: SceneSpec = {
     const fl = span(3, 3.45, lb)
     const hx = Math.max(0, x - L.mono * 3)
     return {
-      cap: lb < 1.5 ? 'await user.scroll()' : lb < 3 ? 'type("run start")' : 'enter()',
+      cap: f.prompt ? 'await user.input()' : lb < 1.5 ? 'await user.scroll()' : lb < 3 ? 'type("run start")' : 'enter()',
       node: (
         <>
           {range(-3, 4).map((i) => (
@@ -34,7 +35,7 @@ export const boot: SceneSpec = {
             <div className="rowflash" style={{ opacity: fl > 0 && fl < 1 ? (1 - fl) * 0.45 : 0 }} />
           </div>
           <div className="code dim" style={{ left: x + L.mono * 0.2, top: y - rowH }}>~/f-of-y  (main)</div>
-          <Code x={x} y={y} prompt="$" segs={COMMAND} n={t.n} caret={t.caret} />
+          {!f.prompt && <Code x={x} y={y} prompt="$" segs={COMMAND} n={t.n} caret={t.caret} />}
         </>
       ),
     }

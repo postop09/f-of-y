@@ -2,8 +2,7 @@
 import { ScrollStage } from '@/widgets/scroll-stage/ui/ScrollStage'
 
 type Props = {
-  startAtEnd?: boolean
   onExplore: () => void
 }
 
-export const FilmPage = ({ startAtEnd, onExplore }: Props) => <ScrollStage startAtEnd={startAtEnd} onExplore={onExplore} />
+export const FilmPage = ({ onExplore }: Props) => <ScrollStage onExplore={onExplore} />

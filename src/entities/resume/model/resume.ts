@@ -117,6 +117,7 @@ export const ITEMS: readonly ResumeItem[] = [
     result: ['기획부터 개발까지 평균 1일 이상 작업 시간 단축', '재사용 가능한 컴포넌트 라이브러리로 신규 기능 개발 속도 향상', '컴포넌트 문서화로 개발팀과 디자인팀 간 소통 비용 감소'],
     categories: ['ui', 'ux', 'arch'],
     keywords: ['디자인 시스템', '디자인시스템', 'design system', '컴포넌트', 'component', 'ui', 'npm', '라이브러리', '재사용', '일관성', '디자이너'],
+    link: 'https://enormous-algebra-1c0.notion.site/d7f2b988121e4495b5be7fe2c55a4551?source=copy_link',
   },
   {
     id: 'tuneit-achaki',
@@ -144,6 +145,10 @@ export const ITEMS: readonly ResumeItem[] = [
     result: [],
     categories: ['ui'],
     keywords: ['차량', '관제', '실시간', 'chart', '차트', '시각화', 'google maps', '지도', 'sse', 'polling', '대시보드'],
+    images: [
+      { src: '/work/tuneit-fleet/test.png', alt: '지도 위에 두 구간을 빨간 선으로 표시한 테스트 이미지', caption: '테스트 이미지', w: 3090, h: 1600 },
+      { src: '/work/tuneit-fleet/test2.png', alt: '출발지에서 도착지까지 교통 상황별 색으로 표시한 경로 지도 테스트 이미지', caption: '테스트 이미지 2', w: 1310, h: 1558 },
+    ],
   },
 ]
 
