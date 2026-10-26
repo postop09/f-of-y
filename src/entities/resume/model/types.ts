@@ -35,7 +35,10 @@ export type ResumeItem = {
   categories: readonly CategoryId[]
   /** 로컬 매칭용 단어 (소문자) */
   keywords: readonly string[]
+  /** 설명 문서 (Notion 등) */
   link?: string
+  /** 실제로 돌아가는 서비스 주소 */
+  site?: string
   /** 제품 화면·구조도. 없으면 카드는 글만 */
   images?: readonly ResumeImage[]
 }

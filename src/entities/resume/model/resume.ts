@@ -54,6 +54,10 @@ export const ITEMS: readonly ResumeItem[] = [
     categories: ['arch', 'team'],
     keywords: ['monorepo', '모노레포', 'turborepo', '통합', '구조', '아키텍처', '공통', '중복', '유지보수', '송금'],
     link: 'https://enormous-algebra-1c0.notion.site/Mono-repo-2b82037042838030bb51fa470f1884c6',
+    images: [
+      { src: '/work/successmode/trans1.png', alt: '송금 정보 입력 화면 예시 이미지', caption: '생성된 이미지', w: 1024, h: 1536 },
+      { src: '/work/successmode/trans2.png', alt: '송금 상태 화면 예시 이미지', caption: '생성된 이미지', w: 1024, h: 1536 },
+    ],
   },
   {
     id: 'sm-sentry',
@@ -73,7 +77,7 @@ export const ITEMS: readonly ResumeItem[] = [
     id: 'sm-e2e',
     company: '석세스모드',
     period: '2024.05 ~ 2026.02',
-    title: '환급, 쿠폰, 예약 등 신규 서비스 End-to-End 개발',
+    title: '환급, 쿠폰, 예약 등 신규 서비스 End-to-End, MVP 개발',
     summary: 'Shipped refund, coupon and booking services end to end as MVPs with LIFF and Next.js on an FSD architecture, then ran three UI/UX renewals from user feedback',
     problem: ['경쟁사의 공격적인 리베이트 전략으로 가맹점 이탈 위험 증가', '병원 및 일반 가맹점을 대상으로 한 차별화된 프로모션 수단 필요'],
     solution: ['핵심 기능에 집중한 MVP 방식 개발 전략 선택', '서비스 성격에 맞춰 LIFF, Next.js 등 기술 스택 선정', '빠른 출시 이후 운영 피드백을 통해 점진적 개선 방향 수립'],
@@ -85,6 +89,7 @@ export const ITEMS: readonly ResumeItem[] = [
     ],
     categories: ['ux', 'ui', 'arch'],
     keywords: ['mvp', '신규', '출시', 'fsd', 'next', 'liff', '환급', '쿠폰', '예약', '리뉴얼', '피드백', '사용성', 'e2e', '가맹점'],
+    site: 'https://tourcoupon.ktaxpay.com/ko',
   },
   {
     id: 'sm-process',
@@ -131,6 +136,9 @@ export const ITEMS: readonly ResumeItem[] = [
     result: ['사용자 행동 분석 기반의 서비스 고도화', '코드 안정성 및 가독성 향상', '온보딩 및 유지보수 러닝커브 감소'],
     categories: ['ux', 'arch', 'team'],
     keywords: ['firebase', 'analytics', '분석', '데이터', '사용자 행동', 'typescript', '타입스크립트', 'hooks', '리팩터링', '리팩토링', '문서화'],
+    images: [
+      { src: '/work/tuneit/firebase.png', alt: 'firebase analytics 이벤트 목록 정리 이미지', caption: '생성된 이미지', w: 1536, h: 1024 },
+    ],
   },
   {
     id: 'tuneit-fleet',
@@ -146,8 +154,7 @@ export const ITEMS: readonly ResumeItem[] = [
     categories: ['ui'],
     keywords: ['차량', '관제', '실시간', 'chart', '차트', '시각화', 'google maps', '지도', 'sse', 'polling', '대시보드'],
     images: [
-      { src: '/work/tuneit-fleet/test.png', alt: '지도 위에 두 구간을 빨간 선으로 표시한 테스트 이미지', caption: '테스트 이미지', w: 3090, h: 1600 },
-      { src: '/work/tuneit-fleet/test2.png', alt: '출발지에서 도착지까지 교통 상황별 색으로 표시한 경로 지도 테스트 이미지', caption: '테스트 이미지 2', w: 1310, h: 1558 },
+      { src: '/work/tuneit/gps.png', alt: '지도 위에 이동경로를 선으로 표시한 이미지', caption: '생성된 이미지', w: 3028, h: 1580 },
     ],
   },
 ]

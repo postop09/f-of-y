@@ -62,6 +62,11 @@ export const ResumeItemCard = ({ item, p }: Props) => {
             {CATEGORY[c].label}
           </span>
         ))}
+        {item.site && (
+          <a className="ri-link" href={item.site} target="_blank" rel="noreferrer">
+            사이트 ↗
+          </a>
+        )}
         {item.link && (
           <a className="ri-link" href={item.link} target="_blank" rel="noreferrer">
             문서 ↗
