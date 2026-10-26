@@ -46,7 +46,7 @@ import './scrollStage.css'
 const HANGUL = [...new Set(SCENES.map((s) => s.text).join('').match(/[가-힣]/g))].join('') || '가'
 
 const jump = (top: number) => window.scrollTo({ top, behavior: REDUCE ? 'auto' : 'smooth' })
-/** the transport (and the first scene's input) ask for a replay with this event; the stage's input effect does the work (no refs read in render) */
+/** the first scene's input asks for a replay with this event; the stage's input effect does the work (no refs read in render) */
 const REPLAY = 'f-of-y:replay'
 /** at: where to start (scroll units) */
 const requestReplay = (at = 0) => window.dispatchEvent(new CustomEvent(REPLAY, { detail: at }))
@@ -457,11 +457,9 @@ export const ScrollStage = ({ onExplore }: Props) => {
           prog={prog}
           trackRef={trackRef}
           locked={fr.auto}
-          ended={fr.u >= END}
           muted={muted}
           onMute={() => soundRef.current && setMuted(soundRef.current.toggleMute())}
           onHome={() => jump(0)}
-          onReplay={() => requestReplay()}
           onPointerDown={onScrubDown}
           onPointerMove={onScrubMove}
           onPointerUp={onScrubUp}
