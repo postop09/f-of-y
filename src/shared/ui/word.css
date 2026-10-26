@@ -1,12 +1,12 @@
 /* big words: one span per glyph; glyphs off the default axes carry their own font-variation-settings */
 .word {
   position: absolute; left: 0; top: 0; white-space: nowrap; line-height: .8; color: var(--fg);
-  font-family: var(--fam); font-variation-settings: "wght" 900, "wdth" 125;
+  font-family: var(--fam); font-weight: 900; font-variation-settings: "wght" 900, "wdth" 125;
   font-kerning: none; font-feature-settings: "tnum" 1;
 }
 .measure {
   position: absolute; left: -9999px; top: 0; visibility: hidden; pointer-events: none; white-space: pre;
-  font-family: var(--fam); font-size: 100px; line-height: .8; font-kerning: none; font-feature-settings: "tnum" 1;
+  font-family: var(--fam); font-weight: 900; font-size: 100px; line-height: .8; font-kerning: none; font-feature-settings: "tnum" 1;
 }
 .ch { display: inline-block; transform-origin: 50% 100%; }
 .ch.sig { color: var(--sig); }

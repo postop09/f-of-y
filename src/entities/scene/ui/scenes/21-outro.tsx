@@ -1,4 +1,4 @@
-// 21 ─ outro: NO KEYFRAMES, struck out on paper, then a single line that is wiped away
+// 21 ─ outro: 내 사전에 포기, with 포기 struck out on paper, then a single line that is wiped away
 import { E, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
@@ -8,22 +8,25 @@ import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
-const FINAL = '// 0 keyframes. 1 file. every frame = f(scrollY).'
+const HEAD = '내 사전에'
+const STRUCK = '포기'
+const nStruck = [...STRUCK].length
+const FINAL = '// 포기 0번. 목표 1개. 나의 모든 걸음 = f(y).'
 export const outro: SceneSpec = {
   id: 'outro',
   len: 12,
-  text: 'no keyframes. 0 keyframes, 1 file, every frame is f(scrollY).',
-  // the big caret waits a beat, KEYFRAMES is typed on thirty-seconds from 1, paper on the downbeat at 4,
+  text: '내 사전에 포기는 없다. 포기 0번, 목표 1개, 나의 모든 걸음은 f(y).',
+  // the big caret waits a beat, the word is typed on sixteenths from 1, paper on the downbeat at 4,
   // the struck-out word on the next sixteenth, then the last line on thirty-seconds, wiped off as the bar ends
-  sfx: [...typeCues('KEYFRAMES', 1, 1 / 8), [4, 'boom'], [4.25, 'shing'], ...typeCues(FINAL, 5.5), [11.5, 'whoosh']],
+  sfx: [...typeCues(STRUCK, 1, 1 / 4), [4, 'boom'], [4.25, 'shing'], ...typeCues(FINAL, 5.5), [11.5, 'whoosh']],
   view: (f) => {
     const { L, lb } = f
-    const N = fit('NO', (L.W - 2 * L.M) * 0.42, L.H * 0.26)
+    const N = fit(HEAD, (L.W - 2 * L.M) * 0.62, L.H * 0.2)
     const y = L.H * 0.17
-    const K = fit('KEYFRAMES', (L.W - 2 * L.M) * 0.95, L.H * 0.24, 900, 62)
+    const K = fit(STRUCK, (L.W - 2 * L.M) * 0.95, L.H * 0.24, 900, 62)
     const ky = y + N.fs * 0.95
-    const shown = 'KEYFRAMES'.slice(0, countOn(lb, 1, 9, 1 / 8))
-    const typingK = lb >= 1 && shown.length < 9
+    const shown = [...STRUCK].slice(0, countOn(lb, 1, nStruck, 1 / 4)).join('')
+    const typingK = lb >= 1 && [...shown].length < nStruck
     const paper = lb >= 4 && lb < 5.5
     const strike = E.outCubic(span(4.25, 4.75, lb))
     const fsz = L.mono * 1.15
@@ -38,14 +41,14 @@ export const outro: SceneSpec = {
     const C = lb >= 5.5 && lb < 11.75
     return {
       paper,
-      cap: lb < 1 ? 'export const keyframes = [];' : lb < 4 ? 'type("KEYFRAMES")' : lb < 5.5 ? 'keyframes.length  // 0' : lb < 11.5 ? 'render complete  // exit 0' : 'clear()',
+      cap: lb < 1 ? 'export const giveUps = [];' : lb < 4 ? `type("${STRUCK}")` : lb < 5.5 ? 'giveUps.length  // 0' : lb < 11.5 ? 'render complete  // exit 0' : 'clear()',
       flash: lb >= 4 ? 0.2 * (1 - span(4, 4.2, lb)) : 0,
       shake: lb >= 4 ? 10 * (1 - span(4, 4.2, lb)) : 0,
       node: (
         <>
           {A && (
             <>
-              <Word text="NO" fs={N.fs} x={L.M} y={y} style={{ transform: `scale(${E.outBack(span(0, 0.25, lb)).toFixed(4)})`, transformOrigin: '0% 100%' }} />
+              <Word text={HEAD} fs={N.fs} x={L.M} y={y} style={{ transform: `scale(${E.outBack(span(0, 0.25, lb)).toFixed(4)})`, transformOrigin: '0% 100%' }} />
               {shown && <Word text={shown} fs={K.fs} x={L.M} y={ky} d={62} />}
               {lb >= 0.25 && !paper && <div className="bigcaret" style={{ left: L.M + textW(shown, K.fs, 900, 62) + K.fs * 0.04, top: ky + K.fs * 0.03, width: K.fs * 0.06, height: K.fs * 0.72, visibility: typingK || f.blink ? 'visible' : 'hidden' }} />}
               {strike > 0 && <div className="bar fgbg" style={{ left: L.M - K.fs * 0.05, top: ky + K.fs * 0.34, width: (K.w + K.fs * 0.1) * strike, height: Math.max(4, K.fs * 0.075) }} />}

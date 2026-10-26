@@ -42,6 +42,9 @@ import { ScriptOutline } from './ScriptOutline'
 import { Transport } from './Transport'
 import './scrollStage.css'
 
+/** every syllable the scenes put on screen (each scene's text carries its words) */
+const HANGUL = [...new Set(SCENES.map((s) => s.text).join('').match(/[가-힣]/g))].join('') || '가'
+
 const jump = (top: number) => window.scrollTo({ top, behavior: REDUCE ? 'auto' : 'smooth' })
 /** the transport (and the first scene's input) ask for a replay with this event; the stage's input effect does the work (no refs read in render) */
 const REPLAY = 'f-of-y:replay'
@@ -106,7 +109,13 @@ export const ScrollStage = ({ onExplore }: Props) => {
     const ro = new ResizeObserver(measure)
     ro.observe(stage)
     Promise.race([
-      Promise.all([document.fonts.load('900 100px "Archivo"'), document.fonts.load('500 16px "IBM Plex Mono"')]),
+      Promise.all([
+        document.fonts.load('900 100px "Archivo"'),
+        document.fonts.load('500 16px "IBM Plex Mono"'),
+        // Noto Sans KR comes in unicode-range slices: ask for the ones the script's Hangul sits in
+        document.fonts.load('900 100px "Noto Sans KR"', HANGUL),
+        document.fonts.load('500 16px "Noto Sans KR"', HANGUL),
+      ]),
       new Promise((r) => setTimeout(r, 3000)),
     ])
       .catch(() => {})

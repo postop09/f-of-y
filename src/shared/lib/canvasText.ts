@@ -77,8 +77,8 @@ export const rasterize = (text: string, lay: CanvasWord, cs: number): Cell[] => 
 
 export type OMetrics = { cx: number; cy: number; cw: number; ch: number }
 
-// Outer outline and inner counter of the letter O, as fractions of the font size.
-export const measureO = (): OMetrics => {
+// Outer outline and inner counter of a ring-shaped letter (O, 0), as fractions of the font size.
+export const measureO = (ch = 'O'): OMetrics => {
   const z = 200
   const c = document.createElement('canvas')
   c.width = z * 1.6
@@ -88,7 +88,7 @@ export const measureO = (): OMetrics => {
   x.fillStyle = '#fff'
   x.textBaseline = 'alphabetic'
   const base = z * 1.1
-  x.fillText('O', 0, base)
+  x.fillText(ch, 0, base)
   const d = x.getImageData(0, 0, c.width, c.height).data
   const W = c.width
   const H = c.height

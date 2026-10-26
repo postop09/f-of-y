@@ -6,8 +6,8 @@
   --rule: #20252c;
   --sig: #c6f432;
   --paper: #e7e7df;
-  --fam: "Archivo", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
-  --mono-fam: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fam: "Archivo", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --mono-fam: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Noto Sans KR", monospace;
   color-scheme: dark;
   background: var(--void);
   scrollbar-width: none;

@@ -1,4 +1,4 @@
-// 14 ─ pixel: a scan line turns the word into cells, rows slide, they scatter
+// 14 ─ pixel → 문제를 쪼개고 … 해답: a scan line turns the words into cells, rows slide, they scatter, the answer lands
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
 import { type Layout, memo } from '@/shared/lib/layout'
@@ -10,15 +10,25 @@ import { typeCues } from '../../lib/cues'
 import { wordSlot } from '../../lib/wordSlot'
 import type { SceneSpec } from '../../model/types'
 
+const TOP = '문제를'
+const BOTTOM = '쪼개고'
+const S1: Seg[] = [['하나씩 풀어서', '']]
+/** typed in two bursts: before and after the scatter */
+const S2A = '다시 엮어'
+const S2B = ' 만든'
+const nA = [...S2A].length
+const nB = [...S2B].length
+const ANSWER = '해답'
+
 const pixelWords = (L: Layout) =>
   memo(L, 'every-pixel', () => {
     const w = (L.W - 2 * L.M) * 0.8
     const h = Math.min(L.H * 0.19, (L.H - L.TY) * 0.32)
-    const fs = Math.min(canvasFit('EVERY', w, h), canvasFit('PIXEL', w, h))
+    const fs = Math.min(canvasFit(TOP, w, h), canvasFit(BOTTOM, w, h))
     const y = L.TY - L.mono * 0.5
-    const a = layoutAt('EVERY', L.M, y, fs)
-    const b = layoutAt('PIXEL', L.M, y + fs * 0.92, fs)
-    const cells = [...rasterize('EVERY', a, L.cs), ...rasterize('PIXEL', b, L.cs)].map((c, i) => ({ ...c, i, lime: hash(i, 7) < 0.07 }))
+    const a = layoutAt(TOP, L.M, y, fs)
+    const b = layoutAt(BOTTOM, L.M, y + fs * 1.05, fs)
+    const cells = [...rasterize(TOP, a, L.cs), ...rasterize(BOTTOM, b, L.cs)].map((c, i) => ({ ...c, i, lime: hash(i, 7) < 0.07 }))
     const x0 = Math.min(...cells.map((c) => c.x))
     const x1 = Math.max(...cells.map((c) => c.x)) + L.cs
     return { lines: [a, b], cells, x0, x1, top: a.top }
@@ -26,33 +36,32 @@ const pixelWords = (L: Layout) =>
 export const pixel: SceneSpec = {
   id: 'pixel',
   len: 8,
-  text: 'every pixel on this screen is moving off a word',
-  // scan, two lines on thirty-seconds, rows slide at 3.75, scatter at 5, WORD lands at 6
-  sfx: [[0.5, 'riser'], ...typeCues('on this screen', 2), [3.75, 'whoosh'], ...typeCues('is moving', 3.75, 1 / 8), [5, 'crash'], ...typeCues(' off a', 5, 1 / 8), [6, 'boom']],
+  text: '문제를 쪼개고 하나씩 풀어서 다시 엮어 만든 해답',
+  // scan, two lines on thirty-seconds, rows slide at 3.75, scatter at 5, the answer lands at 6
+  sfx: [[0.5, 'riser'], ...typeCues(S1, 2), [3.75, 'whoosh'], ...typeCues(S2A, 3.75, 1 / 8), [5, 'crash'], ...typeCues(S2B, 5, 1 / 8), [6, 'boom']],
   view: (f) => {
     const { L, lb } = f
-    const s1: Seg[] = [['on this screen', '']]
-    const s2: Seg[] = [['is moving', ''], [' off a', 'sig']]
-    const t1 = typeOn(f, s1, 2)
-    const n2 = countOn(lb, 3.75, 9, 1 / 8) + countOn(lb, 5, 6, 1 / 8)
+    const s2: Seg[] = [[S2A, ''], [S2B, 'sig']]
+    const t1 = typeOn(f, S1, 2)
+    const n2 = countOn(lb, 3.75, nA, 1 / 8) + countOn(lb, 5, nB, 1 / 8)
     const x = Math.max(L.M, L.W * 0.56)
     const gone = 1 - span(5.75, 6, lb)
     const R = lb < 3.75 ? pixelWords(L) : null
-    const word = wordSlot(L)
+    const word = wordSlot(L, ANSWER)
     const on = lb >= 6
     return {
-      cap: lb < 2 ? `pixels = raster(text, ${L.cs})${R ? `  // n=${R.cells.length}` : ''}` : lb < 5 ? 'px.x += row % 2 ? v : −v' : lb < 6 ? 'px.scatter()' : 'word = vector(pixels)',
+      cap: lb < 2 ? `pieces = raster(problem, ${L.cs})${R ? `  // n=${R.cells.length}` : ''}` : lb < 5 ? 'px.x += row % 2 ? v : −v' : lb < 6 ? 'px.scatter()' : 'answer = vector(pieces)',
       flash: on ? 0.25 * (1 - span(6, 6.35, lb)) : 0,
       shake: on ? 16 * (1 - span(6, 6.35, lb)) : 0,
       node: (
         <>
           {lb >= 2 && gone > 0 && (
             <>
-              <Code x={x} y={L.TY - L.mono * 3.6} segs={s1} n={t1.n} caret={lb < 3.75 && t1.caret} style={{ opacity: gone }} />
-              <Code x={x} y={L.TY - L.mono * 2.2} segs={s2} n={n2} caret={lb >= 3.75 && (n2 < 15 ? lb < 4.875 || (lb >= 5 && lb < 5.75) || f.blink : f.blink)} style={{ opacity: gone }} />
+              <Code x={x} y={L.TY - L.mono * 3.6} segs={S1} n={t1.n} caret={lb < 3.75 && t1.caret} style={{ opacity: gone }} />
+              <Code x={x} y={L.TY - L.mono * 2.2} segs={s2} n={n2} caret={lb >= 3.75 && (n2 < nA + nB ? lb < 3.75 + nA / 8 || (lb >= 5 && lb < 5 + nB / 8) || f.blink : f.blink)} style={{ opacity: gone }} />
             </>
           )}
-          {on && <Word text="WORD" fs={word.fs} x={word.x} y={word.y} style={{ transform: `scale(${lerp(1.3, 1, E.outExpo(span(6, 6.4, lb)))})`, transformOrigin: '50% 60%' }} />}
+          {on && <Word text={ANSWER} fs={word.fs} x={word.x} y={word.y} style={{ transform: `scale(${lerp(1.3, 1, E.outExpo(span(6, 6.4, lb)))})`, transformOrigin: '50% 60%' }} />}
         </>
       ),
     }
@@ -78,7 +87,7 @@ export const pixel: SceneSpec = {
       g.textBaseline = 'alphabetic'
       for (const ln of R.lines) {
         canvasFont(g, ln.fs)
-        g.fillText(ln === R.lines[0] ? 'EVERY' : 'PIXEL', ln.left, ln.base)
+        g.fillText(ln === R.lines[0] ? TOP : BOTTOM, ln.left, ln.base)
       }
       g.restore()
     }

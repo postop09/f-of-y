@@ -1,15 +1,19 @@
-// 10 ─ sixty: a counter you drive with the wheel
+// 10 ─ sixty → 60일 연속: a counter you drive with the wheel
 import { lerp, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
+import { monoW } from '@/shared/lib/canvasText'
 import { Word } from '@/shared/ui/Word'
 import type { Cue, SceneSpec } from '../../model/types'
 import './10-sixty.css'
 
+const LABEL = '일 연속'
+const SUB = '하루도 빠짐없이'
+
 export const sixty: SceneSpec = {
   id: 'sixty',
   len: 4,
-  text: 'sixty frames per second',
-  // five frames per sixteenth: 60 lands on beat 4
+  text: '60일 연속, 하루도 빠짐없이',
+  // five days per sixteenth: 60 lands on beat 4
   sfx: [...range(1, 11).map((k): Cue => [k / 4, 'tick', k]), [3, 'blip', 9], [3, 'crash']],
   view: (f) => {
     const { L, lb } = f
@@ -18,17 +22,17 @@ export const sixty: SceneSpec = {
     const N = fit('00', (L.W - 2 * L.M) * 0.42, L.H * 0.4)
     const x = L.M + (L.W - 2 * L.M) * 0.04
     const y = L.H * 0.5 - N.fs * 0.45
-    const SX = fit('SIXTY', (L.W - 2 * L.M) * 0.3, L.H * 0.09)
+    const SX = fit(LABEL, (L.W - 2 * L.M) * 0.3, L.H * 0.09)
     const full = n >= 60
     const bw = N.w / 60
     return {
-      cap: `frame++  // ${n}`,
+      cap: `day++  // ${n}`,
       flash: full ? 0.18 * (1 - span(3, 3.3, lb)) : 0,
       node: (
         <>
           <Word text={pad(n, 2)} fs={N.fs} x={x} y={y} ch={() => ({ sig: full })} style={{ transform: `scale(${(1 + 0.035 * (1 - (raw % 1))).toFixed(4)})`, transformOrigin: '0% 100%' }} />
-          <Word text="SIXTY" fs={SX.fs} x={L.W - L.M - SX.w} y={y + N.fs * 0.02} style={{ opacity: span(0, 0.5, lb) }} />
-          <div className="code dim" style={{ left: L.W - L.M - SX.w, top: y + N.fs * 0.32 }}>fps</div>
+          <Word text={LABEL} fs={SX.fs} x={L.W - L.M - SX.w} y={y + N.fs * 0.02} style={{ opacity: span(0, 0.5, lb) }} />
+          <div className="code dim" style={{ left: L.W - L.M - Math.max(SX.w, monoW(SUB, L.mono)), top: y + N.fs * 0.32 }}>{SUB}</div>
           {range(0, 59).map((i) => (
             <i key={i} className={'meter-b' + (i < n ? ' on' : '')} style={{ left: x + i * bw, top: y + N.fs * 0.86, width: Math.max(1, bw * 0.55), height: L.mono * 0.8 }} />
           ))}

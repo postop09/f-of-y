@@ -1,4 +1,4 @@
-// 04 ─ letters: an editor, then a word that moves only while you scroll
+// 04 ─ letters → 한 팀처럼: an editor, then a word whose letters move as one while you scroll
 import { E, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
@@ -8,12 +8,17 @@ import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 type Row = { segs: Seg[]; at: number } | null
+const R1: Seg[] = [['기획·디자인·개발', 'sig'], ['의 언어로', '']]
+const R2: Seg[] = [['말하면', '']]
+const R3: Seg[] = [['모두가 ', ''], ['함께', 'sig'], [' 움직인다', '']]
+const BIG = '한 팀처럼'
+const last = [...BIG].length - 1
 export const letters: SceneSpec = {
   id: 'letters',
   len: 8,
-  text: 'typed a little logic(); now the letters come alive',
+  text: '기획·디자인·개발의 언어로 말하면 모두가 함께 움직인다 — 한 팀처럼',
   // the wave runs at one cycle per beat once the last line is typed
-  sfx: [...typeCues('typed a little logic();', 0), ...typeCues('now the', 3), [5, 'whoosh'], ...typeCues('letters come alive', 5.75)],
+  sfx: [...typeCues(R1, 0), ...typeCues(R2, 3), [5, 'whoosh'], ...typeCues(R3, 5.75)],
   view: (f) => {
     const { L, lb } = f
     const rowH = L.mono * 1.55
@@ -22,25 +27,25 @@ export const letters: SceneSpec = {
     const rows: Row[] = [
       { segs: [[`// scene 04 · y = ${Math.round(f.y)}px`, 'dim']], at: -Infinity },
       null,
-      { segs: [['typed', 'sig'], [' a little logic();', '']], at: 0 },
-      { segs: [['now the', '']], at: 3 },
-      { segs: [['letters come ', ''], ['alive', 'sig']], at: 5.75 },
+      { segs: R1, at: 0 },
+      { segs: R2, at: 3 },
+      { segs: R3, at: 5.75 },
     ]
     const cur = lb < 3 ? 2 : lb < 5.75 ? 3 : 4
     const hx = Math.max(0, x - L.mono * 3)
     const top = y0 + rowH * 5.6
     const h = Math.max(36, Math.min(L.H * 0.22, L.H - top - L.H * 0.14 - 30))
-    const W0 = fit('LETTERS', L.W - 2 * L.M, h)
+    const W0 = fit(BIG, L.W - 2 * L.M, h)
     const amp = span(6, 7, lb)
     let crest = 0
     let best = -2
     const ph = (i: number) => Math.PI * 2 * (lb - 6) - i * 0.8
-    range(0, 6).forEach((i) => {
+    range(0, last).forEach((i) => {
       const s = Math.sin(ph(i))
       if (s > best) [best, crest] = [s, i]
     })
     return {
-      cap: lb < 3 ? 'typed("a little logic")' : lb < 6 ? 'compile("letters")' : `letters.forEach((l, i) => l.y = sin(2πy − .8i))  // wght ${Math.round(900 - 450 * amp * (0.5 + 0.5 * best))}`,
+      cap: lb < 3 ? 'speak(["기획", "디자인", "개발"])' : lb < 6 ? 'compile("team")' : `letters.forEach((l, i) => l.y = sin(2πy − .8i))  // wght ${Math.round(900 - 450 * amp * (0.5 + 0.5 * best))}`,
       node: (
         <>
           {range(0, 5).map((i) => (
@@ -56,7 +61,7 @@ export const letters: SceneSpec = {
           })}
           {lb >= 5 && (
             <Word
-              text="LETTERS"
+              text={BIG}
               fs={W0.fs}
               x={x}
               y={top}
@@ -66,7 +71,7 @@ export const letters: SceneSpec = {
                 const c = Math.cos(ph(i) + 0.5) * amp
                 const y = (1 - E.outBack(a)) * 0.6 * W0.fs - s * 0.12 * W0.fs
                 return {
-                  sig: amp > 0 ? i === crest : i === 6 && a > 0.5,
+                  sig: amp > 0 ? i === crest : i === last && a > 0.5,
                   w: 900 - 450 * amp * (0.5 + 0.5 * Math.sin(ph(i))),
                   d: 125 - 40 * amp * (0.5 + 0.5 * Math.cos(ph(i))),
                   style: { opacity: a > 0 ? 1 : 0, transform: `translateY(${y.toFixed(1)}px) rotate(${(c * 9).toFixed(2)}deg)` },

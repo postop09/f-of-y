@@ -4,7 +4,7 @@
 .axis-lb { fill: var(--sub); font: 400 calc(var(--mono) * .55) var(--mono-fam); }
 .handle-ln { stroke: var(--sub); stroke-width: 1; }
 .curve { fill: none; stroke: var(--sig); stroke-width: 2.5; }
-.svgword { fill: var(--fg); font-family: var(--fam); font-variation-settings: "wght" 900, "wdth" 125; letter-spacing: -.01em; }
+.svgword { fill: var(--fg); font-family: var(--fam); font-weight: 900; font-variation-settings: "wght" 900, "wdth" 125; letter-spacing: -.01em; }
 .pt { fill: var(--ink); }
 .h-open { fill: var(--void); stroke: var(--ink); stroke-width: 1.5; }
 .h-on { fill: var(--sig); }

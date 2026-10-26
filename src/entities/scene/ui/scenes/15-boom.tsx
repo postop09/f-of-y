@@ -13,7 +13,7 @@ export const boom: SceneSpec = {
   sfx: [[0, 'boom'], [0, 'crash']],
   view: (f) => {
     const { L, lb } = f
-    // BOOM takes the exact place and size of the WORD just before it
+    // BOOM takes the exact place and size of the answer just before it
     const B = wordSlot(L, 'BOOM')
     const q = lb
     return {
