@@ -11,11 +11,11 @@ import type { SceneSpec } from '../../model/types'
 const HEAD = '내 사전에'
 const STRUCK = '포기'
 const nStruck = [...STRUCK].length
-const FINAL = '// 포기 0번. 목표 1개. 나의 모든 걸음 = f(y).'
+const FINAL = '// 지금까지 시청해주셔서 감사합니다.'
 export const outro: SceneSpec = {
   id: 'outro',
   len: 12,
-  text: '내 사전에 포기는 없다. 포기 0번, 목표 1개, 나의 모든 걸음은 f(y).',
+  text: '내 사전에 포기는 없다. 지금까지 시청해주셔서 감사합니다.',
   // the big caret waits a beat, the word is typed on sixteenths from 1, paper on the downbeat at 4,
   // the struck-out word on the next sixteenth, then the last line on thirty-seconds, wiped off as the bar ends
   sfx: [...typeCues(STRUCK, 1, 1 / 4), [4, 'boom'], [4.25, 'shing'], ...typeCues(FINAL, 5.5), [11.5, 'whoosh']],
