@@ -1,4 +1,4 @@
-// 21 ─ outro: 내 사전에 포기, with 포기 struck out on paper, then a single line that is wiped away
+// 19 ─ outro: 내 사전에 포기, with 포기 struck out on paper, then a single line that is wiped away
 import { E, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'

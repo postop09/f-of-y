@@ -1,4 +1,4 @@
-// 11 ─ every one → 매일 한 칸: sixty day cells, filled in order
+// 13 ─ every one → 큰 가능성: sixty day cells, filled in order
 import { E, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
@@ -6,17 +6,17 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { Cue, SceneSpec } from '../../model/types'
-import './11-everyone.css'
+import './13-everyone.css'
 
-const LINE: Seg[] = [['하루하루 ', ''], ['채워 온', 'sig']]
-const BIG = '매일 한 칸'
+const LINE: Seg[] = [['작은 노력이 ', ''], ['만드는', 'sig']]
+const BIG = '큰 가능성'
 /** the first word drops on beat 3, the rest on beat 4 */
 const SECOND = BIG.indexOf(' ') + 1
 
 export const everyone: SceneSpec = {
   id: 'everyone',
   len: 4,
-  text: '하루하루 채워 온, 매일 한 칸',
+  text: '작은 노력이 만드는, 큰 가능성',
   // six days per sixteenth from beat 2; 매일 drops on beat 3, 한 칸 on beat 4
   sfx: [...typeCues(LINE, 0), ...range(1, 10).map((k): Cue => [1 + k / 4, 'tick', k]), [2, 'whoosh'], [3, 'thud']],
   view: (f) => {

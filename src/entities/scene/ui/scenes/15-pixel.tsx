@@ -1,4 +1,4 @@
-// 14 ─ pixel → 문제를 쪼개고 … 해답: a scan line turns the words into cells, rows slide, they scatter, the answer lands
+// 15 ─ pixel → 문제를 쪼개고 … 해결방안: a scan line turns the words into cells, rows slide, they scatter, the answer lands
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
 import { type Layout, memo } from '@/shared/lib/layout'
@@ -14,11 +14,11 @@ const TOP = '문제를'
 const BOTTOM = '쪼개고'
 const S1: Seg[] = [['하나씩 풀어서', '']]
 /** typed in two bursts: before and after the scatter */
-const S2A = '다시 엮어'
-const S2B = ' 만든'
+const S2A = '새롭게'
+const S2B = ' 만드는'
 const nA = [...S2A].length
 const nB = [...S2B].length
-const ANSWER = '해답'
+const ANSWER = '해결방안'
 
 const pixelWords = (L: Layout) =>
   memo(L, 'every-pixel', () => {
@@ -36,7 +36,7 @@ const pixelWords = (L: Layout) =>
 export const pixel: SceneSpec = {
   id: 'pixel',
   len: 8,
-  text: '문제를 쪼개고 하나씩 풀어서 다시 엮어 만든 해답',
+  text: '문제를 쪼개고 하나씩 풀어서 새롭게 만드는 해결방안',
   // scan, two lines on thirty-seconds, rows slide at 3.75, scatter at 5, the answer lands at 6
   sfx: [[0.5, 'riser'], ...typeCues(S1, 2), [3.75, 'whoosh'], ...typeCues(S2A, 3.75, 1 / 8), [5, 'crash'], ...typeCues(S2B, 5, 1 / 8), [6, 'boom']],
   view: (f) => {

@@ -1,10 +1,10 @@
-// 10 ─ sixty → 60일 연속: a counter you drive with the wheel
+// 16 ─ sixty → 60일 연속: a counter you drive with the wheel
 import { lerp, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
 import { Word } from '@/shared/ui/Word'
 import type { Cue, SceneSpec } from '../../model/types'
-import './10-sixty.css'
+import './16-sixty.css'
 
 const LABEL = '일 연속'
 const SUB = '하루도 빠짐없이'

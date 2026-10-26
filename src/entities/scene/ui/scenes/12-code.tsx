@@ -1,4 +1,4 @@
-// 18 ─ code → 꾸준한 속도, 그리고
+// 12 ─ code → 꾸준한 노력, 그리고
 import { E, pad, span } from '@/shared/lib/math'
 import { countOn } from '@/shared/lib/typing'
 import { fit, textW } from '@/shared/lib/textMeasure'
@@ -6,7 +6,7 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
-import './18-code.css'
+import './12-code.css'
 
 const SOURCE = [
   'const unit = innerHeight * 0.18;   // one scroll unit',
@@ -18,8 +18,8 @@ const SOURCE = [
   '}',
   '',
   "word('꾸준한').pop(at.steady);",
-  "word('속도').type(at.steady + .6, 1.5);",
-  "word('제시간').drop(at.lands);",
+  "word('노력').type(at.steady + .6, 1.5);",
+  "word('책임감').drop(at.lands);",
   '',
   'for (let f = 0; f < 60; f++) {',
   '  render(f / 60);',
@@ -29,14 +29,14 @@ const SOURCE = [
   'export default frame;',
 ]
 const TOP = '꾸준한'
-const TYPED = '속도'
+const TYPED = '노력'
 const AND = '그리고'
 const nTyped = [...TYPED].length
 
 export const code: SceneSpec = {
   id: 'code',
   len: 4,
-  text: '꾸준한 속도, 그리고',
+  text: '꾸준한 노력, 그리고',
   // the first word on the downbeat, the second typed from beat 2, and the link from beat 4
   sfx: [[0, 'thud'], ...typeCues(TYPED, 1), ...typeCues(AND, 3)],
   view: (f) => {

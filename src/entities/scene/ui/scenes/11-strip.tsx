@@ -1,4 +1,4 @@
-// 20 ─ 한 걸음, 또 한 걸음: a film strip that steps one frame per notch
+// 11 ─ 한 걸음, 또 한 걸음: a film strip that steps one frame per notch
 import { E, bump, pad, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { monoW } from '@/shared/lib/canvasText'
@@ -7,7 +7,7 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { Cue, SceneSpec } from '../../model/types'
-import './20-strip.css'
+import './11-strip.css'
 
 const FRAMES = ['lime', 'solid', 'outline', 'paper', 'lime', 'solid'] // F01–F04 sit in the middle
 /** each step starts here and lands three sixteenths later, on beats 2, 3 and 4 */

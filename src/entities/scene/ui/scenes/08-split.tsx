@@ -1,15 +1,15 @@
-// 06 ─ split → 칸막이: the wall between teams drops in, a blade crosses it, and the halves drift apart
+// 08 ─ split → 독고다이: the wall between teams drops in, a blade crosses it, and the halves drift apart
 import { E, lerp, span } from '@/shared/lib/math'
 import { Word } from '@/shared/ui/Word'
 import { wordSlot } from '../../lib/wordSlot'
 import type { SceneSpec } from '../../model/types'
 
-const BIG = '칸막이'
+const BIG = '독고다이'
 
 export const split: SceneSpec = {
   id: 'split',
   len: 4,
-  text: '팀 사이의 칸막이, 그리고 갈라진다',
+  text: '팀 사이의 독고다이, 그리고 갈라진다',
   // the word lands on the downbeat, the blade sweeps in on the off-beat and cuts on beat 2,
   // then the halves spring apart and keep drifting a little, staying on screen
   sfx: [[0, 'boom'], [0.5, 'whoosh'], [1, 'shing']],

@@ -1,4 +1,4 @@
-// 15 ─ boom: debris on a closed-form trajectory
+// 18 ─ boom: debris on a closed-form trajectory
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'
 import { Word } from '@/shared/ui/Word'
@@ -8,19 +8,19 @@ import type { SceneSpec } from '../../model/types'
 export const boom: SceneSpec = {
   id: 'boom',
   len: 2,
-  text: 'boom',
+  text: '문제해결',
   // straight on the downbeat
   sfx: [[0, 'boom'], [0, 'crash']],
   view: (f) => {
     const { L, lb } = f
-    // BOOM takes the exact place and size of the answer just before it
-    const B = wordSlot(L, 'BOOM')
+    // 문제해결 takes the exact place and size of the answer just before it
+    const B = wordSlot(L, '문제해결')
     const q = lb
     return {
       cap: `impact({ amp: ${Math.max(0, 8 - q * 6).toFixed(1)} })`,
       flash: q > 0 ? 0.35 * Math.exp(-q * 8) : 0,
       shake: q > 0 ? 34 * Math.exp(-q * 4) : 0,
-      node: <Word text="BOOM" fs={B.fs} x={B.x} y={B.y} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(0, 0.3, q))).toFixed(4)})`, transformOrigin: '50% 60%' }} />,
+      node: <Word text="문제해결" fs={B.fs} x={B.x} y={B.y} style={{ transform: `scale(${lerp(1.5, 1, E.outExpo(span(0, 0.3, q))).toFixed(4)})`, transformOrigin: '50% 60%' }} />,
     }
   },
   draw: (g, f) => {

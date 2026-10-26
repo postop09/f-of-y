@@ -1,4 +1,4 @@
-// 12 ─ render → 전진: press, and push until the goal
+// 02 ─ render → 전진: press, and push until the goal
 import { bump, pad, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
@@ -6,15 +6,15 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
-import './12-render.css'
+import './02-render.css'
 
-const LINE: Seg[] = [['목표로', '']]
-const BIG = '전진'
+const LINE: Seg[] = [['자기소개', '']]
+const BIG = '시작'
 
 export const render: SceneSpec = {
   id: 'render',
   len: 4,
-  text: '목표로 전진, 목표 달성률 100%',
+  text: '자기소개 시작, 진행률 100%',
   // the press lands on beat 2, the bar runs two beats and fills on beat 4
   sfx: [...typeCues(LINE, 0), [1, 'hit'], [1, 'riser'], [3, 'blip', 9]],
   view: (f) => {
@@ -40,7 +40,7 @@ export const render: SceneSpec = {
             <i style={{ transform: `scaleX(${k.toFixed(4)})` }} />
           </div>
           <div className={'code small' + (k >= 1 ? ' sig' : ' dim')} style={{ left: bx, top: by + bh + L.mono * 1.9 }}>
-            {k >= 1 ? '목표 달성률 100% · 완료' : `목표 달성률 ${pad(pct, 3)}%`}
+            {k >= 1 ? '진행률 100% · 완료' : `진행률 ${pad(pct, 3)}%`}
           </div>
         </>
       ),

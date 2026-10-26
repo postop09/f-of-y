@@ -1,4 +1,4 @@
-// 09 ─ goes → 실행: anticipation, then off screen with a trail
+// 04 ─ goes → 실행: anticipation, then off screen with a trail
 import { E, clamp, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
@@ -8,12 +8,12 @@ import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 const LINE: Seg[] = [['마음먹으면', '']]
-const BIG = '실행'
+const BIG = 'GO'
 
 export const goes: SceneSpec = {
   id: 'goes',
   len: 4,
-  text: '마음먹으면 바로 실행',
+  text: '마음먹으면 바로 GO',
   // typed on sixteenths, filled, a half-beat wind-up, and gone on the kick at 2.5
   sfx: [...typeCues(LINE, 0), [2.5, 'whoosh']],
   view: (f) => {

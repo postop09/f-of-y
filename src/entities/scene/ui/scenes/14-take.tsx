@@ -1,19 +1,19 @@
-// 13 ─ take → 한 번 더: one more try, until it works
+// 14 ─ take → 하나 더: one more try, until it works
 import { E, span, springAt } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { Word } from '@/shared/ui/Word'
 import type { SceneSpec } from '../../model/types'
-import './13-take.css'
+import './14-take.css'
 
-const TOP = '한 번'
+const TOP = '하나'
 const BOTTOM = '더'
 const SLAM = '+1'
 
 export const take: SceneSpec = {
   id: 'take',
   len: 4,
-  text: '한 번 더, 될 때까지',
-  // 한 번 on the downbeat, 더 on the clap, the +1 slams on beat 3
+  text: '하나 더, 될 때까지',
+  // 하나 on the downbeat, 더 on the clap, the +1 slams on beat 3
   sfx: [[0, 'thud', 0], [1, 'thud', 1], [2, 'hit'], [2, 'thud', 2]],
   view: (f) => {
     const { L, lb } = f

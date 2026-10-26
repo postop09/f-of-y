@@ -1,4 +1,4 @@
-// 16 ─ done → 끝까지.
+// 07 ─ done → 끝까지.
 import { E, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'

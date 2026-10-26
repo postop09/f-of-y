@@ -1,4 +1,4 @@
-// 02 ─ blank → 도전: letters decode into place
+// 03 ─ blank → 도전: letters decode into place
 import { E, hash, range, span } from '@/shared/lib/math'
 import { bigBox } from '@/shared/lib/layout'
 import { fit } from '@/shared/lib/textMeasure'
@@ -12,7 +12,7 @@ const SCRAMBLE = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊ#'
 const BIG = '도전'
 /** the line, typed in two bursts around the decode */
 const LEAD: Seg = ['낯선 일 앞에서도 ', '']
-const TAIL: Seg[] = [['주눅', 'sig'], [' 들지 않다', '']]
+const TAIL: Seg[] = [['새로움', 'sig'], ['을 즐긴다', '']]
 const nLead = [...LEAD[0]].length
 const nTail = TAIL.reduce((a, [t]) => a + [...t].length, 0)
 const letters = [...BIG].length
@@ -20,7 +20,7 @@ const letters = [...BIG].length
 export const blank: SceneSpec = {
   id: 'blank',
   len: 4,
-  text: '낯선 일 앞에서도 주눅 들지 않다 — 도전',
+  text: '낯선 일 앞에서도 새로움을 즐긴다 — 도전',
   // one long line typed in two bursts on thirty-seconds; the big word settles a letter per sixteenth
   sfx: [...typeCues([LEAD], 0, 1 / 8), ...range(0, letters - 1).map((i): Cue => [1.75 + i * 0.25, 'blip', i]), ...typeCues(TAIL, 2.75, 1 / 8)],
   view: (f) => {

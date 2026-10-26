@@ -1,19 +1,19 @@
-// 05 ─ bend → 유연하게: a curve whose handle is pulled by the scroll; the word rides it
+// 10 ─ bend → 유연하게: a curve whose handle is pulled by the scroll; the word rides it
 import { E, lerp, range, span } from '@/shared/lib/math'
 import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Cursor } from '@/shared/ui/Cursor'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
-import './05-bend.css'
+import './10-bend.css'
 
 type Pt = [number, number]
-const LINE: Seg[] = [['휘어질 뿐, ', ''], ['꺾이지 않는다', 'sig']]
+const LINE: Seg[] = [['문제는 ', ''], ['소통으로 해결한다', 'sig']]
 const BIG = '유연하게'
 export const bend: SceneSpec = {
   id: 'bend',
   len: 4,
-  text: '휘어질 뿐, 꺾이지 않는다 — 유연하게',
+  text: '문제는 소통으로 해결한다 — 유연하게',
   // the handle is grabbed on beat 2, as the line is typed; the word rides the curve for the last two beats
   sfx: [...typeCues(LINE, 0), [1, 'blip', 2], [1, 'boing'], [2, 'whoosh']],
   view: (f) => {
@@ -34,7 +34,7 @@ export const bend: SceneSpec = {
     const fs = Math.max(20, Math.min(G.h * 0.17, G.w * 0.09))
     const grab = lb >= 1 && lb < 2
     return {
-      cap: lb < 1 ? 'type("휘어질 뿐, 꺾이지 않는다")' : lb < 2 ? `curve.bend(${(k * 1.05).toFixed(2)})` : `text.along(curve, ${off.toFixed(0)}%)`,
+      cap: lb < 1 ? 'type("문제는 소통으로 해결한다")' : lb < 2 ? `curve.bend(${(k * 1.05).toFixed(2)})` : `text.along(curve, ${off.toFixed(0)}%)`,
       node: (
         <>
           <Code x={L.M} y={L.TY} segs={LINE} n={t.n} caret={t.caret} />

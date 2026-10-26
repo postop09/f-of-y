@@ -1,4 +1,4 @@
-// 22 ─ yours: "and now it's" — YOURS slams in, and a scan line turns it into the pixel field you get to play with.
+// 20 ─ yours: "and now it's" — YOURS slams in, and a scan line turns it into the pixel field you get to play with.
 // Everything is drawn on the canvas so the last frame is exactly the field the live mode starts from.
 import { COL } from '@/shared/config/typography'
 import { E, hash, lerp, span } from '@/shared/lib/math'

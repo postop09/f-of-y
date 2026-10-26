@@ -1,4 +1,4 @@
-// 04 ─ letters → 한 팀처럼: an editor, then a word whose letters move as one while you scroll
+// 09 ─ letters → 한 팀처럼: an editor, then a word whose letters move as one while you scroll
 import { E, pad, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
@@ -8,15 +8,15 @@ import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 
 type Row = { segs: Seg[]; at: number } | null
-const R1: Seg[] = [['기획·디자인·개발', 'sig'], ['의 언어로', '']]
-const R2: Seg[] = [['말하면', '']]
-const R3: Seg[] = [['모두가 ', ''], ['함께', 'sig'], [' 움직인다', '']]
+const R1: Seg[] = [['기획·디자인·개발', 'sig'], [' 구분없이', '']]
+const R2: Seg[] = [['모두와', '']]
+const R3: Seg[] = [['소통하며 ', ''], ['함께', 'sig'], [' 움직인다', '']]
 const BIG = '한 팀처럼'
 const last = [...BIG].length - 1
 export const letters: SceneSpec = {
   id: 'letters',
   len: 8,
-  text: '기획·디자인·개발의 언어로 말하면 모두가 함께 움직인다 — 한 팀처럼',
+  text: '기획·디자인·개발 구분없이 모두와 소통하며 함께 움직인다 — 한 팀처럼',
   // the wave runs at one cycle per beat once the last line is typed
   sfx: [...typeCues(R1, 0), ...typeCues(R2, 3), [5, 'whoosh'], ...typeCues(R3, 5.75)],
   view: (f) => {
@@ -25,7 +25,7 @@ export const letters: SceneSpec = {
     const x = L.M
     const y0 = L.TY - rowH * 1.6
     const rows: Row[] = [
-      { segs: [[`// scene 04 · y = ${Math.round(f.y)}px`, 'dim']], at: -Infinity },
+      { segs: [[`// scene 09 · y = ${Math.round(f.y)}px`, 'dim']], at: -Infinity },
       null,
       { segs: R1, at: 0 },
       { segs: R2, at: 3 },

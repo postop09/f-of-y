@@ -1,4 +1,4 @@
-// 17 ─ 핑계 없이 → 한계 없이: the excuse is selected, deleted and retyped as a limit; then the plan of blockers is wiped
+// 05 ─ 업무 계획 → 업무 계획: the excuse is selected, deleted and retyped as a limit; then the plan of blockers is wiped
 import { E, bump, hash, lerp, range, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
 import { type Seg, countOn, typeOn } from '@/shared/lib/typing'
@@ -6,7 +6,7 @@ import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
-import './17-timeline.css'
+import './05-timeline.css'
 
 type Clip = [track: number, from: number, to: number, name: string]
 const CLIPS: Clip[] = [
@@ -17,12 +17,12 @@ const CLIPS: Clip[] = [
 ]
 const TRACKS = ['기획', '설계', '개발', '운영']
 /** the title: the first word is selected, the whole line deleted and retyped with the second */
-const A = '핑계 없이'
-const B = '한계 없이'
-const PICK = [...'핑계'].length
+const A = '주도적인'
+const B = '업무 계획'
+const PICK = [...'주도적인'].length
 const nA = [...A].length
 const nB = [...B].length
-const RM: Seg[] = [['rm -rf ./한계', '']]
+const RM: Seg[] = [['rm -rf ./무계획', '']]
 const DOTS = CLIPS.flatMap(([tr, a, b], ci) => {
   const n = Math.max(2, Math.round((b - a) * 11))
   return range(0, n - 1).map((j) => ({ tr, x: a + ((j + 0.3 + 0.4 * hash(ci, j)) / n) * (b - a) }))
@@ -30,7 +30,7 @@ const DOTS = CLIPS.flatMap(([tr, a, b], ci) => {
 export const timeline: SceneSpec = {
   id: 'timeline',
   len: 8,
-  text: '핑계 없이. 한계 없이. rm -rf ./한계 — 걸림돌 제거',
+  text: '주도적인. 업무 계획. rm -rf ./무계획 — 걸림돌 제거',
   // the title types on sixteenths, deletes and retypes on thirty-seconds; the plan is squashed on the clap at 5
   sfx: [...typeCues(A, 0, 1 / 4), [2, 'blip', 3], ...typeCues(A, 2.5, 1 / 8), ...typeCues(B, 3.75, 1 / 8), [5, 'thud'], [5.25, 'whoosh'], ...typeCues(RM, 5.25), [7.5, 'enter']],
   view: (f) => {
@@ -55,9 +55,8 @@ export const timeline: SceneSpec = {
     const squash = E.inOutCubic(span(4.75, 5.25, lb))
     const shrink = E.inCubic(span(5.25, 5.75, lb))
     const t = typeOn(f, RM, 5.25)
-    const out = span(7.5, 7.75, lb)
     return {
-      cap: lb < 0.25 ? 'plan.load(project)' : lb < 2 ? `plan.blockers = []  // ${left} left` : lb < 2.5 ? 'select("핑계")' : lb < 4.75 ? 'type("한계 없이")' : lb < 5.25 ? 'delete plan.limits' : 'sh("rm -rf ./한계")',
+      cap: lb < 0.25 ? 'plan.load(project)' : lb < 2 ? `plan.blockers = []  // ${left} left` : lb < 2.5 ? 'select("주도적인")' : lb < 4.75 ? 'type("업무 계획")' : lb < 5.25 ? 'delete plan.limits' : 'sh("rm -rf ./무계획")',
       shake: lb > 4.75 ? 8 * bump(4.9, 5.2, lb) : 0,
       node: (
         <>
@@ -89,7 +88,6 @@ export const timeline: SceneSpec = {
           {lb >= 5.25 && (
             <>
               <Code x={P.x} y={P.y + L.mono} prompt="$" segs={RM} n={t.n} caret={t.caret} />
-              <div className="code small dim" style={{ left: P.x + L.mono * 1.2, top: P.y + L.mono * 2.6, opacity: out }}>{`트랙 ${TRACKS.length}개, 걸림돌 ${DOTS.length}개 제거`}</div>
             </>
           )}
         </>

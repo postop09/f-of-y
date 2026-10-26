@@ -215,7 +215,7 @@ const CHORD = [
 ]
 
 /** 반주가 숨을 고른 뒤 다시 터지는 박. 영상에서는 zoom의 CLOSE가 여기에 떨어진다(scenes.test.ts가 확인). */
-export const DROP = 32
+export const DROP = 82
 
 /** 16분음표 한 칸(step)의 반주. 첫 마디는 패드와 하이햇만, DROP 앞 한 마디는 숨 고르기(직전 박의 클랩 롤로 예고하고,
  * 크래시와 긴 베이스 한 음으로 들어간다), 그 뒤로는 4마디 진행이 계속 돈다. */

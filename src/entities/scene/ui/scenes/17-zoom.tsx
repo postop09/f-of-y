@@ -1,4 +1,4 @@
-// 07 ─ zoom → 몰입: the camera dives through the 0 of 100% and comes out 몰입
+// 17 ─ zoom → 몰입: the camera dives through the 0 of 100% and comes out 몰입
 import { REDUCE } from '@/shared/config/motion'
 import { E, lerp, span } from '@/shared/lib/math'
 import { SPB } from '@/shared/lib/synth'

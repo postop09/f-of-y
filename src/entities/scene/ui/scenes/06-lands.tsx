@@ -1,15 +1,14 @@
-// 19 ─ lands → 제시간, 약속한 그 날에
+// 06 ─ lands → 책임감, 개발 배포 운영
 import { E, bump, hash, range, span } from '@/shared/lib/math'
 import { fit, textW } from '@/shared/lib/textMeasure'
-import { monoW } from '@/shared/lib/canvasText'
 import { Word } from '@/shared/ui/Word'
 import type { Cue, SceneSpec } from '../../model/types'
-import './19-lands.css'
+import './06-lands.css'
 
 // the playhead crosses the ruler over the whole scene, so the three marks fall on beats 2, 3 and 4
 const MARKS = [0.25, 0.5, 0.75]
 const hit = (m: number) => m * 4
-const BIG = '제시간'
+const BIG = '책임감'
 const LETTERS = [...BIG].length
 /** each letter bounces in over 11/16 of a beat, touching down a sixteenth after the last */
 const touch = (i: number) => 0.25 + i * 0.125
@@ -17,7 +16,7 @@ const touch = (i: number) => 0.25 + i * 0.125
 export const lands: SceneSpec = {
   id: 'lands',
   len: 4,
-  text: '제시간에, 약속한 그 날에',
+  text: '책임감, 개발 배포 운영',
   sfx: [...range(0, LETTERS - 1).map((i): Cue => [touch(i), 'thud', i]), ...MARKS.flatMap((m, j): Cue[] => [[hit(m), 'hit'], [hit(m), 'blip', j * 2]])],
   view: (f) => {
     const { L, lb } = f
@@ -29,8 +28,8 @@ export const lands: SceneSpec = {
     const ry = L.H * 0.8
     const head = span(0, 4, lb)
     const marks = MARKS
-    const R = fit('약속한 그 날에', LW.w * 1.05, LW.fs * 0.42)
-    const parts: [string, number][] = [['약속한 ', 0], ['그 ', 1], ['날에', 2]]
+    const R = fit('개발 배포 운영', LW.w * 1.05, LW.fs * 0.42)
+    const parts: [string, number][] = [['개발 ', 0], ['배포 ', 1], ['운영', 2]]
     let px = L.W / 2 - R.w / 2
     const line = E.outCubic(span(0.75, 1.25, lb))
     const label = (m: number) => `${Math.round((f.at + hit(m)) * f.unitPx)}px`
@@ -72,7 +71,6 @@ export const lands: SceneSpec = {
             ))}
             <b style={{ left: `${head * 100}%` }} />
           </div>
-          {lb >= hit(0.75) && <div className="code small sig" style={{ left: rx1 - monoW('지연 0일', L.mono * 0.68), top: ry + L.mono * 1.8 }}>지연 0일</div>}
         </>
       ),
     }
