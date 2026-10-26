@@ -21,18 +21,16 @@ export const Help = ({ hidden, wait, paused }: Props) => (
       </>
     ) : (
       <>
-        <div className="go">아래로 스크롤하면 재생돼요. 멈추면 화면도 멈추고, 위로 올리면 되감겨요.</div>
         <div className="keys">
           <span>
-            <kbd>휠</kbd>
-            <kbd>스와이프</kbd>재생·되감기
+            <kbd>휠</kbd>재생·되감기
           </span>
           <span>
             <kbd>←</kbd>
             <kbd>→</kbd>장면 이동
           </span>
           <span>
-            <kbd>클릭</kbd>소리 켜기·히트
+            <kbd>클릭</kbd>박자 히트
           </span>
           <span>
             <kbd>M</kbd>소리

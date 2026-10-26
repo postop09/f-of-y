@@ -1,37 +1,39 @@
-// 16 ─ done.
-import { E, span } from '@/shared/lib/math'
+// 07 ─ done → 끝까지.
+import { E, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
-import type { SceneSpec } from '../../model/types'
+import type { Cue, SceneSpec } from '../../model/types'
+
+const LINE: Seg[] = [['맡은 일은', '']]
+const BIG = '끝까지'
+const NOTE: Seg[] = [['// 흐지부지는 없다', 'dim']]
 
 export const done: SceneSpec = {
   id: 'done',
   len: 6,
-  text: "and it's done. // render complete",
-  // DONE drops from beat 3, the dot lands on beat 4, then the comment on thirty-seconds
-  sfx: [...typeCues("and it's", 0), [3, 'enter'], ...typeCues('// render complete', 3.5)],
+  text: '맡은 일은 끝까지. // 흐지부지는 없다',
+  // the letters drop from beat 3 and touch down on thirty-seconds, the dot lands on beat 4, then the comment
+  sfx: [...typeCues(LINE, 0), ...range(0, [...BIG].length - 1).map((i): Cue => [2.5 + i / 8, 'thud', i]), [3, 'enter'], ...typeCues(NOTE, 3.5)],
   view: (f) => {
     const { L, lb } = f
-    const segs: Seg[] = [["and it's", '']]
-    const t = typeOn(f, segs, 0, 3)
-    const D = fit('DONE', (L.W - 2 * L.M) * 0.62, L.H * 0.26)
+    const t = typeOn(f, LINE, 0, 3)
+    const D = fit(BIG, (L.W - 2 * L.M) * 0.62, L.H * 0.26)
     const x = L.W / 2 - D.w / 2
     const y = L.H * 0.42
     const ds = D.fs * 0.16
     const dot = E.outBack(span(3, 3.25, lb))
-    const cm: Seg[] = [['// render complete', 'dim']]
-    const c = typeOn(f, cm, 3.5)
+    const c = typeOn(f, NOTE, 3.5)
     return {
-      cap: lb < 3 ? 'await render()' : 'process.exit(0)',
+      cap: lb < 3 ? 'await finish(task)' : 'process.exit(0)',
       shake: lb > 3 ? 8 * (1 - span(3, 3.2, lb)) : 0,
       node: (
         <>
-          <Code x={x} y={y - L.mono * 2.4} segs={segs} n={t.n} caret={t.caret} />
+          <Code x={x} y={y - L.mono * 2.4} segs={LINE} n={t.n} caret={t.caret} />
           <Word
-            text="DONE"
+            text={BIG}
             fs={D.fs}
             x={x}
             y={y}
@@ -41,7 +43,7 @@ export const done: SceneSpec = {
             }}
           />
           {dot > 0 && <div className="bar sigbg" style={{ left: x + D.w + D.fs * 0.04, top: y + 0.734 * D.fs - ds, width: ds, height: ds, transform: `scale(${dot.toFixed(4)})` }} />}
-          <Code x={x} y={y + D.fs * 0.95} segs={cm} n={c.n} caret={c.caret} />
+          <Code x={x} y={y + D.fs * 0.95} segs={NOTE} n={c.n} caret={c.caret} />
         </>
       ),
     }

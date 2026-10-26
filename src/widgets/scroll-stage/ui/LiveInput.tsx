@@ -1,4 +1,5 @@
 // live 모드의 입력 줄: $ YOURS▮. 단어를 고치면 잠시 뒤 필드가 새 단어로 옮겨 가고, Enter면 바로 옮기며 터뜨린다.
+// Enter 뒤에도 포커스는 입력칸에 남아 계속 칠 수 있고, explore 를 치고 Enter면 이력서 탐색으로 간다.
 // 1번 장면의 명령 줄처럼 강조된 줄에 놓이고, 브라우저 캐럿 대신 영상의 블록 캐럿이 글자를 따라간다.
 // .world 밖(aria-hidden 아님)에 있어서 스크린리더·키보드로도 쓸 수 있다.
 import { type Ref, useEffect, useRef, useState } from 'react'
@@ -18,9 +19,14 @@ type Props = {
   onWord: (word: string) => void
   /** Enter: 바로 옮기고 터뜨린다 */
   onEnter: (word: string) => void
+  /** explore + Enter: 이력서 탐색으로 */
+  onExplore: () => void
 }
 
-export const LiveInput = ({ x, y, mono, W, blink, word, inputRef, onWord, onEnter }: Props) => {
+/** 1번 장면의 명령 줄처럼 `run` 은 붙여도 되고 빼도 된다 (대소문자 무시) */
+const isExplore = (text: string) => text.trim().toLowerCase().replace(/^run\s+/, '') === 'explore'
+
+export const LiveInput = ({ x, y, mono, W, blink, word, inputRef, onWord, onEnter, onExplore }: Props) => {
   const [value, setValue] = useState(word)
   const timer = useRef(0)
   useEffect(() => () => clearTimeout(timer.current), [])
@@ -56,8 +62,11 @@ export const LiveInput = ({ x, y, mono, W, blink, word, inputRef, onWord, onEnte
                 if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
                   e.preventDefault()
                   clearTimeout(timer.current)
-                  onEnter(value)
-                  e.currentTarget.blur()
+                  if (isExplore(value)) {
+                    // the field takes the word like any other, then the page moves on
+                    onWord(value)
+                    onExplore()
+                  } else onEnter(value)
                 } else if (e.key === 'Escape') e.currentTarget.blur()
               }}
             />
@@ -69,6 +78,8 @@ export const LiveInput = ({ x, y, mono, W, blink, word, inputRef, onWord, onEnte
         # 자유롭게 단어를 입력해보세요
         <br/>
         # 화면을 누르면 터졌다가 제자리로 돌아와요 · 스크롤을 올리면 되감겨요
+        <br/>
+        # explore 를 입력하면 이력서 탐색으로 이동해요
       </div>
     </>
   )

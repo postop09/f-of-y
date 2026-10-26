@@ -1,6 +1,6 @@
 # f-of-y — F(Y) · 스크롤 키네틱 타이포
 
-키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 22장면.
+키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 20장면.
 내리면 재생, 멈추면 정지, 올리면 되감기. 마우스 근처 글자는 굵기·폭이 깎인다.
 `parc-etoile-ui-lab`의 `web/07-scroll/`을 독립 프로젝트로 옮긴 것.
 
@@ -33,7 +33,7 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 장면은 `{ id, len, at, view(f), draw?(g, f) }`. `view(f)`는 순수 함수로 이 프레임의 JSX와 카메라·플래시·흔들림·HUD 캡션을 돌려주고, `draw`는 캔버스 층을 그린다.
 - `f.lb`는 장면 안 위치. 시계도 키프레임도 없으니 새로고침해도 같은 프레임에 선다.
 - 조작: 휠·스와이프 재생/되감기, `←` `→` 장면 이동, 하단 바 스크러빙. `prefers-reduced-motion`이면 카메라·흔들림·플래시가 꺼진다.
-- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 112박, 약 72초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 끝에 있을 때 하단 바 왼쪽의 ↻ 버튼은 반주까지 첫 칸부터 다시 맞춰 처음부터 다시 자동 재생한다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
+- 처음 들어오면 클릭(또는 Space)을 기다렸다가, 소리와 함께 영상처럼 끝까지 한 번 자동 재생된다. 1스크롤 단위 = 반주 1박(94 BPM, `AUTOPLAY_SPEED`)이라 100박, 약 64초이고, 위치는 반주 시계를 따른다. 그동안 스크롤·키·스크러버는 잠기고, 끝나면 스크롤 위치가 마지막 프레임에 놓인 채 조작이 넘어온다. 하단 바 왼쪽의 처음으로 버튼은 마지막 장면에서도 그대로 처음으로 스크롤한다. 같은 탭에서는 다시 재생하지 않고(`sessionStorage`), `prefers-reduced-motion`이면 건너뛴다.
 - 소리는 전부 Web Audio 합성이다(`public/keyframe.html`에서 옮김). 시작한 뒤로는 94 BPM 반주가 계속 돌고, 장면의 효과음(`sfx`)은 자동 재생 중엔 박자에 맞춰 미리 예약되고 스크롤 모드에선 앞으로 지나갈 때 울린다(되감기·점프에선 안 울림). 클릭하면 다음 16분음표에 히트(소리 + 퍼지는 네모)가 들어간다. `M`이나 하단 바 오른쪽 버튼으로 음소거, 탭이 가려지면 소리도 멈춘다.
 - 1번 장면의 명령 줄(`$ ▮`)은 타이핑이 시작되기 전까지 진짜 입력칸이다(`widgets/scroll-stage/ui/BootInput.tsx`). 아무 글자나 치면 그 줄로 들어가고, `start`(또는 `run start`) + Enter면 소리와 함께 영상이 재생된다. 방문자가 명령을 이미 쳤으니 장면의 타이핑은 건너뛰고 enter 박(u = 3)부터, 반주도 그 박자에 맞춰 시작한다(`sound.restart(at)`). `explore` + Enter면 친 글자가 흩어진 뒤(동작 줄이기 설정이면 바로) 영상을 건너뛰고 `#explore`로 간다. 클릭·Space로 시작하는 것도 그대로 된다.
 - 영상 끝(yours 장면 다음)에서는 live 필드가 된다(`public/keyframe.html`의 live를 옮김). YOURS 픽셀이 시간으로 움직이는 상태가 되어, 커서에 밀리고, 클릭하면 터졌다가 스프링으로 돌아오고, 반주 박마다 부푼다. `$ ▮` 입력칸(1번 장면의 명령 줄과 같은 모양)에 단어를 치면 픽셀이 그 단어로 옮겨 간다(Enter면 바로, 아니면 입력이 멈춘 뒤). 스크롤을 올리면 다시 영상으로 돌아가고, 바꾼 단어는 다음에 돌아올 때도 남는다. 구현은 `widgets/scroll-stage/lib/liveField.ts`(물리)와 `ui/LiveInput.tsx`(입력 줄).
@@ -45,9 +45,9 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 방문자가 질문을 치면 `POST /api/explore`(`api/explore.ts`, Vercel 함수)가 Jev에 묻는다. Jev는 글을 쓰지 않고 정해진 형식으로만 답하는 모델이라, 세 가지를 확률로 고르게 한다: 카테고리(choice), 경력 항목(choice, `none` 포함), 이력서에 대한 질문인지(noul). 서버는 id와 확률만 돌려주고, 화면이 `entities/resume/model/resume.ts`의 데이터로 카드를 그린다.
 - 카테고리: 사용자 경험 · UI 개선 · AI 활용 · 구조·아키텍처 · 운영 안정성 · 협업·프로세스. 항목 하나가 여러 카테고리에 들 수 있고, `categories` 목록에서 고르면 Jev 없이 바로 거른다.
 - 이력서 원본 PDF는 `private/`(gitignore)에 둔다. 연락처·주소가 있어 `public/`에 두면 배포에 그대로 공개되기 때문. 화면 데이터에는 연락처를 싣지 않고 경력 항목만 둔다.
-- 이미지: 항목에 `images`를 달면 카드의 제목 아래에 썸네일 줄이 생기고, 누르면 라이트박스(`shared/ui/Lightbox`)로 크게 본다(←/→ 넘기기, 이미지를 누르면 원본 크기, Esc로 닫기). 파일은 `public/work/<항목 id>/`에 두고(webp, 긴 변 2000px 안팎), 경로는 import 하지 않고 문자열로 적는다(서버 함수도 이 데이터를 읽음). `w`·`h`는 원본 크기로, 불러오기 전에 자리를 잡아 둔다. `model/resume.test.ts`가 파일이 실제로 있는지와 alt·크기를 확인한다.
+- 이미지: 항목에 `images`를 달면 카드의 제목 아래에 썸네일 줄이 생기고, 누르면 라이트박스(`shared/ui/Lightbox`)로 크게 본다(←/→ 넘기기, 이미지를 누르면 원본 크기, Esc로 닫기). 파일은 회사별 폴더 `public/work/<회사>/`(예: `successmode`, `tuneit`)에 두고(webp, 긴 변 2000px 안팎), 경로는 import 하지 않고 문자열로 적는다(서버 함수도 이 데이터를 읽음). `w`·`h`는 원본 크기로, 불러오기 전에 자리를 잡아 둔다. `model/resume.test.ts`가 파일이 실제로 있는지, 한 회사의 이미지가 한 폴더에 모여 있는지, alt·크기를 확인한다.
   ```ts
-  images: [{ src: '/work/sm-monorepo/structure.webp', alt: '모노레포 패키지 구조도', caption: '패키지 구조', w: 1600, h: 1000 }],
+  images: [{ src: '/work/successmode/structure.webp', alt: '모노레포 패키지 구조도', caption: '패키지 구조', w: 1600, h: 1000 }],
   ```
 - `api/`는 Vercel이 파일마다 따로 컴파일하는 Node ESM이라, 서버가 읽는 `entities/resume/lib/jev.ts`·`model/resume.ts`의 런타임 상대 import에는 `.js`를 붙인다.
 
@@ -65,7 +65,7 @@ api/explore.ts            Vercel 함수: TYPESAFE_API_KEY로 Jev 호출 (개발 
 src/widgets/scroll-stage/ ScrollStage (트랙·스테이지·rAF 루프·키보드·자동 재생), Hud, Transport(스크러버), Help, ScriptOutline(sr-only 대본)
                           lib/sound (AudioContext·반주 스케줄러·효과음·히트·음소거), lib/hits (클릭 히트 그리기), lib/liveField + ui/LiveInput (끝의 live 필드), ui/BootInput (1번 장면의 명령 입력: start·explore), model/autoplay (첫 방문 자동 재생 여부·속도)
                           lib/worldTransform (카메라·흔들림 → transform)
-src/entities/scene/       model/scenes.ts (22장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
+src/entities/scene/       model/scenes.ts (20장면 순서 → SCENES/TOTAL/sceneAt), model/types.ts (Frame, SceneSpec, Scene, SceneOut, Cam),
                           ui/scenes/NN-id.tsx (장면 하나 = 파일 하나, 전용 클래스는 같은 이름의 .css), ui/scenes.css (여러 장면 공용 클래스),
                           lib/stackScenes (at·TOTAL 누적), lib/cues (typeCues·효과음 신호 펼치기 → CUES), lib/wordSlot (WORD·BOOM 자리), lib/liveWord (YOURS·live 단어 자리와 격자), lib/findSceneIndex, lib/centre
 src/shared/config/        motion (prefers-reduced-motion), typography (글꼴·색 상수)
