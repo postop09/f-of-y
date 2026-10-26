@@ -9,11 +9,11 @@ export const boom: SceneSpec = {
   id: 'boom',
   len: 2,
   text: '문제해결',
-  // straight on the downbeat
-  sfx: [[0, 'boom'], [0, 'crash']],
+  // straight on the downbeat; no crash, since the drop's crash two beats earlier is still ringing
+  sfx: [[0, 'boom']],
   view: (f) => {
     const { L, lb } = f
-    // 문제해결 takes the exact place and size of the answer just before it
+    // 문제해결 sits in the shared word slot (wordSlot), the same place and size as split's and pixel's words
     const B = wordSlot(L, '문제해결')
     const q = lb
     return {

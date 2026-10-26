@@ -17,7 +17,7 @@ export const everyone: SceneSpec = {
   id: 'everyone',
   len: 4,
   text: '작은 노력이 만드는, 큰 가능성',
-  // six days per sixteenth from beat 2; 매일 drops on beat 3, 한 칸 on beat 4
+  // six cells per sixteenth from beat 2; the first word drops on beat 3, the rest on beat 4
   sfx: [...typeCues(LINE, 0), ...range(1, 10).map((k): Cue => [1 + k / 4, 'tick', k]), [2, 'whoosh'], [3, 'thud']],
   view: (f) => {
     const { L, lb } = f

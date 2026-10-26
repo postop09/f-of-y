@@ -1,11 +1,11 @@
 // 07 ─ done → 끝까지.
-import { E, span } from '@/shared/lib/math'
+import { E, range, span } from '@/shared/lib/math'
 import { fit } from '@/shared/lib/textMeasure'
 import { type Seg, typeOn } from '@/shared/lib/typing'
 import { Code } from '@/shared/ui/Code'
 import { Word } from '@/shared/ui/Word'
 import { typeCues } from '../../lib/cues'
-import type { SceneSpec } from '../../model/types'
+import type { Cue, SceneSpec } from '../../model/types'
 
 const LINE: Seg[] = [['맡은 일은', '']]
 const BIG = '끝까지'
@@ -15,8 +15,8 @@ export const done: SceneSpec = {
   id: 'done',
   len: 6,
   text: '맡은 일은 끝까지. // 흐지부지는 없다',
-  // the word drops from beat 3, the dot lands on beat 4, then the comment
-  sfx: [...typeCues(LINE, 0), [3, 'enter'], ...typeCues(NOTE, 3.5)],
+  // the letters drop from beat 3 and touch down on thirty-seconds, the dot lands on beat 4, then the comment
+  sfx: [...typeCues(LINE, 0), ...range(0, [...BIG].length - 1).map((i): Cue => [2.5 + i / 8, 'thud', i]), [3, 'enter'], ...typeCues(NOTE, 3.5)],
   view: (f) => {
     const { L, lb } = f
     const t = typeOn(f, LINE, 0, 3)

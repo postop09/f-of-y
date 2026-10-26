@@ -8,10 +8,10 @@ const BIG = '독고다이'
 
 export const split: SceneSpec = {
   id: 'split',
-  len: 4,
+  len: 2,
   text: '팀 사이의 독고다이, 그리고 갈라진다',
   // the word lands on the downbeat, the blade sweeps in on the off-beat and cuts on beat 2,
-  // then the halves spring apart and keep drifting a little, staying on screen
+  // then the halves spring apart and drift a little for the last half beat, staying on screen
   sfx: [[0, 'boom'], [0.5, 'whoosh'], [1, 'shing']],
   view: (f) => {
     const { L, lb } = f
@@ -19,7 +19,7 @@ export const split: SceneSpec = {
     const blade = E.outCubic(span(0.5, 1, lb))
     const cut = lb >= 1
     // top half up and right, bottom half down and left: a quick crack, then a slow drift
-    const e = E.outExpo(span(1, 1.5, lb)) + 0.6 * span(1.5, 4, lb)
+    const e = E.outExpo(span(1, 1.5, lb)) + 0.15 * span(1.5, 2, lb)
     const dx = e * word.w * 0.05
     const dy = e * word.fs * 0.06
     const rot = 0.6 * e

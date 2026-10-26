@@ -60,7 +60,7 @@ const SCROLL_KEYS = new Set([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRig
 const END = TOTAL - 0.02
 
 type Props = {
-  /** the way to the next screen: "explore" typed on the first scene's line */
+  /** the way to the next screen: "explore" typed on the first scene's line or the live field's */
   onExplore: () => void
 }
 
@@ -430,6 +430,7 @@ export const ScrollStage = ({ onExplore }: Props) => {
             blink={fr.blink}
             word={liveWord}
             inputRef={liveInputRef}
+            onExplore={onExplore}
             onWord={(w) => {
               const fld = fieldRef.current
               if (!fld) return

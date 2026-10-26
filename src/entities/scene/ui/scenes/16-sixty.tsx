@@ -15,8 +15,8 @@ export const sixty: SceneSpec = {
   id: 'sixty',
   len: 4,
   text: '100가지, 모든 문제를 해결할 때까지',
-  // counts up over three beats: 100 lands on beat 4
-  sfx: [...range(1, 11).map((k): Cue => [k / 4, 'tick', k]), [3, 'blip', 9], [3, 'crash']],
+  // counts up over three beats: 100 lands on beat 4 with a blip only, since the breakdown's crash follows a beat later
+  sfx: [...range(1, 11).map((k): Cue => [k / 4, 'tick', k]), [3, 'blip', 9]],
   view: (f) => {
     const { L, lb } = f
     const raw = lerp(0, TO, span(0, 3, lb))
