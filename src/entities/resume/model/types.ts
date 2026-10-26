@@ -9,9 +9,9 @@ export type Category = {
   hint: string
 }
 
-/** 카드 썸네일과 라이트박스에 보이는 이미지. 파일은 public/work/<항목 id>/ 에 둔다 */
+/** 카드 썸네일과 라이트박스에 보이는 이미지. 파일은 회사별 폴더 public/work/<회사>/ 에 둔다 */
 export type ResumeImage = {
-  /** public 기준 경로 (예: '/work/sm-monorepo/structure.webp'). 서버 함수도 이 파일을 읽으므로 import 하지 않고 문자열로 둔다 */
+  /** public 기준 경로 (예: '/work/successmode/trans1.png'). 서버 함수도 이 파일을 읽으므로 import 하지 않고 문자열로 둔다 */
   src: string
   alt: string
   /** 썸네일 아래·라이트박스에 'fig.N 캡션'으로 */
