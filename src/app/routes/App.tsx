@@ -1,8 +1,8 @@
 // 화면 고르기: 주소의 해시 하나로 정한다. 없으면 영상, #explore 면 explore. 뒤로·앞으로 가기도 그대로 된다.
 // 화면을 바꿀 때마다 맨 위에서 연다: explore 에서 cd .. 로 돌아오면 영상의 1번 장면이다.
 import { useEffect, useState } from 'react'
-import { ExplorePage } from '@/pages/explore/ui/ExplorePage'
-import { FilmPage } from '@/pages/film/ui/FilmPage'
+import { ExplorePage } from '@/pages/explore'
+import { FilmPage } from '@/pages/film'
 
 type Route = 'film' | 'explore'
 

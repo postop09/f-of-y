@@ -1,7 +1,6 @@
 // 06 ─ lands → 책임감, 개발 배포 운영
-import { E, bump, hash, range, span } from '@/shared/lib/math'
-import { fit, textW } from '@/shared/lib/textMeasure'
-import { Word } from '@/shared/ui/Word'
+import { E, bump, fit, hash, range, span, textW } from '@/shared/lib'
+import { Word } from '@/shared/ui'
 import type { Cue, SceneSpec } from '../../model/types'
 import './06-lands.css'
 

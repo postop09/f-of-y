@@ -1,9 +1,6 @@
 // 12 ─ code → 꾸준한 노력, 그리고
-import { E, pad, span } from '@/shared/lib/math'
-import { countOn } from '@/shared/lib/typing'
-import { fit, textW } from '@/shared/lib/textMeasure'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { E, countOn, fit, pad, span, textW } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './12-code.css'

@@ -1,10 +1,8 @@
 // 20 ─ yours: "and now it's" — YOURS slams in, and a scan line turns it into the pixel field you get to play with.
 // Everything is drawn on the canvas so the last frame is exactly the field the live mode starts from.
-import { COL } from '@/shared/config/typography'
-import { E, hash, lerp, span } from '@/shared/lib/math'
-import { canvasFont, cell } from '@/shared/lib/canvasText'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
+import { COL } from '@/shared/config'
+import { type Seg, E, canvasFont, cell, hash, lerp, span, typeOn } from '@/shared/lib'
+import { Code } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import { liveRaster } from '../../lib/liveWord'
 import type { SceneSpec } from '../../model/types'

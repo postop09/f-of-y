@@ -2,9 +2,7 @@
 // len·at은 스크롤 단위(1단위 = 뷰포트 높이의 18%)이고, f.lb는 장면 안 위치라서
 // 내리면 재생, 멈추면 정지, 올리면 되감긴다 — 시계도 키프레임도 없다.
 import type { ReactNode } from 'react'
-import type { Layout } from '@/shared/lib/layout'
-import type { SfxKind } from '@/shared/lib/synth'
-import type { Clock } from '@/shared/lib/typing'
+import type { Clock, Layout, SfxKind } from '@/shared/lib'
 
 export type Frame = Clock & {
   /** 장면 안 위치 (스크롤 단위) */

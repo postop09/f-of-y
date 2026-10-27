@@ -1,7 +1,7 @@
 // 큰 Archivo 단어. 글자마다 span 하나씩, 축(wght/wdth)은 w / d 또는 ch()로 넘긴다.
 // 기본 축(900 / 125)은 .word가 갖고, 다른 글자만 font-variation-settings를 직접 단다.
 import type { CSSProperties } from 'react'
-import { clamp } from '@/shared/lib/math'
+import { clamp } from '@/shared/lib'
 import './word.css'
 
 const axes = (w: number, d: number): CSSProperties | undefined =>

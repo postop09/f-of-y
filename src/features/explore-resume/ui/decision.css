@@ -1,0 +1,14 @@
+/* what Jev decided: category bars. relies on the page's .explore scope for --fg/--sub/--sig and --mono */
+.ex-decision { margin: 12px 0 6px; }
+.ex-cat-probs { list-style: none; margin: 0 0 6px; padding: 0; }
+.ex-cat-probs li { display: flex; align-items: center; gap: 10px; color: var(--sub); white-space: pre; }
+.ex-cat-probs li.top { color: var(--fg); }
+.ex-arrow { color: var(--sig); width: 1ch; }
+.ex-cat-label { min-width: 8em; }
+.ex-cat-probs li:not(.top) .cellbar i.on { background: var(--sub); }
+.ex-num { font-variant-numeric: tabular-nums; }
+.ex-miss { color: var(--fg); }
+
+@media (max-width: 640px) {
+  .ex-cat-label { min-width: 6.5em; }
+}

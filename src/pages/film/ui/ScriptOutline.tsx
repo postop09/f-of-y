@@ -1,5 +1,5 @@
 // 스크린리더용 대본. 스테이지는 aria-hidden이라 장면 텍스트를 여기서 읽는다.
-import type { Scene } from '@/entities/scene/model/types'
+import type { Scene } from '@/entities/scene'
 
 type Props = { scenes: readonly Scene[] }
 

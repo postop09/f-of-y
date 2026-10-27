@@ -1,9 +1,6 @@
 // 02 ─ render → 전진: press, and push until the goal
-import { bump, pad, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, bump, fit, pad, span, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './02-render.css'

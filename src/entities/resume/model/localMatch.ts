@@ -1,8 +1,8 @@
 // Jev 없이 고르는 대체 경로: 질문에 든 키워드로 항목 점수를 매기고, 항목 점수를 카테고리로 모은다.
 // 서버 함수가 없거나(npm run export의 단일 HTML) 키가 없거나 Jev가 실패했을 때 쓴다.
-import { CATEGORIES, ITEMS } from '../model/resume'
-import type { CategoryId } from '../model/types'
-import { type ExploreResult, bestCategory, top } from './jev'
+import { bestCategory, top } from '../lib/rank'
+import { CATEGORIES, ITEMS } from './resume'
+import type { CategoryId, ExploreResult } from './types'
 
 /** 카테고리 이름·별칭이 질문에 그대로 나오면 그 카테고리 쪽으로 기운다 */
 const CATEGORY_WORDS: Record<CategoryId, readonly string[]> = {

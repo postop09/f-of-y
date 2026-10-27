@@ -1,6 +1,6 @@
 // 장면이 돌려준 카메라·흔들림을 .world의 transform 문자열로. 흔들림은 스크롤 속도에 비례한다.
-import type { Cam } from '@/entities/scene/model/types'
-import { FX } from '@/shared/config/motion'
+import type { Cam } from '@/entities/scene'
+import { FX } from '@/shared/config'
 
 type Out = { shake?: number; cam?: Cam | null }
 

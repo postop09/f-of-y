@@ -1,4 +1,4 @@
-// 이력서 데이터의 모양. 화면(entities/resume/ui)과 서버 함수(api/explore.ts)가 같이 쓴다.
+// 이력서 데이터와 탐색 결과의 모양. 화면(ui/)과 서버 함수(api/explore.ts → index.server.ts)가 같이 쓴다.
 
 export type CategoryId = 'ux' | 'ui' | 'ai' | 'arch' | 'ops' | 'team'
 
@@ -41,4 +41,20 @@ export type ResumeItem = {
   site?: string
   /** 제품 화면·구조도. 없으면 카드는 글만 */
   images?: readonly ResumeImage[]
+}
+
+export type ExploreSource = 'jev' | 'local'
+/** 항목 하나와 질문의 일치 확률 */
+export type ExploreHit = { id: string; p: number }
+/** 질문 하나의 탐색 결과. Jev(api/jev)와 키워드 매칭(localMatch)이 같은 모양을 돌려준다 */
+export type ExploreResult = {
+  source: ExploreSource
+  /** jev가 답했을 때 실제 모델 버전 */
+  model?: string
+  category: CategoryId
+  categories: Record<CategoryId, number>
+  /** 확률 순, 많아야 TOP개 (lib/rank) */
+  items: ExploreHit[]
+  /** 이 질문이 이력서(경력·역량)에 대한 것일 확률 */
+  aboutResume: number
 }

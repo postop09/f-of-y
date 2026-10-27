@@ -1,5 +1,5 @@
 // 캔버스 글자 측정·배치·래스터화. DOM 단어와 같은 Archivo 900 / wdth 125로 맞춘다.
-import { FAM, MONO } from '@/shared/config/typography'
+import { FAM, MONO } from '@/shared/config'
 import { hash } from './math'
 
 const STRETCH = typeof CanvasRenderingContext2D !== 'undefined' && 'fontStretch' in CanvasRenderingContext2D.prototype

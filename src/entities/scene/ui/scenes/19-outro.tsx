@@ -1,10 +1,6 @@
 // 19 ─ outro: 내 사전에 포기, with 포기 struck out on paper, then a single line that is wiped away
-import { E, span } from '@/shared/lib/math'
-import { fit, textW } from '@/shared/lib/textMeasure'
-import { monoW } from '@/shared/lib/canvasText'
-import { type Seg, countOn, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, countOn, fit, monoW, span, textW, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 

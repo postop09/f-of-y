@@ -1,8 +1,6 @@
 // 10 ─ bend → 유연하게: a curve whose handle is pulled by the scroll; the word rides it
-import { E, lerp, range, span } from '@/shared/lib/math'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Cursor } from '@/shared/ui/Cursor'
+import { type Seg, E, lerp, range, span, typeOn } from '@/shared/lib'
+import { Code, Cursor } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './10-bend.css'

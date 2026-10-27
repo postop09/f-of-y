@@ -1,7 +1,7 @@
 // 18 ─ boom: debris on a closed-form trajectory
-import { COL } from '@/shared/config/typography'
-import { E, hash, lerp, span } from '@/shared/lib/math'
-import { Word } from '@/shared/ui/Word'
+import { COL } from '@/shared/config'
+import { E, hash, lerp, span } from '@/shared/lib'
+import { Word } from '@/shared/ui'
 import { wordSlot } from '../../lib/wordSlot'
 import type { SceneSpec } from '../../model/types'
 

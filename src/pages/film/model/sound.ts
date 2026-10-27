@@ -1,7 +1,8 @@
 // 소리 담당: AudioContext 하나, 94 BPM 반주 스케줄러, 효과음, 박자에 맞춘 클릭 히트, 음소거.
 // 브라우저는 클릭·키 입력 전에는 소리를 막으므로 start()는 반드시 그 이벤트 안에서 부른다.
 // 반주의 시계는 AudioContext.currentTime이다. 탭이 가려져 suspend되면 시계도, 반주도 함께 멈춘다.
-import { type SfxKind, type Synth, STEP, makeSynth, music, noiseBuffer } from '@/shared/lib/synth'
+import { music } from '@/entities/scene'
+import { type SfxKind, type Synth, STEP, makeSynth, noiseBuffer } from '@/shared/lib'
 
 const VOLUME = 0.8
 /** 반주를 미리 예약해 두는 길이 (초) */

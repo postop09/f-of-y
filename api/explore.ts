@@ -1,7 +1,7 @@
 // POST /api/explore { q } → 탐색 결과 (ExploreResult). Vercel 함수이고, 개발 중엔 vite.config.ts의 플러그인이 같은 함수를 부른다.
 // TYPESAFE_API_KEY로 Jev를 부르는 곳은 여기뿐이다. 키는 브라우저로 나가지 않는다.
 // 응답에는 id와 확률만 담는다; 화면이 자기 이력서 데이터로 그린다.
-import { buildJevRequest, cleanQuery, readJevResponse } from '../src/entities/resume/lib/jev.js'
+import { buildJevRequest, cleanQuery, readJevResponse } from '../src/entities/resume/index.server.js'
 
 const JEV_URL = 'https://api.typesafe.ai/v1/systemone'
 const TIMEOUT = 8000

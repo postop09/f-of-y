@@ -1,9 +1,6 @@
 // 13 ─ every one → 큰 가능성: sixty day cells, filled in order
-import { E, pad, range, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, fit, pad, range, span, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { Cue, SceneSpec } from '../../model/types'
 import './13-everyone.css'

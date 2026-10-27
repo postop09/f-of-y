@@ -1,7 +1,7 @@
 // 경력 항목 하나: 회사·기간·제목, 이미지 썸네일(있으면), 문제 → 해결 → 구현 → 결과, 카테고리 태그. 비어 있는 단계는 건너뛴다.
 // 썸네일을 누르면 그 이미지부터 라이트박스로 크게 본다.
 import { useState } from 'react'
-import { Lightbox } from '@/shared/ui/Lightbox'
+import { Lightbox } from '@/shared/ui'
 import { CATEGORY } from '../model/resume'
 import type { ResumeItem } from '../model/types'
 import './resumeItemCard.css'

@@ -1,28 +1,14 @@
 // 방문자의 질문 → Jev 요청, Jev 응답 → 탐색 결과. 서버 함수(api/explore.ts)와 화면이 같은 모양을 쓴다.
 // Jev는 글을 쓰지 않는다: 카테고리와 항목을 고르고 확률만 돌려준다. 보여 줄 문구는 이력서 데이터에서 온다.
 // api/ 는 Vercel이 파일마다 따로 컴파일하는 Node ESM이라, 여기서 런타임에 읽는 상대 경로는 .js 확장자를 붙인다.
+import { bestCategory, top } from '../lib/rank.js'
 import { CATEGORIES, ITEMS } from '../model/resume.js'
-import type { CategoryId } from '../model/types'
+import type { CategoryId, ExploreResult } from '../model/types'
 
 export const JEV_MODEL = 'jev-latest'
 export const MAX_QUERY = 200
 /** 항목 고르기의 '해당 없음' 선택지 */
 const NONE = 'none'
-/** 결과로 돌려줄 항목 수 */
-const TOP = 3
-
-export type ExploreResult = {
-  source: 'jev' | 'local'
-  /** jev가 답했을 때 실제 모델 버전 */
-  model?: string
-  category: CategoryId
-  categories: Record<CategoryId, number>
-  /** 확률 순, 많아야 TOP개 */
-  items: { id: string; p: number }[]
-  /** 이 질문이 이력서(경력·역량)에 대한 것일 확률 */
-  aboutResume: number
-}
-
 /** 공백을 정리하고 길이를 자른 질문. 비었으면 null */
 export const cleanQuery = (q: unknown) => {
   if (typeof q !== 'string') return null
@@ -64,11 +50,6 @@ const probs = (v: unknown): Record<string, number> | null => {
   return out
 }
 const CATEGORY_IDS = CATEGORIES.map((c) => c.id)
-
-/** 확률 순으로 많아야 TOP개 (Jev 결과, 키워드 매칭, 화면의 카테고리 막대가 같이 쓴다) */
-export const top = <T extends { p: number }>(xs: T[]) => xs.sort((a, b) => b.p - a.p).slice(0, TOP)
-/** 확률이 가장 높은 카테고리 */
-export const bestCategory = (categories: Record<CategoryId, number>) => top(CATEGORY_IDS.map((id) => ({ id, p: categories[id] })))[0].id
 
 /** Jev 응답 → 탐색 결과. 모양이 다르면 null */
 export const readJevResponse = (json: unknown): ExploreResult | null => {

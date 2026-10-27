@@ -1,7 +1,7 @@
 // 1스크롤 단위 = 반주 1박. 장면은 반 마디(2박) 경계에서 바뀌고, 효과음은 32분음표 격자에 떨어져야 한다.
 import { describe, expect, it } from 'vitest'
-import { DROP } from '@/shared/lib/synth'
-import { CUES, SCENES, TOTAL } from './scenes'
+import { DROP } from '../model/music'
+import { CUES, SCENES, TOTAL } from './score'
 
 const onGrid = (x: number, step: number) => Math.abs(x / step - Math.round(x / step)) < 1e-9
 

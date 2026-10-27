@@ -1,5 +1,5 @@
 // 클릭 히트: 박자에 맞춰 네모가 퍼지고 파편이 튄다(public/keyframe.html에서 가져옴). 캔버스 층에 그린다.
-import { E, hash } from '@/shared/lib/math'
+import { E, hash } from '@/shared/lib'
 
 export type Hit = { x: number; y: number; /** 보이기 시작하는 시각 (performance.now 초) */ t: number; seed: number }
 
