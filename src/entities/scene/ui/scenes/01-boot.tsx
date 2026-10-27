@@ -1,8 +1,7 @@
 // 01 ─ boot: a prompt, a command, enter
 // Before the typing starts the visitor can type the command instead (ScrollStage puts a real input on this line, f.prompt).
-import { pad, range, span } from '@/shared/lib/math'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
+import { type Seg, pad, range, span, typeOn } from '@/shared/lib'
+import { Code } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 

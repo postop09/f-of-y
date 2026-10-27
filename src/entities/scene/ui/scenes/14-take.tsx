@@ -1,7 +1,6 @@
 // 14 ─ take → 하나 더: one more try, until it works
-import { E, span, springAt } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { Word } from '@/shared/ui/Word'
+import { E, fit, span, springAt } from '@/shared/lib'
+import { Word } from '@/shared/ui'
 import type { SceneSpec } from '../../model/types'
 import './14-take.css'
 

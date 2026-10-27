@@ -29,9 +29,9 @@
 }
 .ex-empty { display: grid; gap: 6px; }
 .ex-examples { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
-/* link-like buttons: the examples and the category names */
-.ex-examples button, .ex-list dt button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); text-align: left; }
-.ex-examples button:hover, .ex-list dt button:hover { text-decoration: underline; }
+/* link-like buttons: the examples (the category names get the same look in features/explore-resume/ui/commandList.css) */
+.ex-examples button { appearance: none; border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; color: var(--sig); text-align: left; }
+.ex-examples button:hover { text-decoration: underline; }
 
 .ex-turn { position: relative; scroll-margin-top: 64px; animation: ex-in .3s ease-out both; }
 @keyframes ex-in { from { opacity: 0; transform: translateY(8px); } }
@@ -39,23 +39,8 @@
 .ex-cmd .ex-ln { top: .14em; }
 .ex-wait { margin-top: 10px !important; color: var(--sig) !important; }
 
-.ex-decision { margin: 12px 0 6px; }
-.ex-cat-probs { list-style: none; margin: 0 0 6px; padding: 0; }
-.ex-cat-probs li { display: flex; align-items: center; gap: 10px; color: var(--sub); white-space: pre; }
-.ex-cat-probs li.top { color: var(--fg); }
-.ex-arrow { color: var(--sig); width: 1ch; }
-.ex-cat-label { min-width: 8em; }
-.ex-cat-probs li:not(.top) .cellbar i.on { background: var(--sub); }
-.ex-num { font-variant-numeric: tabular-nums; }
-.ex-miss { color: var(--fg); }
+/* the decision bars and the help/categories listings are styled by the feature (features/explore-resume/ui/*.css) */
 .ex-cards { display: grid; gap: 30px; margin-top: 18px; }
-
-/* help and categories: a two-column listing, name then description */
-.ex-list { margin-top: 10px; display: grid; gap: 8px; }
-.ex-list dl { margin: 0; display: grid; gap: 2px; }
-.ex-list dl > div { display: flex; gap: 2ch; }
-.ex-list dt { min-width: 12ch; color: var(--fg); }
-.ex-list dd { margin: 0; }
 
 /* the dock: the prompt row, pinned to the bottom like a chat input */
 .ex-dock {
@@ -85,5 +70,4 @@
 @media (prefers-reduced-motion: reduce) { .ex-turn { animation: none; } }
 @media (max-width: 640px) {
   .explore { --mono: 16px; }
-  .ex-cat-label { min-width: 6.5em; }
 }

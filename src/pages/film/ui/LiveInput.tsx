@@ -3,7 +3,7 @@
 // 1번 장면의 명령 줄처럼 강조된 줄에 놓이고, 브라우저 캐럿 대신 영상의 블록 캐럿이 글자를 따라간다.
 // .world 밖(aria-hidden 아님)에 있어서 스크린리더·키보드로도 쓸 수 있다.
 import { type Ref, useEffect, useRef, useState } from 'react'
-import { MAX_WORD } from '../lib/liveField'
+import { MAX_WORD } from '../model/liveField'
 
 type Props = {
   x: number

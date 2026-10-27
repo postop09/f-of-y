@@ -2,9 +2,9 @@
 // 장면이 그리던 줄과 같은 자리·글꼴이라, 재생이 시작되면 장면의 `$ run start` 가 그 자리를 이어받는다.
 // .world 밖(aria-hidden 아님)에 있어서 스크린리더·키보드로도 쓸 수 있다.
 import { type CSSProperties, type Ref, useEffect, useRef, useState } from 'react'
-import { REDUCE } from '@/shared/config/motion'
+import { REDUCE } from '@/shared/config'
 
-/** 글자가 흩어지는 시간 (ms). 다 흩어지면 다음 화면으로 간다 (scrollStage.css 의 boot-scatter 와 같게) */
+/** 글자가 흩어지는 시간 (ms). 다 흩어지면 다음 화면으로 간다 (filmPage.css 의 boot-scatter 와 같게) */
 const SCATTER_MS = 640
 
 /** 흩어지는 글자 하나: 날아갈 거리(px)·회전(deg)·늦게 출발하는 시간(ms) */

@@ -1,9 +1,6 @@
 // 07 ─ done → 끝까지.
-import { E, range, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, fit, range, span, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { Cue, SceneSpec } from '../../model/types'
 

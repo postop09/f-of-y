@@ -1,9 +1,6 @@
 // 05 ─ 업무 계획 → 업무 계획: the excuse is selected, deleted and retyped as a limit; then the plan of blockers is wiped
-import { E, bump, hash, lerp, range, span } from '@/shared/lib/math'
-import { fit, textW } from '@/shared/lib/textMeasure'
-import { type Seg, countOn, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, bump, countOn, fit, hash, lerp, range, span, textW, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 import './05-timeline.css'

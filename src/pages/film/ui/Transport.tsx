@@ -1,7 +1,7 @@
 // 하단 바: 처음으로 버튼 + 스크롤 위치를 문지르는 스크러버 + 소리 버튼. 스테이지에서 유일하게 포인터를 받는 곳.
 // 자동 재생 중(locked)에는 진행만 보여 주고 처음으로·스크러버는 받지 않는다. 소리 버튼은 언제나 된다.
 import type { PointerEvent, Ref } from 'react'
-import type { Scene } from '@/entities/scene/model/types'
+import type { Scene } from '@/entities/scene'
 
 type Props = {
   scenes: readonly Scene[]

@@ -1,7 +1,7 @@
 // 탐색 입력 줄: `$ ▮`. 영상의 타이핑 줄처럼 프롬프트와 깜빡이는 블록 캐럿만 있고, 친 글자가 캐럿 앞에 쌓인다. Enter로 질문을 보내고 비운다.
 // 진짜 입력칸은 글자 폭에 맞춰 늘어나고(숨은 복사본이 폭을 정함) 브라우저 캐럿은 감춘다. 줄 어디를 눌러도 입력칸으로 간다.
 import { type Ref, useState } from 'react'
-import { MAX_QUERY } from '@/entities/resume/lib/jev'
+import { MAX_QUERY } from '@/entities/resume'
 import './askLine.css'
 
 type Props = {

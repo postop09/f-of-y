@@ -1,7 +1,6 @@
 // yours 장면과 영상 끝의 live 필드가 같이 쓰는 큰 단어 자리와 그 픽셀 격자(keyframe.html의 liveBox·rasterLive).
 // 같은 단어면 yours가 그린 마지막 픽셀과 live가 시작하는 픽셀이 정확히 겹친다.
-import { type CanvasWord, type Cell, canvasFit, layoutAt, rasterize } from '@/shared/lib/canvasText'
-import { type Layout, memo } from '@/shared/lib/layout'
+import { type CanvasWord, type Cell, type Layout, canvasFit, layoutAt, memo, rasterize } from '@/shared/lib'
 
 export type LiveRaster = { lay: CanvasWord; cells: Cell[]; bbox: { x: number; y: number; w: number; h: number } }
 

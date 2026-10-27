@@ -1,6 +1,6 @@
 // 08 ─ split → 독고다이: the wall between teams drops in, a blade crosses it, and the halves drift apart
-import { E, lerp, span } from '@/shared/lib/math'
-import { Word } from '@/shared/ui/Word'
+import { E, lerp, span } from '@/shared/lib'
+import { Word } from '@/shared/ui'
 import { wordSlot } from '../../lib/wordSlot'
 import type { SceneSpec } from '../../model/types'
 

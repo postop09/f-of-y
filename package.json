@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "F(Y) · 키프레임 없이 스크롤 위치 하나로만 계산되는 키네틱 타이포그래피 22장면",
+  "description": "F(Y) · 키프레임 없이 스크롤 위치 하나로만 계산되는 키네틱 타이포그래피 20장면",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
@@ -11,7 +11,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint src scripts api",
+    "lint": "eslint src scripts api && steiger ./src",
+    "fsd": "steiger ./src",
     "typecheck": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@feature-sliced/steiger-plugin": "^0.8.0",
     "@types/node": "^22.20.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -34,6 +36,7 @@
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
     "jsdom": "^29.1.1",
+    "steiger": "^0.8.0",
     "tsx": "^4.23.13",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.70.0",

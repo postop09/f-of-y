@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CATEGORIES } from '@/entities/resume/model/resume'
+import { CATEGORIES } from '@/entities/resume'
 import { ask } from './ask'
 
 const reply = (status: number, body: unknown) => vi.fn(async () => new Response(JSON.stringify(body), { status }))

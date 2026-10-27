@@ -1,10 +1,6 @@
 // 11 ─ 한 걸음, 또 한 걸음: a film strip that steps one frame per notch
-import { E, bump, pad, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { monoW } from '@/shared/lib/canvasText'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, bump, fit, monoW, pad, span, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { Cue, SceneSpec } from '../../model/types'
 import './11-strip.css'

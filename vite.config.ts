@@ -35,7 +35,6 @@ export default defineConfig({
     alias: {
       '@/app': alias('./src/app'),
       '@/pages': alias('./src/pages'),
-      '@/widgets': alias('./src/widgets'),
       '@/features': alias('./src/features'),
       '@/entities': alias('./src/entities'),
       '@/shared': alias('./src/shared'),

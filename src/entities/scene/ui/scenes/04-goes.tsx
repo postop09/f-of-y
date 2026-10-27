@@ -1,9 +1,6 @@
 // 04 ─ goes → 실행: anticipation, then off screen with a trail
-import { E, clamp, range, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, clamp, fit, range, span, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 

@@ -1,7 +1,6 @@
 // split·pixel의 큰 단어와 boom의 BOOM이 같은 자리에 같은 크기로 놓이는 공용 자리.
 // WORD에 맞춘 글자 크기로, 가로는 가운데, 세로는 화면 50% 지점에 둔다.
-import type { Layout } from '@/shared/lib/layout'
-import { fit, textW } from '@/shared/lib/textMeasure'
+import { type Layout, fit, textW } from '@/shared/lib'
 import { centre } from './centre'
 
 export const wordSlot = (L: Layout, text = 'WORD') => {

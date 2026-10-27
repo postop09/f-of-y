@@ -1,5 +1,5 @@
 // 네 귀퉁이의 모니터 표시: 파일명, 장면 번호와 박자, 캡션, 속도와 Y.
-import { pad } from '@/shared/lib/math'
+import { pad } from '@/shared/lib'
 
 type Props = {
   /** 현재 장면 index (0부터) */

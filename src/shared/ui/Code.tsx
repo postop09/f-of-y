@@ -1,6 +1,6 @@
 // 모노 한 줄. `n` 글자까지만 보이고, 블록 캐럿이 따라붙는다.
 import type { CSSProperties } from 'react'
-import { type Seg, sliceCounts } from '@/shared/lib/typing'
+import { type Seg, sliceCounts } from '@/shared/lib'
 import './code.css'
 
 type Props = {

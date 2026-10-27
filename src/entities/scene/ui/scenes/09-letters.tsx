@@ -1,9 +1,6 @@
 // 09 ─ letters → 한 팀처럼: an editor, then a word whose letters move as one while you scroll
-import { E, pad, range, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { type Seg, typeOn } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { type Seg, E, fit, pad, range, span, typeOn } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { typeCues } from '../../lib/cues'
 import type { SceneSpec } from '../../model/types'
 

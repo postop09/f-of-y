@@ -1,8 +1,6 @@
 // 16 ─ sixty → 100가지: a counter you drive with the wheel
-import { lerp, range, span } from '@/shared/lib/math'
-import { fit } from '@/shared/lib/textMeasure'
-import { monoW } from '@/shared/lib/canvasText'
-import { Word } from '@/shared/ui/Word'
+import { fit, lerp, monoW, range, span } from '@/shared/lib'
+import { Word } from '@/shared/ui'
 import type { Cue, SceneSpec } from '../../model/types'
 import './16-sixty.css'
 

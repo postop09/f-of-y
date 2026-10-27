@@ -1,13 +1,7 @@
 // 17 ─ zoom → 몰입: the camera dives through the 0 of 100% and comes out 몰입
-import { REDUCE } from '@/shared/config/motion'
-import { E, lerp, span } from '@/shared/lib/math'
-import { SPB } from '@/shared/lib/synth'
-import { memo } from '@/shared/lib/layout'
-import { fit, textW } from '@/shared/lib/textMeasure'
-import { measureO } from '@/shared/lib/canvasText'
-import type { Seg } from '@/shared/lib/typing'
-import { Code } from '@/shared/ui/Code'
-import { Word } from '@/shared/ui/Word'
+import { REDUCE } from '@/shared/config'
+import { type Seg, E, SPB, fit, lerp, measureO, memo, span, textW } from '@/shared/lib'
+import { Code, Word } from '@/shared/ui'
 import { centre } from '../../lib/centre'
 import type { Cam, SceneSpec } from '../../model/types'
 

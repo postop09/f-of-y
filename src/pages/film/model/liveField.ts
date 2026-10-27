@@ -1,12 +1,10 @@
 // live 필드: 영상 끝에서 YOURS 픽셀이 손에 넘어온다(public/keyframe.html의 live 장면을 옮김).
 // 칸마다 제자리로 당기는 스프링이 있고, 커서가 밀고, 클릭하면 터졌다가 돌아오고, 반주 박마다 살짝 부푼다.
 // 단어를 바꾸면 칸들이 새 단어 자리로 옮겨 가고, 남는 칸은 사라지고 모자란 칸은 기존 칸 근처에서 생겨난다.
-// 장면들과 달리 스크롤의 순수 함수가 아니라 시간으로 흐르는 상태라서, 위젯이 rAF 루프에서 직접 굴린다.
-import { liveRaster } from '@/entities/scene/lib/liveWord'
-import { COL } from '@/shared/config/typography'
-import { cell } from '@/shared/lib/canvasText'
-import type { Layout } from '@/shared/lib/layout'
-import { hash } from '@/shared/lib/math'
+// 장면들과 달리 스크롤의 순수 함수가 아니라 시간으로 흐르는 상태라서, 페이지가 rAF 루프에서 직접 굴린다.
+import { liveRaster } from '@/entities/scene'
+import { COL } from '@/shared/config'
+import { type Layout, cell, hash } from '@/shared/lib'
 
 type LiveCell = { x: number; y: number; vx: number; vy: number; hx: number; hy: number; lime: boolean; a: number; dying: boolean }
 type Pointer = { x: number; y: number; in: boolean }
