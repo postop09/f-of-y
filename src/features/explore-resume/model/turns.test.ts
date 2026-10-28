@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type ExploreResult, itemsIn } from '@/entities/resume'
-import { MIN_ABOUT, MIN_P, commandLine, picked } from './turns'
+import { MIN_ABOUT, MIN_P, SURE_P, commandLine, picked } from './turns'
 
 const res = (over: Partial<ExploreResult>): ExploreResult => ({
   source: 'jev',
@@ -13,7 +13,11 @@ const res = (over: Partial<ExploreResult>): ExploreResult => ({
 
 describe('picked', () => {
   it('shows nothing for a question that is not about the resume', () => {
-    expect(picked(res({ aboutResume: MIN_ABOUT - 0.01, items: [{ id: 'sm-sentry', p: 0.9 }] }))).toEqual([])
+    expect(picked(res({ aboutResume: MIN_ABOUT - 0.01, items: [{ id: 'sm-sentry', p: SURE_P - 0.01 }] }))).toEqual([])
+  })
+  it('still shows a sure item when the relevance is low (one-word questions like "ai")', () => {
+    const out = picked(res({ aboutResume: MIN_ABOUT - 0.05, items: [{ id: 'bigglz-ai', p: SURE_P }, { id: 'sm-sentry', p: 0.01 }] }))
+    expect(out.map((x) => [x.item.id, x.p])).toEqual([['bigglz-ai', SURE_P]])
   })
   it('keeps items at or above MIN_P, in order, with their p', () => {
     const out = picked(res({ items: [{ id: 'sm-sentry', p: 0.8 }, { id: 'bigglz-ai', p: MIN_P }, { id: 'tuneit-ds', p: 0.1 }] }))
