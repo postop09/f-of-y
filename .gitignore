@@ -8,3 +8,4 @@ export
 .vercel
 .DS_Store
 private/
+.env*
