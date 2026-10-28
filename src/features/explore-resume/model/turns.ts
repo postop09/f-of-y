@@ -5,6 +5,8 @@ import { type CategoryId, type ExploreResult, type ResumeItem, CATEGORY, ITEM, i
 export const MIN_P = 0.15
 /** 이보다 낮으면 이력서와 무관한 질문으로 본다 */
 export const MIN_ABOUT = 0.4
+/** 항목 하나가 이만큼 확실하면 관련도가 낮아도 보여 준다 ("ai" 처럼 낱말 하나만 친 질문은 Jev 가 관련도를 낮게 주기도 한다) */
+export const SURE_P = 0.8
 
 /** 쌓이는 한 차례: 질문(답을 기다리는 중이면 r = null), 카테고리 보기, 명령어(all 은 모든 카테고리 보기) */
 export type TurnKind =
@@ -21,9 +23,9 @@ export const commandLine = (t: TurnKind) =>
 
 export type Pick = { item: ResumeItem; p?: number }
 
-/** 질문 결과에서 보여 줄 항목: 일치도가 충분한 것, 없으면 고른 카테고리의 항목 */
+/** 질문 결과에서 보여 줄 항목: 일치도가 충분한 것, 없으면 고른 카테고리의 항목. 이력서와 무관하면(확실한 항목도 없으면) 없음 */
 export const picked = (r: ExploreResult): Pick[] => {
-  if (r.aboutResume < MIN_ABOUT) return []
+  if (r.aboutResume < MIN_ABOUT && !r.items.some((it) => it.p >= SURE_P)) return []
   const hits = r.items.filter((it) => it.p >= MIN_P).map((it) => ({ item: ITEM[it.id], p: it.p }))
   return hits.length ? hits : itemsIn(r.category).map((item) => ({ item }))
 }

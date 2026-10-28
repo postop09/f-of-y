@@ -18,19 +18,27 @@ export const ITEMS: readonly ResumeItem[] = [
     id: 'bigglz-ai',
     company: '㈜비글즈',
     period: '2026.03 ~ 재직중',
-    title: 'AI 기반 개발 환경 구축 및 활용 방안 수립',
-    summary: 'Built project rules and guidelines for AI coding tools (Cursor, Claude) so AI-generated code is consistent, and used AI to prototype service demos fast',
-    problem: ['AI 도구 활용 시 결과물 품질과 코드 스타일 편차 발생', '반복적인 수정 및 리뷰 과정으로 생산성 향상 효과 제한'],
-    solution: ['일관된 결과물 생성을 위한 개발 규칙 및 가이드라인 수립'],
-    impl: ['프로젝트별 Cursor/Claude 설계 및 관리', '코드 스타일, 폴더 구조, 아키텍처 원칙 정의', 'AI 기반 코드 생성 및 검증 프로세스 구축'],
-    result: [
-      'AI 생성 코드의 품질 및 일관성 향상',
-      '반복 수정 및 코드 관리 비용 감소',
-      'AI를 활용한 서비스 데모 및 프로토타입 제작으로 사업 아이디어 검증 기간 단축',
-      '신규 서비스 제안 및 프로젝트 발굴 프로세스 효율화',
+    title: 'AI 기반 개발 환경 구축 및 MVP 개발·서비스 연구개발',
+    summary:
+      'Built AI development rules and per-project guidelines (Cursor/Claude agents, rules, skills) so AI-generated code is consistent, set up an AI-based MVP process to build and validate new service ideas fast, and researched AI tech to prototype and propose services for clients',
+    problem: ['AI 도구 활용 시 결과물의 품질과 코드 스타일 편차 발생', '신규 서비스 아이디어의 빠른 검증과 사업 제안을 위한 프로토타입 개발 환경 필요'],
+    solution: [
+      '일관된 결과물 생성을 위한 AI 개발 규칙 및 프로젝트별 가이드라인 수립',
+      '신규 AI 기술 연구 및 AI 기반 서비스 구현 방안 수립',
     ],
+    impl: [
+      'Cursor/Claude AI agent, rule, skill 등 개발 환경 설계',
+      'AI 기술을 활용한 서비스 데모 및 MVP 개발을 통한 신규 아이디어 검증',
+      '고객 요구사항과 사업 목적에 맞춘 프로토타입 제작 및 서비스 제안 지원',
+    ],
+    result: ['AI 생성 코드의 품질과 일관성 향상 및 반복 수정 비용 감소', 'AI 기반 MVP 개발로 서비스 아이디어 검증 기간 단축 및 사업 제안 프로세스 효율화'],
     categories: ['ai', 'team'],
-    keywords: ['ai', '인공지능', 'cursor', 'claude', '프롬프트', '생성', '프로토타입', '데모', '가이드라인', 'llm'],
+    keywords: ['ai', '인공지능', 'cursor', 'claude', 'agent', '에이전트', 'skill', '프롬프트', '생성', '프로토타입', '데모', 'mvp', '연구개발', '가이드라인', 'llm'],
+    media: [
+      { kind: 'video', src: '/work/bigglz/animation1.mp4', alt: '키를 재면 탈 수 있는 놀이기구를 알려 주는 키즈 데모 화면', caption: '애니메이션 테스트', w: 1788, h: 1080 },
+      { kind: 'video', src: '/work/bigglz/animation2.mp4', alt: '놀이기구 수집 카드가 뒤집히며 대기 시간을 보여 주는 데모 화면', caption: '애니메이션 테스트', w: 1900, h: 1080 },
+      { kind: 'video', src: '/work/bigglz/jev.mp4', alt: '질문에 따라 표정과 색이 바뀌는 캐릭터와 대화하는 데모 화면', caption: 'Jev 실시간 반응 테스트', w: 1920, h: 992 },
+    ],
   },
   {
     id: 'sm-monorepo',
@@ -54,7 +62,7 @@ export const ITEMS: readonly ResumeItem[] = [
     categories: ['arch', 'team'],
     keywords: ['monorepo', '모노레포', 'turborepo', '통합', '구조', '아키텍처', '공통', '중복', '유지보수', '송금'],
     link: 'https://enormous-algebra-1c0.notion.site/Mono-repo-2b82037042838030bb51fa470f1884c6',
-    images: [
+    media: [
       { src: '/work/successmode/trans1.png', alt: '송금 정보 입력 화면 예시 이미지', caption: '생성된 이미지', w: 1024, h: 1536 },
       { src: '/work/successmode/trans2.png', alt: '송금 상태 화면 예시 이미지', caption: '생성된 이미지', w: 1024, h: 1536 },
     ],
@@ -136,7 +144,7 @@ export const ITEMS: readonly ResumeItem[] = [
     result: ['사용자 행동 분석 기반의 서비스 고도화', '코드 안정성 및 가독성 향상', '온보딩 및 유지보수 러닝커브 감소'],
     categories: ['ux', 'arch', 'team'],
     keywords: ['firebase', 'analytics', '분석', '데이터', '사용자 행동', 'typescript', '타입스크립트', 'hooks', '리팩터링', '리팩토링', '문서화'],
-    images: [
+    media: [
       { src: '/work/tuneit/firebase.png', alt: 'firebase analytics 이벤트 목록 정리 이미지', caption: '생성된 이미지', w: 1536, h: 1024 },
     ],
   },
@@ -153,7 +161,7 @@ export const ITEMS: readonly ResumeItem[] = [
     result: [],
     categories: ['ui'],
     keywords: ['차량', '관제', '실시간', 'chart', '차트', '시각화', 'google maps', '지도', 'sse', 'polling', '대시보드'],
-    images: [
+    media: [
       { src: '/work/tuneit/gps.png', alt: '지도 위에 이동경로를 선으로 표시한 이미지', caption: '생성된 이미지', w: 3028, h: 1580 },
     ],
   },

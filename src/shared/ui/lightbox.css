@@ -14,10 +14,11 @@
   flex: 1; min-height: 0; display: flex;
   padding: 24px 16px 8px; overflow: auto; overscroll-behavior: contain;
 }
-.lb-stage img {
+.lb-stage img, .lb-stage video {
   display: block; margin: auto; max-width: 100%; max-height: 100%; width: auto; height: auto;
-  object-fit: contain; background: var(--rule); cursor: zoom-in;
+  object-fit: contain; background: var(--rule);
 }
+.lb-stage img { cursor: zoom-in; }
 /* original size: the stage scrolls */
 .lightbox.full .lb-stage img { max-width: none; max-height: none; cursor: zoom-out; }
 .lb-bar {
