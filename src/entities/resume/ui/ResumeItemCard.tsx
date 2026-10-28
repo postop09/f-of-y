@@ -1,5 +1,5 @@
-// 경력 항목 하나: 회사·기간·제목, 이미지 썸네일(있으면), 문제 → 해결 → 구현 → 결과, 카테고리 태그. 비어 있는 단계는 건너뛴다.
-// 썸네일을 누르면 그 이미지부터 라이트박스로 크게 본다.
+// 경력 항목 하나: 회사·기간·제목, 이미지·영상 썸네일(있으면), 문제 → 해결 → 구현 → 결과, 카테고리 태그. 비어 있는 단계는 건너뛴다.
+// 썸네일을 누르면 거기부터 라이트박스로 크게 본다(영상은 거기서 재생). 썸네일의 영상은 첫 프레임만 (preload metadata).
 import { useState } from 'react'
 import { Lightbox } from '@/shared/ui'
 import { CATEGORY } from '../model/resume'
@@ -16,9 +16,9 @@ const STEPS = [
 type Props = { item: ResumeItem; /** 질문과의 일치도 0..1 (있으면 제목 옆에) */ p?: number }
 
 export const ResumeItemCard = ({ item, p }: Props) => {
-  // 라이트박스로 보고 있는 이미지 (닫혀 있으면 null)
+  // 라이트박스로 보고 있는 이미지·영상 (닫혀 있으면 null)
   const [open, setOpen] = useState<number | null>(null)
-  const images = item.images ?? []
+  const media = item.media ?? []
   return (
     <article className="ri">
       <header>
@@ -28,17 +28,26 @@ export const ResumeItemCard = ({ item, p }: Props) => {
         </div>
         <h3>{item.title}</h3>
       </header>
-      {images.length > 0 && (
+      {media.length > 0 && (
         <div className="ri-figs">
-          {images.map((img, i) => (
-            <figure key={img.src}>
-              <button type="button" onClick={() => setOpen(i)} aria-label={`${img.caption ?? img.alt} 크게 보기`}>
+          {media.map((m, i) => (
+            <figure key={m.src}>
+              <button type="button" onClick={() => setOpen(i)} aria-label={`${m.caption ?? m.alt} ${m.kind === 'video' ? '재생' : '크게 보기'}`}>
                 {/* width·height: 불러오기 전에 자리를 잡아 새 차례로 스크롤할 때 밀리지 않게 */}
-                <img src={img.src} alt={img.alt} width={img.w} height={img.h} loading="lazy" decoding="async" />
+                {m.kind === 'video' ? (
+                  <>
+                    <video src={m.src} width={m.w} height={m.h} preload="metadata" muted playsInline aria-hidden tabIndex={-1} />
+                    <span className="ri-fig-play" aria-hidden>
+                      ▶
+                    </span>
+                  </>
+                ) : (
+                  <img src={m.src} alt={m.alt} width={m.w} height={m.h} loading="lazy" decoding="async" />
+                )}
               </button>
               <figcaption>
                 <span className="ri-fig-n">fig.{i + 1}</span>
-                {img.caption && ` ${img.caption}`}
+                {m.caption && ` ${m.caption}`}
               </figcaption>
             </figure>
           ))}
@@ -73,7 +82,7 @@ export const ResumeItemCard = ({ item, p }: Props) => {
           </a>
         )}
       </footer>
-      {open !== null && <Lightbox images={images} index={open} onIndex={setOpen} onClose={() => setOpen(null)} />}
+      {open !== null && <Lightbox items={media} index={open} onIndex={setOpen} onClose={() => setOpen(null)} />}
     </article>
   )
 }

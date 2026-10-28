@@ -45,9 +45,14 @@ npm run lint && npm run typecheck && npm test && npm run build
 - 방문자가 질문을 치면 `POST /api/explore`(`api/explore.ts`, Vercel 함수)가 Jev에 묻는다. Jev는 글을 쓰지 않고 정해진 형식으로만 답하는 모델이라, 세 가지를 확률로 고르게 한다: 카테고리(choice), 경력 항목(choice, `none` 포함), 이력서에 대한 질문인지(noul). 서버는 id와 확률만 돌려주고, 화면이 `entities/resume/model/resume.ts`의 데이터로 카드를 그린다.
 - 카테고리: 사용자 경험 · UI 개선 · AI 활용 · 구조·아키텍처 · 운영 안정성 · 협업·프로세스. 항목 하나가 여러 카테고리에 들 수 있고, `categories` 목록에서 고르면 Jev 없이 바로 거른다.
 - 이력서 원본 PDF는 `private/`(gitignore)에 둔다. 연락처·주소가 있어 `public/`에 두면 배포에 그대로 공개되기 때문. 화면 데이터에는 연락처를 싣지 않고 경력 항목만 둔다.
-- 이미지: 항목에 `images`를 달면 카드의 제목 아래에 썸네일 줄이 생기고, 누르면 라이트박스(`shared/ui/Lightbox`)로 크게 본다(←/→ 넘기기, 이미지를 누르면 원본 크기, Esc로 닫기). 파일은 회사별 폴더 `public/work/<회사>/`(예: `successmode`, `tuneit`)에 두고(webp, 긴 변 2000px 안팎), 경로는 import 하지 않고 문자열로 적는다(서버 함수도 이 데이터를 읽음). `w`·`h`는 원본 크기로, 불러오기 전에 자리를 잡아 둔다. `model/resume.test.ts`가 파일이 실제로 있는지, 한 회사의 이미지가 한 폴더에 모여 있는지, alt·크기를 확인한다.
+- 이미지·영상: 항목에 `media`를 달면 카드의 제목 아래에 썸네일 줄이 생기고, 누르면 라이트박스(`shared/ui/Lightbox`)로 크게 본다(←/→ 넘기기, 이미지를 누르면 원본 크기, 영상은 바로 재생, Esc로 닫기). 파일은 회사별 폴더 `public/work/<회사>/`(예: `bigglz`, `successmode`, `tuneit`)에 두고, 경로는 import 하지 않고 문자열로 적는다(서버 함수도 이 데이터를 읽음). `w`·`h`는 원본 크기로, 불러오기 전에 자리를 잡아 둔다. `model/resume.test.ts`가 파일이 실제로 있는지, 한 회사의 파일이 한 폴더에 모여 있는지, alt·크기·형식을 확인한다.
+  - 이미지: webp/png, 긴 변 2000px 안팎.
+  - 영상: `kind: 'video'`, mp4(H.264, 소리 없음, 1080p, 1편에 10MB 안팎). 썸네일은 첫 프레임(`preload="metadata"`)이라 파일 머리에 moov 가 와야 한다(fast start). 화면 녹화 `.mov`는 ffmpeg 없이 macOS 기본 도구로 바꿀 수 있다: `avconvert -p PresetAppleM4V1080pHD -s in.mov -o out.m4v` 뒤 `.mp4`로 이름만 바꾼다. 원본 `.mov`는 커밋하지 않는다.
   ```ts
-  images: [{ src: '/work/successmode/structure.webp', alt: '모노레포 패키지 구조도', caption: '패키지 구조', w: 1600, h: 1000 }],
+  media: [
+    { src: '/work/successmode/structure.webp', alt: '모노레포 패키지 구조도', caption: '패키지 구조', w: 1600, h: 1000 },
+    { kind: 'video', src: '/work/bigglz/jev.mp4', alt: '질문에 따라 표정이 바뀌는 캐릭터', caption: 'Jev 대화 데모', w: 1920, h: 992 },
+  ],
   ```
 - `api/`는 Vercel이 파일마다 따로 컴파일하는 Node ESM이라, 서버는 `entities/resume/index.server.ts`만 읽고, 그 아래(`api/jev.ts`·`lib/rank.ts`·`model/resume.ts`)의 런타임 상대 import에는 `.js`를 붙인다.
 

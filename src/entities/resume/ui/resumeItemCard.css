@@ -8,9 +8,12 @@
 .ri-figs { --fig-h: 7.5em; display: flex; gap: 12px; margin: 0 0 12px; padding-bottom: 4px; overflow-x: auto; scrollbar-width: thin; }
 /* min-content: the caption wraps to the thumbnail's width instead of stretching it */
 .ri-figs figure { flex: none; width: min-content; margin: 0; }
-.ri-figs button { display: block; padding: 0; border: 1px solid var(--ln); background: none; cursor: zoom-in; }
+.ri-figs button { position: relative; display: block; padding: 0; border: 1px solid var(--ln); background: none; cursor: zoom-in; }
 .ri-figs button:hover, .ri-figs button:focus-visible { border-color: var(--sig); outline: none; }
-.ri-figs img { display: block; width: auto; max-width: min(24em, 70vw); height: var(--fig-h); object-fit: contain; background: var(--ln); }
+.ri-figs img, .ri-figs video { display: block; width: auto; max-width: min(24em, 70vw); height: var(--fig-h); object-fit: contain; background: var(--ln); }
+/* a video thumbnail is its first frame with a play mark in the corner */
+.ri-figs video { pointer-events: none; }
+.ri-fig-play { position: absolute; right: 4px; bottom: 4px; padding: 0 5px; font-size: .8em; line-height: 1.6; color: var(--sig); background: rgb(0 0 0 / .6); }
 .ri-figs figcaption { margin-top: 4px; max-width: 100%; color: var(--sub); font-size: .86em; line-height: 1.4; }
 .ri-fig-n { color: var(--sig); }
 .ri-step { margin: 0 0 8px; }

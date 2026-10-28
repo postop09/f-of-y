@@ -9,8 +9,10 @@ export type Category = {
   hint: string
 }
 
-/** 카드 썸네일과 라이트박스에 보이는 이미지. 파일은 회사별 폴더 public/work/<회사>/ 에 둔다 */
-export type ResumeImage = {
+/** 카드 썸네일과 라이트박스에 보이는 이미지·영상. 파일은 회사별 폴더 public/work/<회사>/ 에 둔다 */
+export type ResumeMedia = {
+  /** 없으면 이미지. 영상은 mp4(H.264, 소리 없음): 썸네일엔 첫 프레임, 라이트박스에서 재생 */
+  kind?: 'image' | 'video'
   /** public 기준 경로 (예: '/work/successmode/trans1.png'). 서버 함수도 이 파일을 읽으므로 import 하지 않고 문자열로 둔다 */
   src: string
   alt: string
@@ -39,8 +41,8 @@ export type ResumeItem = {
   link?: string
   /** 실제로 돌아가는 서비스 주소 */
   site?: string
-  /** 제품 화면·구조도. 없으면 카드는 글만 */
-  images?: readonly ResumeImage[]
+  /** 제품 화면·구조도·시연 영상. 없으면 카드는 글만 */
+  media?: readonly ResumeMedia[]
 }
 
 export type ExploreSource = 'jev' | 'local'
