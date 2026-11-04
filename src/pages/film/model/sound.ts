@@ -9,6 +9,13 @@ const VOLUME = 0.8
 const AHEAD = 0.14
 
 type WebkitWindow = Window & { webkitAudioContext?: typeof AudioContext }
+/** Safari 17+: Web Audio는 기본이 'ambient'라 iPhone 무음 스위치를 켜 두면 아무 소리도 안 난다. 'playback'이면 영상처럼 들린다. */
+type AudioSessionNavigator = Navigator & { audioSession?: { type: string } }
+
+/** 멈춘 컨텍스트를 깨운다. iOS는 'suspended' 말고 'interrupted'(전화·다른 앱·백그라운드)로도 멈춘다. */
+const wake = (ac: AudioContext) => {
+  if (ac.state !== 'running' && ac.state !== 'closed' && !document.hidden) ac.resume().catch(() => {})
+}
 
 export type Sound = ReturnType<typeof createSound>
 
@@ -40,8 +47,16 @@ export const createSound = () => {
     /** 첫 사용자 입력에서 소리를 켠다. 이미 켜져 있으면 깨우기만 한다. */
     start() {
       if (ac) {
-        if (ac.state === 'suspended' && !document.hidden) ac.resume().catch(() => {})
+        wake(ac)
         return
+      }
+      const session = (navigator as AudioSessionNavigator).audioSession
+      if (session) {
+        try {
+          session.type = 'playback'
+        } catch {
+          // older Safari: the ringer switch still mutes it
+        }
       }
       const C = window.AudioContext ?? (window as WebkitWindow).webkitAudioContext
       if (!C) return
@@ -65,7 +80,7 @@ export const createSound = () => {
       newBus()
       t0 = ac.currentTime + 0.06
       next = 0
-      if (ac.state === 'suspended') ac.resume().catch(() => {})
+      wake(ac)
     },
 
     /** 반주가 시작된 뒤 귀에 들리는 시각 (초). 소리를 못 켰으면 null. */
@@ -132,6 +147,6 @@ export const createSound = () => {
 
     /** 탭이 가려지면 멈추고, 돌아오면 이어서 */
     suspend: () => void ac?.suspend().catch(() => {}),
-    resume: () => void ac?.resume().catch(() => {}),
+    resume: () => void (ac && wake(ac)),
   }
 }

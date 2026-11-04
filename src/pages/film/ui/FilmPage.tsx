@@ -146,7 +146,8 @@ export const FilmPage = ({ onExplore }: Props) => {
         if (stall > 0.5 !== m.stall > 0.5) m.dirty = true
         m.stall = stall
       }
-      const target = m.auto ?? clamp(window.scrollY / m.unitPx, 0, TOTAL)
+      // typing in the live field: the scroll the on-screen keyboard brings (iOS, Android) must not rewind out of it
+      const target = m.auto ?? (m.hold ? TOTAL : clamp(window.scrollY / m.unitPx, 0, TOTAL))
       const prev = m.u
       m.u = m.auto !== null || REDUCE || Math.abs(target - m.u) < 1e-3 ? target : m.u + (target - m.u) * (1 - Math.exp(-dt * 11))
       m.v += ((m.u - prev) / dt - m.v) * (1 - Math.exp(-dt * 12))
@@ -220,7 +221,11 @@ export const FilmPage = ({ onExplore }: Props) => {
       return true
     }
     const onClick = (e: MouseEvent) => {
-      if (e.target instanceof Element && e.target.closest('button, #scrub, input, .boot-row, .live-row')) return
+      if (e.target instanceof Element && e.target.closest('button, #scrub, input, .boot-row, .live-row')) {
+        // on a phone the scroll does not count as a gesture, so a tap on the live line may be the first chance to make sound
+        if (m.live && e.target.closest('.live-row')) sound.start()
+        return
+      }
       if (begin()) return
       const lay = layoutRef.current
       if (m.live && lay) {
@@ -237,6 +242,20 @@ export const FilmPage = ({ onExplore }: Props) => {
     // the root is overflow:hidden while autoplaying; these also cover iOS touch and keyboard paging
     const onBlock = (e: Event) => {
       if (m.auto !== null) e.preventDefault()
+      // a real scroll while typing in the live field: let go of the word so the scroll rewinds as usual
+      else if (m.hold) {
+        m.hold = false
+        liveInputRef.current?.blur()
+      }
+    }
+    // the live field's input holds the film at its end while it has focus, and puts the scroll back there when the keyboard goes
+    const onFocusIn = (e: FocusEvent) => {
+      if (e.target === liveInputRef.current && m.live) m.hold = true
+    }
+    const onFocusOut = (e: FocusEvent) => {
+      if (e.target !== liveInputRef.current || !m.hold) return
+      m.hold = false
+      if (m.unitPx) window.scrollTo(0, TOTAL * m.unitPx)
     }
     const onMove = (e: globalThis.PointerEvent) => {
       if (e.pointerType === 'touch') return
@@ -292,6 +311,7 @@ export const FilmPage = ({ onExplore }: Props) => {
       sound.restart(at / AUTOPLAY_SPEED)
       m.auto = at
       m.go = true
+      m.hold = false
       m.sfxU = Math.max(0, at - 0.01) // a cue right on `at` (the enter) still sounds
       m.hits.length = 0
       m.dirty = true
@@ -303,12 +323,16 @@ export const FilmPage = ({ onExplore }: Props) => {
     window.addEventListener('blur', onLeave)
     window.addEventListener('keydown', onKey)
     window.addEventListener('click', onClick)
+    document.addEventListener('focusin', onFocusIn)
+    document.addEventListener('focusout', onFocusOut)
     document.addEventListener('visibilitychange', onVisibility)
     window.addEventListener('wheel', onBlock, { passive: false })
     window.addEventListener('touchmove', onBlock, { passive: false })
     return () => {
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('click', onClick)
+      document.removeEventListener('focusin', onFocusIn)
+      document.removeEventListener('focusout', onFocusOut)
       document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener(REPLAY, onReplay)
       window.removeEventListener('pointermove', onMove)

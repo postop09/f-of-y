@@ -30,6 +30,8 @@ export type Motion = {
   ptr: { x: number; y: number; in: boolean }
   /** 영상 끝의 live 필드가 돌고 있다 */
   live: boolean
+  /** live 입력칸에 치는 중: 키보드가 올라오며 브라우저가 페이지를 스크롤해도 영상 끝에 머문다 */
+  hold: boolean
 }
 
 export const createMotion = (autoplay = false): Motion => ({
@@ -51,6 +53,7 @@ export const createMotion = (autoplay = false): Motion => ({
   hits: [],
   ptr: { x: -1e4, y: -1e4, in: false },
   live: false,
+  hold: false,
 })
 
 /** 렌더에 쓰는 프레임 스냅샷 */
