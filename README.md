@@ -1,4 +1,4 @@
-# f-of-y — F(Y) · 스크롤 키네틱 타이포
+# f-of-y — F(Y) · 개발자 조윤식을 소개합니다
 
 키프레임 없이 **스크롤 위치 하나로만** 계산되는 키네틱 타이포그래피 20장면.
 내리면 재생, 멈추면 정지, 올리면 되감기. 마우스 근처 글자는 굵기·폭이 깎인다.
@@ -20,6 +20,10 @@ echo 'TYPESAFE_API_KEY=…' > .env.local   # npm run dev 가 /api/explore 에서
 ```
 
 배포(Vercel)에서는 프로젝트 환경변수에 `TYPESAFE_API_KEY`를 등록한다. 키가 없거나 Jev에 닿지 않으면(단일 HTML export 포함) 키워드 매칭으로 대신 고른다.
+
+## 공유 미리보기
+
+`index.html`의 OG·Twitter 메타 태그가 `public/og.png`(1200×630)를 가리킨다. 카카오톡·슬랙 등은 상대 경로를 못 읽어서 배포 주소(`https://self-announcement.vercel.app`)를 절대 경로로 적었다. 이미지는 영상 끝 프레임(YOURS 픽셀)처럼 `F(Y)`를 격자로 래스터한 카드다. 바꿨다면 카카오 [공유 디버거](https://developers.kakao.com/tool/debugger/sharing)에서 캐시를 지운다.
 
 ## 검증
 
